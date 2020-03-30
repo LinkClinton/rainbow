@@ -3,4 +3,56 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="shared">
+      <UniqueIdentifier>{68406566-35f5-4a21-95e5-c9a6c3040bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\math">
+      <UniqueIdentifier>{437d0ffe-56c8-490a-a09b-4242e21558fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\math\detail">
+      <UniqueIdentifier>{c5e3705d-69ec-4d8e-898d-484ab10eea25}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shared\math\vector.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\vector1.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\vector2.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\vector3.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\vector4.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\matrix4x4.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\math.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\assert.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\vector1.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\vector2.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\vector3.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\vector4.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\matrix4x4.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
