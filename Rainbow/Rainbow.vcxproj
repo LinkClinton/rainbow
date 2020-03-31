@@ -95,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,7 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,8 +151,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shared\random_generator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="interfaces\noncopyable.hpp" />
+    <ClInclude Include="samplers\detail\random_sampler.hpp" />
+    <ClInclude Include="samplers\detail\sampler.hpp" />
+    <ClInclude Include="samplers\random_sampler.hpp" />
+    <ClInclude Include="samplers\sampler.hpp" />
     <ClInclude Include="shared\assert.hpp" />
     <ClInclude Include="shared\math\detail\matrix4x4.hpp" />
     <ClInclude Include="shared\math\detail\vector.hpp" />
@@ -167,6 +173,8 @@
     <ClInclude Include="shared\math\vector2.hpp" />
     <ClInclude Include="shared\math\vector3.hpp" />
     <ClInclude Include="shared\math\vector4.hpp" />
+    <ClInclude Include="shared\random_generator.hpp" />
+    <ClInclude Include="shared\utilities.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

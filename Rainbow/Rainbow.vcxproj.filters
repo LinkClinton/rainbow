@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shared\random_generator.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -12,6 +15,15 @@
     </Filter>
     <Filter Include="shared\math\detail">
       <UniqueIdentifier>{c5e3705d-69ec-4d8e-898d-484ab10eea25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplers">
+      <UniqueIdentifier>{23cd9ec0-199a-44c0-9107-997ccaa01a2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interfaces">
+      <UniqueIdentifier>{00470fd9-5e6b-4ad3-97d0-28f761984a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplers\detail">
+      <UniqueIdentifier>{6da867b0-bcd1-44de-8639-ae0ee93d0deb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +68,27 @@
     </ClInclude>
     <ClInclude Include="shared\math\detail\vector.hpp">
       <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\random_generator.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\utilities.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\sampler.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\noncopyable.hpp">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\sampler.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\random_sampler.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\random_sampler.hpp">
+      <Filter>samplers\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

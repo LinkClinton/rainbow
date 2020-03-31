@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../utilities.hpp"
+
 #include "vector1.hpp"
 #include "vector2.hpp"
 #include "vector3.hpp"
@@ -10,9 +12,7 @@
 namespace rainbow {
 
 	namespace math {
-
-		using real = float;
-
+		
 		using vector1 = vector1_t<real>;
 		using vector2 = vector2_t<real>;
 		using vector3 = vector3_t<real>;

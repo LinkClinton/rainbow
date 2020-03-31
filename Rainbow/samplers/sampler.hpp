@@ -1,0 +1,43 @@
+#pragma once
+
+#include "../interfaces/noncopyable.hpp"
+
+#include "../shared/random_generator.hpp"
+#include "../shared/utilities.hpp"
+#include "../shared/math/math.hpp"
+
+#include <vector>
+#include <memory>
+
+namespace rainbow {
+
+	namespace sampler {
+
+		template <size_t Dimension>
+		class sampler_t : public interface::noncopyable {
+		public:
+			using sample_type = math::vector_t<Dimension, real>;
+		public:
+			explicit sampler_t(const uint64 samples);
+
+			sample_type sample(const size_t index) const;
+			
+			virtual sample_type next_sample();
+
+			virtual void reset();
+		protected:
+			std::vector<sample_type> mSamples;
+
+			random_generator mRandomGenerator;
+			
+			size_t mCurrentSampleIndex;
+		};
+
+		using sampler1d = sampler_t<1>;
+		using sampler2d = sampler_t<2>;
+		using sampler3d = sampler_t<3>;
+		using sampler4d = sampler_t<4>;
+	}
+}
+
+#include "detail/sampler.hpp"
