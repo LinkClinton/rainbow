@@ -1,10 +1,12 @@
 #include "shared/math/math.hpp"
 
-int main() {
-	rainbow::vector1 a;
-	rainbow::vector2 b;
-	rainbow::vector3 c;
-	rainbow::vector4 d;
+using namespace rainbow;
 
-	rainbow::matrix4x4 e;
+int main() {
+	math::vector1 a;
+	math::vector2 b;
+	math::vector3 c;
+	math::vector4 d;
+
+	math::matrix4x4 e;
 }

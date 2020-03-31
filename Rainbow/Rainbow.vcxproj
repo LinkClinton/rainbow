@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="shared\assert.hpp" />
     <ClInclude Include="shared\math\detail\matrix4x4.hpp" />
+    <ClInclude Include="shared\math\detail\vector.hpp" />
     <ClInclude Include="shared\math\detail\vector1.hpp" />
     <ClInclude Include="shared\math\detail\vector2.hpp" />
     <ClInclude Include="shared\math\detail\vector3.hpp" />

@@ -54,5 +54,8 @@
     <ClInclude Include="shared\math\detail\matrix4x4.hpp">
       <Filter>shared\math\detail</Filter>
     </ClInclude>
+    <ClInclude Include="shared\math\detail\vector.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

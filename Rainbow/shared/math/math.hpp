@@ -9,12 +9,16 @@
 
 namespace rainbow {
 
-	using real = float;
+	namespace math {
 
-	using vector1 = vector1_t<real>;
-	using vector2 = vector2_t<real>;
-	using vector3 = vector3_t<real>;
-	using vector4 = vector4_t<real>;
+		using real = float;
 
-	using matrix4x4 = matrix4x4_t<real>;
+		using vector1 = vector1_t<real>;
+		using vector2 = vector2_t<real>;
+		using vector3 = vector3_t<real>;
+		using vector4 = vector4_t<real>;
+
+		using matrix4x4 = matrix4x4_t<real>;
+		
+	}
 }
