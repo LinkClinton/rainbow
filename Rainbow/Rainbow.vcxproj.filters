@@ -5,6 +5,12 @@
     <ClCompile Include="shared\random_generator.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="shared\ray.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\transform.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -89,6 +95,12 @@
     </ClInclude>
     <ClInclude Include="samplers\detail\random_sampler.hpp">
       <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\ray.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\transform.hpp">
+      <Filter>shared</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

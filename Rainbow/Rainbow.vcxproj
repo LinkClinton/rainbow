@@ -152,6 +152,8 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shared\random_generator.cpp" />
+    <ClCompile Include="shared\ray.cpp" />
+    <ClCompile Include="shared\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="interfaces\noncopyable.hpp" />
@@ -174,6 +176,8 @@
     <ClInclude Include="shared\math\vector3.hpp" />
     <ClInclude Include="shared\math\vector4.hpp" />
     <ClInclude Include="shared\random_generator.hpp" />
+    <ClInclude Include="shared\ray.hpp" />
+    <ClInclude Include="shared\transform.hpp" />
     <ClInclude Include="shared\utilities.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
