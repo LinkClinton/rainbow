@@ -150,18 +150,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cameras\film.cpp" />
+    <ClCompile Include="filters\box_filter.cpp" />
+    <ClCompile Include="filters\filters.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shapes\shapes.cpp" />
     <ClCompile Include="shared\random_generator.cpp" />
     <ClCompile Include="shared\ray.cpp" />
+    <ClCompile Include="shared\spectrums\color_spectrum.cpp" />
     <ClCompile Include="shared\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cameras\film.hpp" />
+    <ClInclude Include="filters\box_filter.hpp" />
+    <ClInclude Include="filters\filters.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
-    <ClInclude Include="samplers\detail\sampler.hpp" />
+    <ClInclude Include="samplers\detail\samplers.hpp" />
     <ClInclude Include="samplers\random_sampler.hpp" />
-    <ClInclude Include="samplers\sampler.hpp" />
+    <ClInclude Include="samplers\samplers.hpp" />
+    <ClInclude Include="shapes\shapes.hpp" />
     <ClInclude Include="shared\assert.hpp" />
+    <ClInclude Include="shared\interactions\interaction.hpp" />
+    <ClInclude Include="shared\interactions\surface_interaction.hpp" />
+    <ClInclude Include="shared\math\bound.hpp" />
+    <ClInclude Include="shared\math\detail\bound.hpp" />
     <ClInclude Include="shared\math\detail\matrix4x4.hpp" />
     <ClInclude Include="shared\math\detail\vector.hpp" />
     <ClInclude Include="shared\math\detail\vector1.hpp" />
@@ -177,6 +190,10 @@
     <ClInclude Include="shared\math\vector4.hpp" />
     <ClInclude Include="shared\random_generator.hpp" />
     <ClInclude Include="shared\ray.hpp" />
+    <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp" />
+    <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp" />
+    <ClInclude Include="shared\spectrums\color_spectrum.hpp" />
+    <ClInclude Include="shared\spectrums\spectrum.hpp" />
     <ClInclude Include="shared\transform.hpp" />
     <ClInclude Include="shared\utilities.hpp" />
   </ItemGroup>

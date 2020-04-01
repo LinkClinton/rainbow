@@ -8,7 +8,7 @@
 
 namespace rainbow {
 
-	class random_generator : public interface::noncopyable {
+	class random_generator : public interfaces::noncopyable {
 	public:
 		random_generator();
 

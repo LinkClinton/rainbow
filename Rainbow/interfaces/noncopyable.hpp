@@ -2,7 +2,7 @@
 
 namespace rainbow {
 
-	namespace interface {
+	namespace interfaces {
 
 		class noncopyable {
 		public:

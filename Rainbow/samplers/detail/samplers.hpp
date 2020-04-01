@@ -1,10 +1,10 @@
 #pragma once
 
-#include "sampler.hpp"
+#include "samplers.hpp"
 
 namespace rainbow {
 
-	namespace sampler {
+	namespace samplers {
 
 		template <size_t Dimension>
 		sampler_t<Dimension>::sampler_t(const uint64 samples) : mSamples(samples), mCurrentSampleIndex(0)
@@ -20,6 +20,8 @@ namespace rainbow {
 		template <size_t Dimension>
 		typename sampler_t<Dimension>::sample_type sampler_t<Dimension>::next_sample()
 		{
+			assert(mCurrentSampleIndex < mSamples.size());
+			
 			return mSamples[mCurrentSampleIndex++];
 		}
 

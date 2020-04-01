@@ -2,6 +2,8 @@
 
 #include "../utilities.hpp"
 
+#include "bound.hpp"
+
 #include "vector1.hpp"
 #include "vector2.hpp"
 #include "vector3.hpp"
@@ -18,7 +20,19 @@ namespace rainbow {
 		using vector3 = vector3_t<real>;
 		using vector4 = vector4_t<real>;
 
+		using vector1i = vector1_t<int32>;
+		using vector2i = vector2_t<int32>;
+		using vector3i = vector3_t<int32>;
+		using vector4i = vector4_t<int32>;
+
 		using matrix4x4 = matrix4x4_t<real>;
-		
+
+		using bound1 = bound1_t<real>;
+		using bound2 = bound2_t<real>;
+		using bound3 = bound3_t<real>;
+
+		using bound1i = bound1_t<int32>;
+		using bound2i = bound2_t<int32>;
+		using bound3i = bound2_t<int32>;
 	}
 }

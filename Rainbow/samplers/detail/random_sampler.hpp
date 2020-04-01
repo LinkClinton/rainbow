@@ -4,7 +4,7 @@
 
 namespace rainbow {
 
-	namespace sampler {
+	namespace samplers {
 
 		template <size_t Dimension>
 		random_sampler_t<Dimension>::random_sampler_t(const uint64 samples) : sampler_t<Dimension>(samples)

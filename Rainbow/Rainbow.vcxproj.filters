@@ -11,6 +11,21 @@
     <ClCompile Include="shared\transform.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="filters\box_filter.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
+    <ClCompile Include="cameras\film.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\filters.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\shapes.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\spectrums\color_spectrum.cpp">
+      <Filter>shared\spectrums</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -30,6 +45,24 @@
     </Filter>
     <Filter Include="samplers\detail">
       <UniqueIdentifier>{6da867b0-bcd1-44de-8639-ae0ee93d0deb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cameras">
+      <UniqueIdentifier>{f1cc373e-4dbc-46dd-8861-70d926c7591b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shapes">
+      <UniqueIdentifier>{bef20d05-8953-4330-8d06-5918d87292d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\interactions">
+      <UniqueIdentifier>{81a45a8c-6835-4840-9584-5f32d1464ac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filters">
+      <UniqueIdentifier>{4296cdab-c7a7-4310-9013-179dd767e388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\spectrums">
+      <UniqueIdentifier>{63899b78-d62b-46e8-9ade-642a34c0ef57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\spectrums\detail">
+      <UniqueIdentifier>{a29c2d7b-d25a-4910-a187-6c154ed85186}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,14 +114,8 @@
     <ClInclude Include="shared\utilities.hpp">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="samplers\sampler.hpp">
-      <Filter>samplers</Filter>
-    </ClInclude>
     <ClInclude Include="interfaces\noncopyable.hpp">
       <Filter>interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="samplers\detail\sampler.hpp">
-      <Filter>samplers\detail</Filter>
     </ClInclude>
     <ClInclude Include="samplers\random_sampler.hpp">
       <Filter>samplers</Filter>
@@ -101,6 +128,48 @@
     </ClInclude>
     <ClInclude Include="shared\transform.hpp">
       <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\interactions\surface_interaction.hpp">
+      <Filter>shared\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\box_filter.hpp">
+      <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\film.hpp">
+      <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\bound.hpp">
+      <Filter>shared\math</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\bound.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\samplers.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\samplers.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\filters.hpp">
+      <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\interactions\interaction.hpp">
+      <Filter>shared\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp">
+      <Filter>shared\spectrums\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\shapes.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\color_spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

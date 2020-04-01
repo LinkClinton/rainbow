@@ -1,10 +1,10 @@
 #pragma once
 
-#include "sampler.hpp"
+#include "samplers.hpp"
 
 namespace rainbow {
 
-	namespace sampler {
+	namespace samplers {
 
 		template <size_t Dimension>
 		class random_sampler_t : public sampler_t<Dimension> {

@@ -11,10 +11,10 @@
 
 namespace rainbow {
 
-	namespace sampler {
+	namespace samplers {
 
 		template <size_t Dimension>
-		class sampler_t : public interface::noncopyable {
+		class sampler_t : public interfaces::noncopyable {
 		public:
 			using sample_type = math::vector_t<Dimension, real>;
 		public:
@@ -40,4 +40,4 @@ namespace rainbow {
 	}
 }
 
-#include "detail/sampler.hpp"
+#include "detail/samplers.hpp"
