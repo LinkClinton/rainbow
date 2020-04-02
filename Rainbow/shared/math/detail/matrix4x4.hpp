@@ -42,6 +42,27 @@ namespace rainbow {
 			return glm::transpose(matrix);
 		}
 
+		template <typename T>
+		matrix4x4_t<T> inverse(const matrix4x4_t<T>& matrix)
+		{
+			return glm::inverse(matrix);
+		}
+
+		template <typename T>
+		matrix4x4_t<T> perspective(const real fov, const real near, const real far)
+		{
+			const auto perspective = matrix4x4_t<T>(
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, far / (far - near), -(far * near) / (far - near),
+				0, 0, 1, 0
+			);
+
+			const auto invTanAngle = 1 / glm::tan(fov / 2);
+
+			return scale(vector3_t<T>(invTanAngle, invTanAngle, 1)) * perspective;
+		}
+
 #else
 
 #endif

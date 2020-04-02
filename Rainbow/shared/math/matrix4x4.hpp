@@ -29,6 +29,12 @@ namespace rainbow {
 
 		template <typename T>
 		matrix4x4_t<T> transpose(const matrix4x4_t<T>& matrix);
+
+		template <typename T>
+		matrix4x4_t<T> inverse(const matrix4x4_t<T>& matrix);
+
+		template <typename T>
+		matrix4x4_t<T> perspective(const real fov, const real near, const real far);
 	}
 }
 

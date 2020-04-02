@@ -2,10 +2,12 @@
 
 #include "math/math.hpp"
 
+#include "ray.hpp"
+
 namespace rainbow {
 	
 	using namespace math;
-
+	
 	class transform {
 	public:
 		transform();
@@ -18,7 +20,12 @@ namespace rainbow {
 		vector4 operator()(const vector2& vec) const;
 		vector4 operator()(const vector3& vec) const;
 		vector4 operator()(const vector4& vec) const;
+		ray operator()(const ray& ray) const;
 
+		matrix4x4 inverse_matrix() const noexcept;
+
+		matrix4x4 matrix() const noexcept;
+		
 		transform inverse() const;
 	private:
 		matrix4x4 mInverseTransform;
@@ -30,4 +37,6 @@ namespace rainbow {
 	transform rotate(const float angle, const vector3& axis);
 
 	transform scale(const vector3& vec);
+
+	transform perspective(const real fov, const real near = 0.01, const real far = 1000);
 }

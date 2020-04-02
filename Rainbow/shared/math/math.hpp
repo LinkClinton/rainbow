@@ -34,5 +34,8 @@ namespace rainbow {
 		using bound1i = bound1_t<int32>;
 		using bound2i = bound2_t<int32>;
 		using bound3i = bound2_t<int32>;
+
+		template <typename T>
+		T tan(const T value);
 	}
 }

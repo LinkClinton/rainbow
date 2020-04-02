@@ -4,6 +4,11 @@ rainbow::spectrums::color_spectrum::color_spectrum(const real value) : coefficie
 {
 }
 
+rainbow::spectrums::color_spectrum::color_spectrum(const coefficient_spectrum<3>& coefficient_spectrum) :
+	color_spectrum(coefficient_spectrum.coefficient)
+{
+}
+
 rainbow::spectrums::color_spectrum::color_spectrum(const std::array<real, 3>& color) : coefficient_spectrum<3>(color)
 {
 }

@@ -26,6 +26,12 @@
     <ClCompile Include="shared\spectrums\color_spectrum.cpp">
       <Filter>shared\spectrums</Filter>
     </ClCompile>
+    <ClCompile Include="cameras\camera.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="cameras\perspective_camera.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -63,6 +69,9 @@
     </Filter>
     <Filter Include="shared\spectrums\detail">
       <UniqueIdentifier>{a29c2d7b-d25a-4910-a187-6c154ed85186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="reflections">
+      <UniqueIdentifier>{a458ed2b-2686-4cc8-a284-421bd934e878}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +179,15 @@
     </ClInclude>
     <ClInclude Include="shared\spectrums\spectrum.hpp">
       <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\camera.hpp">
+      <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\math\detail\math.hpp">
+      <Filter>shared\math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\perspective_camera.hpp">
+      <Filter>cameras</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

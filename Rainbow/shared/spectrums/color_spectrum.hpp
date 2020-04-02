@@ -16,6 +16,8 @@ namespace rainbow {
 
 			color_spectrum(const real value);
 
+			color_spectrum(const coefficient_spectrum<3>& coefficient_spectrum);
+			
 			color_spectrum(const std::array<real, 3>& color);
 
 			color_spectrum(const vector3& color);

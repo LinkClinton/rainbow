@@ -150,7 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cameras\camera.cpp" />
     <ClCompile Include="cameras\film.cpp" />
+    <ClCompile Include="cameras\perspective_camera.cpp" />
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
     <ClCompile Include="main.cpp" />
@@ -161,7 +163,9 @@
     <ClCompile Include="shared\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cameras\camera.hpp" />
     <ClInclude Include="cameras\film.hpp" />
+    <ClInclude Include="cameras\perspective_camera.hpp" />
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
@@ -175,6 +179,7 @@
     <ClInclude Include="shared\interactions\surface_interaction.hpp" />
     <ClInclude Include="shared\math\bound.hpp" />
     <ClInclude Include="shared\math\detail\bound.hpp" />
+    <ClInclude Include="shared\math\detail\math.hpp" />
     <ClInclude Include="shared\math\detail\matrix4x4.hpp" />
     <ClInclude Include="shared\math\detail\vector.hpp" />
     <ClInclude Include="shared\math\detail\vector1.hpp" />

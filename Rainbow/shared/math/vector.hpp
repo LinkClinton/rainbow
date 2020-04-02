@@ -38,6 +38,12 @@ namespace rainbow {
 
 		template <size_t L, typename T>
 		vector_t<L, T> max(const vector_t<L, T>& v0, const vector_t<L, T>& v1);
+
+		template <size_t L, typename T>
+		vector_t<L, T> ceil(const vector_t<L, T>& v);
+
+		template <size_t L, typename T>
+		vector_t<L, T> floor(const vector_t<L, T>& v);
 	}
 }
 

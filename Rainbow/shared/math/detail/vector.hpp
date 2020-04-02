@@ -44,6 +44,18 @@ namespace rainbow {
 			return glm::max(v0, v1);
 		}
 
+		template <size_t L, typename T>
+		vector_t<L, T> ceil(const vector_t<L, T>& v)
+		{
+			return glm::ceil(v);
+		}
+
+		template <size_t L, typename T>
+		vector_t<L, T> floor(const vector_t<L, T>& v)
+		{
+			return glm::floor(v);
+		}
+
 #else
 		
 #endif
