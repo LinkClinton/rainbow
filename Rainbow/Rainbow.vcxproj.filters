@@ -32,6 +32,9 @@
     <ClCompile Include="cameras\perspective_camera.cpp">
       <Filter>cameras</Filter>
     </ClCompile>
+    <ClCompile Include="reflections\reflection.cpp">
+      <Filter>reflections</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="cameras\perspective_camera.hpp">
       <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="reflections\reflection.hpp">
+      <Filter>reflections</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

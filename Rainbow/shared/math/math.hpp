@@ -37,5 +37,22 @@ namespace rainbow {
 
 		template <typename T>
 		T tan(const T value);
+
+		template <typename T>
+		T clamp(const T& value, const T& min_limit, const T& max_limit);
+
+		template <typename T>
+		T max(const T& v0, const T& v1);
+
+		template <typename T>
+		T min(const T& v0, const T& v1);
+
+		template <typename T>
+		T sqrt(const T& v);
+
+		template <typename T>
+		T abs(const T& v);
 	}
 }
+
+#include "detail/math.hpp"

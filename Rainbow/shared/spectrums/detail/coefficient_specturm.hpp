@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../coefficient_spectrum.hpp"
+#include "../math/math.hpp"
 
 namespace rainbow {
 
@@ -14,9 +15,9 @@ namespace rainbow {
 		}
 
 		template <size_t NumSpectrumSamples>
-		coefficient_spectrum<NumSpectrumSamples>::coefficient_spectrum(const std::array<real, NumSpectrumSamples>& samples)
+		coefficient_spectrum<NumSpectrumSamples>::coefficient_spectrum(const std::array<real, NumSpectrumSamples>& samples) :
+			coefficient(samples)
 		{
-			coefficient = samples;
 		}
 
 		template <size_t NumSpectrumSamples>
@@ -185,6 +186,17 @@ namespace rainbow {
 				spectrum.coefficient[index] = coefficient[index] / right;
 
 			return spectrum;
+		}
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> sqrt(const coefficient_spectrum<NumSpectrumSamples>& spectrum)
+		{
+			coefficient_spectrum<NumSpectrumSamples> result;
+			
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				result.coefficient[index] = math::sqrt(spectrum.coefficient[index]);
+
+			return result;
 		}
 
 	}

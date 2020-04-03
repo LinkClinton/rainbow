@@ -13,7 +13,7 @@ namespace rainbow {
 		struct coefficient_spectrum {
 			using type = coefficient_spectrum<NumSpectrumSamples>;
 
-			std::array<real, NumSpectrumSamples> coefficient;
+			std::array<real, NumSpectrumSamples> coefficient = {};
 
 			coefficient_spectrum() = default;
 
@@ -44,7 +44,9 @@ namespace rainbow {
 			type& operator/=(const real right);
 			type operator/(const real right) const;
 		};
-		
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> sqrt(const coefficient_spectrum<NumSpectrumSamples>& spectrum);
 	}
 }
 
