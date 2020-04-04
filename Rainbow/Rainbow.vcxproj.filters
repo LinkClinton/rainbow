@@ -32,8 +32,14 @@
     <ClCompile Include="cameras\perspective_camera.cpp">
       <Filter>cameras</Filter>
     </ClCompile>
-    <ClCompile Include="reflections\reflection.cpp">
-      <Filter>reflections</Filter>
+    <ClCompile Include="scatterings\fresnel_effect.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\scattering_function.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\scattering_function_collection.cpp">
+      <Filter>scatterings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,7 +79,7 @@
     <Filter Include="shared\spectrums\detail">
       <UniqueIdentifier>{a29c2d7b-d25a-4910-a187-6c154ed85186}</UniqueIdentifier>
     </Filter>
-    <Filter Include="reflections">
+    <Filter Include="scatterings">
       <UniqueIdentifier>{a458ed2b-2686-4cc8-a284-421bd934e878}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -192,8 +198,14 @@
     <ClInclude Include="cameras\perspective_camera.hpp">
       <Filter>cameras</Filter>
     </ClInclude>
-    <ClInclude Include="reflections\reflection.hpp">
-      <Filter>reflections</Filter>
+    <ClInclude Include="scatterings\fresnel_effect.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_function.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_function_collection.hpp">
+      <Filter>scatterings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
