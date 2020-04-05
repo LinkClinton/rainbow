@@ -82,6 +82,15 @@
     <Filter Include="scatterings">
       <UniqueIdentifier>{a458ed2b-2686-4cc8-a284-421bd934e878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="textures">
+      <UniqueIdentifier>{40cc93db-9f48-45a2-bd51-a516f2c42d97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="textures\detail">
+      <UniqueIdentifier>{d39d695b-3d22-4b56-abbf-b9e0b27d13a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="materials">
+      <UniqueIdentifier>{44899b26-6080-4285-84fb-9d9b6b3bf68a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\math\vector.hpp">
@@ -203,6 +212,15 @@
     </ClInclude>
     <ClInclude Include="scatterings\scattering_function.hpp">
       <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\material.hpp">
+      <Filter>materials</Filter>
     </ClInclude>
     <ClInclude Include="scatterings\scattering_function_collection.hpp">
       <Filter>scatterings</Filter>

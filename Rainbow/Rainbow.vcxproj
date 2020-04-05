@@ -172,6 +172,7 @@
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
+    <ClInclude Include="materials\material.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
     <ClInclude Include="samplers\random_sampler.hpp" />
@@ -207,6 +208,8 @@
     <ClInclude Include="shared\spectrums\spectrum.hpp" />
     <ClInclude Include="shared\transform.hpp" />
     <ClInclude Include="shared\utilities.hpp" />
+    <ClInclude Include="textures\detail\texture.hpp" />
+    <ClInclude Include="textures\texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
