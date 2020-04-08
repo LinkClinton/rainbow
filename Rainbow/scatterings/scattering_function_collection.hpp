@@ -14,9 +14,12 @@ namespace rainbow {
 	
 	namespace scatterings {
 
-		class scattering_function_collection final : public interfaces::noncopyable {
+		class scattering_function_collection final {
 		public:
 			scattering_function_collection() = default;
+
+			explicit scattering_function_collection(
+				const std::vector<std::shared_ptr<scattering_function>>& functions);
 
 			~scattering_function_collection() = default;
 
@@ -30,9 +33,13 @@ namespace rainbow {
 
 			spectrum rho(const vector3& wo, const std::vector<vector2>& samples) const;
 
-			spectrum rho(const std::vector<vector2>& sample0, const std::vector<vector2>& sample1) const;
+			spectrum rho(const std::vector<vector2>& samples0, const std::vector<vector2>& samples1) const;
 
 			real pdf(const vector3& wo, const vector3& wi) const;
+
+			size_t size() const noexcept;
+		private:
+			std::vector<std::shared_ptr<scattering_function>> match(const scattering_type& type) const noexcept;
 		private:
 			std::vector<std::shared_ptr<scattering_function>> mScatteringFunctions;
 		};

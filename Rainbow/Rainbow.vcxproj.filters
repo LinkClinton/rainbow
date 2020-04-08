@@ -41,6 +41,9 @@
     <ClCompile Include="scatterings\scattering_function_collection.cpp">
       <Filter>scatterings</Filter>
     </ClCompile>
+    <ClCompile Include="materials\material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">

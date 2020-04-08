@@ -101,6 +101,23 @@ rainbow::vector3 rainbow::scatterings::refract(const vector3& wi, const vector3&
 	return -wi * eta + (cos_theta_i * eta - cos_theta_o) * normal;
 }
 
+rainbow::scatterings::scattering_type rainbow::scatterings::operator|(const scattering_type& left,
+	const scattering_type& right)
+{
+	return static_cast<scattering_type>(static_cast<uint32>(left) | static_cast<uint32>(right));
+}
+
+rainbow::scatterings::scattering_type rainbow::scatterings::operator&(const scattering_type& left,
+	const scattering_type& right)
+{
+	return static_cast<scattering_type>(static_cast<uint32>(left) & static_cast<uint32>(right));
+}
+
+bool rainbow::scatterings::match(const scattering_type& target, const scattering_type& flag)
+{
+	return (target & flag) != scattering_type::unknown;
+}
+
 rainbow::scatterings::scattering_sample::scattering_sample(
 	const scattering_type& type, 
 	const spectrum& value,

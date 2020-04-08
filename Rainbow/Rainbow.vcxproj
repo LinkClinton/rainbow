@@ -156,6 +156,7 @@
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
