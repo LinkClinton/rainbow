@@ -28,7 +28,7 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate
 }
 
 rainbow::scatterings::scattering_sample rainbow::scatterings::scattering_function_collection::sample(
-	const std::shared_ptr<surface_interaction>& interaction, const vector2& sample) const
+	const surface_interaction& interaction, const vector2& sample) const
 {
 	const auto& functions = mScatteringFunctions;
 
@@ -45,11 +45,47 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::scattering_functio
 			static_cast<real>(1) - std::numeric_limits<real>::epsilon()),
 		sample.y);
 
+	// transform the wo from world space to shading space
+	const auto wo = interaction.from_world_to_space(interaction.wo);
+
+	if (wo.z == 0) return {};
+
+	// sample the function to get (wo, wi)
+	auto scattering_sample = functions[which]->sample(wo, sample_remapped);
+
+	if (scattering_sample.pdf == 0) return {};
+
+	// if the function we sample is specular scattering, we do not need to sample other functions
+	// and the value and pdf of specular scattering are 0
+	// if the function we sample is not specular, we need calculate all functions(specular will return 0 of pdf and evaluate)
+	if (!scatterings::match(scattering_sample.type, scattering_type::specular)) {
+		const auto type = same_hemisphere(wo, scattering_sample.wi) ? scattering_type::reflection : scattering_type::transmission;
+
+		scattering_sample.value = 0;
+		scattering_sample.pdf = 0;
+
+		// calculate the total value and pdf of functions
+		for (const auto& function : functions) {
+			// if it is reflection, the value and pdf of transmission functions should be 0
+			// if it is transmission, the value and pdf of reflection functions should be 0
+			if (scatterings::match(function->type(), type)) 
+				scattering_sample.value += function->evaluate(wo, scattering_sample.wi);
+
+			scattering_sample.pdf += function->pdf(wo, scattering_sample.wi);
+		}
+	}
+
+	// the pdf of sample is the average of all functions' pdf with (wo, wi)
+	scattering_sample.pdf = scattering_sample.pdf / functions.size();
+
+	// transform the wi from shading space to world space
+	scattering_sample.wi = interaction.from_space_to_world(scattering_sample.wi);
 	
+	return scattering_sample;
 }
 
 rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(const vector3& wo,
-                                                                            const std::vector<vector2>& samples) const
+	const std::vector<vector2>& samples) const
 {
 	spectrum spectrum = 0;
 
@@ -79,7 +115,7 @@ rainbow::real rainbow::scatterings::scattering_function_collection::pdf(const ve
 	for (const auto& function : mScatteringFunctions) 
 		pdf = pdf + function->pdf(wo, wi);
 
-	return pdf / size();
+	return size() != 0 ? pdf / size() : 0;
 }
 
 size_t rainbow::scatterings::scattering_function_collection::size() const noexcept

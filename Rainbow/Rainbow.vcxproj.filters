@@ -44,6 +44,18 @@
     <ClCompile Include="materials\material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="shared\interactions\interaction.cpp">
+      <Filter>shared\interactions</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\interactions\surface_interaction.cpp">
+      <Filter>shared\interactions</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\coordinate_system.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="lights\light.cpp">
+      <Filter>lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -93,6 +105,9 @@
     </Filter>
     <Filter Include="materials">
       <UniqueIdentifier>{44899b26-6080-4285-84fb-9d9b6b3bf68a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lights">
+      <UniqueIdentifier>{94850188-323c-4859-a899-b01d1fc04ccd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +242,12 @@
     </ClInclude>
     <ClInclude Include="scatterings\scattering_function_collection.hpp">
       <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\coordinate_system.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="lights\light.hpp">
+      <Filter>lights</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ namespace rainbow {
 			spectrum evaluate(const vector3& wo, const vector3& wi) const;
 			
 			scattering_sample sample(
-				const std::shared_ptr<surface_interaction>& interaction,
+				const surface_interaction& interaction,
 				const vector2& sample) const;
 
 			spectrum rho(const vector3& wo, const std::vector<vector2>& samples) const;

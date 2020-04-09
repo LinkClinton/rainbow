@@ -13,7 +13,7 @@ namespace rainbow {
 	namespace scatterings {
 
 		/*
-		 * reflection coordinate system is a build with three vectors s, t, n.
+		 * reflection coordinate system(shading space) is a build with three vectors s, t, n.
 		 *
 		 * the theta is the angle between z-axis and vector
 		 * the phi is the angle between the projected vector in x-y plane and x-axis
@@ -59,8 +59,9 @@ namespace rainbow {
 
 		enum class scattering_type : uint32{
 			unknown,
-			reflection = 1,
-			transmission = 2
+			reflection = 1 << 0,
+			transmission = 1 << 1,
+			specular = 1 << 2
 		};
 
 		scattering_type operator|(const scattering_type& left, const scattering_type& right);
