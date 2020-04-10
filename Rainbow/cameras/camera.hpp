@@ -20,8 +20,10 @@ namespace rainbow {
 			~camera() = default;
 
 			virtual ray generate_ray(const vector2& position) const noexcept = 0;
+
+			std::shared_ptr<film> film() const noexcept;
 		protected:
-			std::shared_ptr<film> mFilm;
+			std::shared_ptr<cameras::film> mFilm;
 			
 			transform mCameraToWorld;
 		};
@@ -29,7 +31,7 @@ namespace rainbow {
 		class projective_camera : public camera {
 		public:
 			explicit projective_camera(
-				const std::shared_ptr<film>& film,
+				const std::shared_ptr<cameras::film>& film,
 				const transform& projective,
 				const transform& transform,
 				const bound2& screen_window);

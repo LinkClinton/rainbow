@@ -18,13 +18,13 @@ namespace rainbow {
 		};
 
 		struct light_sample {
-			spectrum power = 0;
+			spectrum irradiance = 0;
 			vector3 wi = vector3(0);
 			real pdf = 0;
 
 			light_sample() = default;
 
-			light_sample(const spectrum& power, const vector3& wi, real pdf);
+			light_sample(const spectrum& irradiance, const vector3& wi, real pdf);
 		};
 
 		class light : public interfaces::noncopyable {
@@ -34,6 +34,8 @@ namespace rainbow {
 			virtual light_sample sample(const vector3& point, const vector2& sample) = 0;
 
 			virtual real pdf(const vector3& point, const vector3& wi) = 0;
+
+			virtual spectrum power() = 0;
 			
 			light_type type() const noexcept;
 		protected:

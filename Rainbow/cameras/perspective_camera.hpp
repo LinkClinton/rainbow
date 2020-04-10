@@ -9,7 +9,7 @@ namespace rainbow {
 		class perspective_camera final : public projective_camera {
 		public:
 			explicit perspective_camera(
-				const std::shared_ptr<film>& film,
+				const std::shared_ptr<cameras::film>& film,
 				const transform& transform,
 				const bound2& screen_window,
 				const real fov);

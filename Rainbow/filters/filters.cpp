@@ -1,7 +1,7 @@
 #include "filters.hpp"
 
 rainbow::filters::filter::filter(const vector2& radius) :
-	mRadius(radius), mInverseRadius(static_cast<real>(1) / radius)
+	mInverseRadius(static_cast<real>(1) / radius), mRadius(radius)
 {
 	
 }

@@ -61,7 +61,8 @@ namespace rainbow {
 			unknown,
 			reflection = 1 << 0,
 			transmission = 1 << 1,
-			specular = 1 << 2
+			specular = 1 << 2,
+			all = reflection | transmission | specular
 		};
 
 		scattering_type operator|(const scattering_type& left, const scattering_type& right);
@@ -95,13 +96,13 @@ namespace rainbow {
 
 			virtual spectrum evaluate(const vector3& wo, const vector3& wi) const = 0;
 
-			virtual scattering_sample sample(const vector3& wo, const vector2& sample) const = 0;
+			virtual scattering_sample sample(const vector3& wo, const vector2& sample) const;
 			
 			virtual spectrum rho(const vector3& wo, const std::vector<vector2>& samples) const = 0;
 
 			virtual spectrum rho(const std::vector<vector2>& sample0, const std::vector<vector2>& sample1) const = 0;
 
-			virtual real pdf(const vector3& wo, const vector3& wi) const = 0;
+			virtual real pdf(const vector3& wo, const vector3& wi) const;
 
 			scattering_type type() const noexcept;
 		protected:

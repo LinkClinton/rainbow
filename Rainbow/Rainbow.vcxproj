@@ -96,6 +96,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,6 +126,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,18 +159,22 @@
     <ClCompile Include="cameras\perspective_camera.cpp" />
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
+    <ClCompile Include="integrators\integrator.cpp" />
     <ClCompile Include="lights\light.cpp" />
+    <ClCompile Include="lights\point_light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
+    <ClCompile Include="scenes\scene.cpp" />
     <ClCompile Include="shapes\shapes.cpp" />
     <ClCompile Include="shared\coordinate_system.cpp" />
     <ClCompile Include="shared\interactions\interaction.cpp" />
     <ClCompile Include="shared\interactions\surface_interaction.cpp" />
     <ClCompile Include="shared\random_generator.cpp" />
     <ClCompile Include="shared\ray.cpp" />
+    <ClCompile Include="shared\sample_function.cpp" />
     <ClCompile Include="shared\spectrums\color_spectrum.cpp" />
     <ClCompile Include="shared\transform.cpp" />
   </ItemGroup>
@@ -176,8 +184,10 @@
     <ClInclude Include="cameras\perspective_camera.hpp" />
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
+    <ClInclude Include="integrators\integrator.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="lights\light.hpp" />
+    <ClInclude Include="lights\point_light.hpp" />
     <ClInclude Include="materials\material.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
@@ -186,6 +196,7 @@
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />
     <ClInclude Include="scatterings\scattering_function_collection.hpp" />
+    <ClInclude Include="scenes\scene.hpp" />
     <ClInclude Include="shapes\shapes.hpp" />
     <ClInclude Include="shared\assert.hpp" />
     <ClInclude Include="shared\coordinate_system.hpp" />
@@ -209,6 +220,7 @@
     <ClInclude Include="shared\math\vector4.hpp" />
     <ClInclude Include="shared\random_generator.hpp" />
     <ClInclude Include="shared\ray.hpp" />
+    <ClInclude Include="shared\sample_function.hpp" />
     <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp" />
     <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp" />
     <ClInclude Include="shared\spectrums\color_spectrum.hpp" />

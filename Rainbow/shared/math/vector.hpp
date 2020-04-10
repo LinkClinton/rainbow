@@ -34,6 +34,9 @@ namespace rainbow {
 		T length(const vector_t<L, T>& v);
 
 		template <size_t L, typename T>
+		T distance_squared(const vector_t<L, T>& v0, const vector_t<L, T>& v1);
+		
+		template <size_t L, typename T>
 		vector_t<L, T> min(const vector_t<L, T>& v0, const vector_t<L, T>& v1);
 
 		template <size_t L, typename T>

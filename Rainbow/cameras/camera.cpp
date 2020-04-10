@@ -1,13 +1,18 @@
 #include "camera.hpp"
 
-rainbow::cameras::camera::camera(const std::shared_ptr<film>& film, const transform& transform) :
+rainbow::cameras::camera::camera(const std::shared_ptr<cameras::film>& film, const transform& transform) :
 	mFilm(film), mCameraToWorld(transform)
 {
 	
 }
 
+std::shared_ptr<rainbow::cameras::film> rainbow::cameras::camera::film() const noexcept
+{
+	return mFilm;
+}
+
 rainbow::cameras::projective_camera::projective_camera(
-	const std::shared_ptr<film>& film, 
+	const std::shared_ptr<cameras::film>& film, 
 	const transform& projective,
 	const transform& transform, 
 	const bound2& screen_window) :

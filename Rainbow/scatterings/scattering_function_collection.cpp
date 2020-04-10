@@ -11,8 +11,8 @@ void rainbow::scatterings::scattering_function_collection::add_scattering_functi
 	mScatteringFunctions.push_back(function);
 }
 
-rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate(const vector3& wo,
-	const vector3& wi) const
+rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate(
+	const vector3& wo, const vector3& wi, const scattering_type& include) const
 {
 	if (wo.z == 0) return 0;
 
@@ -22,15 +22,17 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate
 	spectrum f = 0;
 
 	for (const auto& function : mScatteringFunctions) 
-		if (scatterings::match(function->type(), type)) f += function->evaluate(wo, wi);
+		if (scatterings::match(function->type(), include) && 
+			scatterings::match(function->type(), type)) 
+			f += function->evaluate(wo, wi);
 
 	return f;
 }
 
 rainbow::scatterings::scattering_sample rainbow::scatterings::scattering_function_collection::sample(
-	const surface_interaction& interaction, const vector2& sample) const
+	const surface_interaction& interaction, const vector2& sample, const scattering_type& include) const
 {
-	const auto& functions = mScatteringFunctions;
+	const auto functions = match(include);
 
 	if (functions.empty()) return {};
 
@@ -84,38 +86,49 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::scattering_functio
 	return scattering_sample;
 }
 
-rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(const vector3& wo,
-	const std::vector<vector2>& samples) const
-{
-	spectrum spectrum = 0;
-
-	for (const auto& function : mScatteringFunctions) 
-		spectrum += function->rho(wo, samples);
-
-	return spectrum;
-}
-
-rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(const std::vector<vector2>& samples0,
-	const std::vector<vector2>& samples1) const
+rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(
+	const vector3& wo, const std::vector<vector2>& samples, const scattering_type& include) const
 {
 	spectrum spectrum = 0;
 
 	for (const auto& function : mScatteringFunctions)
-		spectrum += function->rho(samples0, samples1);
+		if (scatterings::match(function->type(), include)) 
+			spectrum += function->rho(wo, samples);
 
 	return spectrum;
 }
 
-rainbow::real rainbow::scatterings::scattering_function_collection::pdf(const vector3& wo, const vector3& wi) const
+rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(
+	const std::vector<vector2>& samples0,
+	const std::vector<vector2>& samples1,
+	const scattering_type& include) const
+{
+	spectrum spectrum = 0;
+
+	for (const auto& function : mScatteringFunctions)
+		if (scatterings::match(function->type(), include))
+			spectrum += function->rho(samples0, samples1);
+
+	return spectrum;
+}
+
+rainbow::real rainbow::scatterings::scattering_function_collection::pdf(
+	const vector3& wo, const vector3& wi, const scattering_type& include) const
 {
 	if (size() == 0 || wo.z == 0) return 0;
 
+	size_t count = 0;
 	real pdf = 0;
 
-	for (const auto& function : mScatteringFunctions) 
-		pdf = pdf + function->pdf(wo, wi);
+	for (const auto& function : mScatteringFunctions) {
+		if (scatterings::match(function->type(), include)) {
+			pdf = pdf + function->pdf(wo, wi);
 
-	return size() != 0 ? pdf / size() : 0;
+			count++;
+		}
+	}
+
+	return count != 0 ? pdf / count : 0;
 }
 
 size_t rainbow::scatterings::scattering_function_collection::size() const noexcept

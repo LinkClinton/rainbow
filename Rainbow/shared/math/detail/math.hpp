@@ -44,6 +44,42 @@ namespace rainbow {
 			return glm::abs(v);
 		}
 
+		template <typename T>
+		T one_over_two_pi()
+		{
+			return glm::one_over_two_pi<T>();
+		}
+
+		template <typename T>
+		T one_over_pi()
+		{
+			return glm::one_over_pi<T>();
+		}
+
+		template <typename T>
+		T quarter_pi()
+		{
+			return glm::quarter_pi<T>();
+		}
+
+		template <typename T>
+		T half_pi()
+		{
+			return glm::half_pi<T>();
+		}
+
+		template <typename T>
+		T two_pi()
+		{
+			return glm::two_pi<T>();
+		}
+
+		template <typename T>
+		T pi()
+		{
+			return glm::pi<T>();
+		}
+
 
 #endif
 	}

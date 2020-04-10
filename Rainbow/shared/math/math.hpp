@@ -52,6 +52,24 @@ namespace rainbow {
 
 		template <typename T>
 		T abs(const T& v);
+
+		template <typename T>
+		T one_over_two_pi();
+
+		template <typename T>
+		T one_over_pi();
+
+		template <typename T>
+		T quarter_pi();
+
+		template <typename T>
+		T half_pi();
+		
+		template <typename T>
+		T two_pi();
+		
+		template <typename T>
+		T pi();
 	}
 }
 

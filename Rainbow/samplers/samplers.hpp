@@ -21,6 +21,8 @@ namespace rainbow {
 			explicit sampler_t(const uint64 samples);
 
 			sample_type sample(const size_t index) const;
+
+			size_t count() const noexcept;
 			
 			virtual sample_type next_sample();
 

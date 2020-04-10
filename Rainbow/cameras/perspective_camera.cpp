@@ -1,7 +1,7 @@
 #include "perspective_camera.hpp"
 
 rainbow::cameras::perspective_camera::perspective_camera(
-	const std::shared_ptr<film>& film,
+	const std::shared_ptr<cameras::film>& film,
 	const transform& transform,
 	const bound2& screen_window,
 	const real fov) : projective_camera(film, perspective(fov), transform, screen_window)
