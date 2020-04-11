@@ -10,7 +10,7 @@ rainbow::cameras::perspective_camera::perspective_camera(
 
 rainbow::ray rainbow::cameras::perspective_camera::generate_ray(const vector2& position) const noexcept
 {
-	const auto target = mRasterToCamera(vector3(position, 0));
+	const auto target = transform_point(mRasterToCamera, vector3(position, 0));
 
 	return mCameraToWorld(ray(normalize(target), vector3(0)));
 }

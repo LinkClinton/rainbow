@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../interfaces/noncopyable.hpp"
-#include "../shapes/shapes.hpp"
+#include "../shapes/shape.hpp"
 #include "../lights/light.hpp"
 
 #include <memory>
@@ -24,7 +24,7 @@ namespace rainbow {
 
 			void add_light(const std::shared_ptr<light>& light);
 			
-			surface_interaction intersect(const ray& ray) const;
+			std::optional<surface_interaction> intersect(const ray& ray) const;
 		private:
 			std::vector<std::shared_ptr<shape>> mShapes;
 			std::vector<std::shared_ptr<light>> mLights;

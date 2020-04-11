@@ -133,25 +133,16 @@ rainbow::scatterings::bidirectional_scattering_distribution_function::bidirectio
 {
 }
 
-rainbow::scatterings::scattering_sample rainbow::scatterings::bidirectional_scattering_distribution_function::sample(
-	const vector3& wo, const vector2& sample) const
+rainbow::spectrum rainbow::scatterings::bidirectional_scattering_distribution_function::rho(
+	const vector3& wo, const std::vector<vector2>& samples) const
 {
-	// sample the wi in hemisphere(reflection)
-	auto wi = cosine_sample_hemisphere(sample);
-
-	// when wo.z less than 0, wi.z should less than 0, too.
-	// there are in the same hemisphere
-	if (wo.z < 0) wi.z = -wi.z;
-
-	return scattering_sample(
-		mType, evaluate(wo, wi), wi, pdf(wo, wi)
-	);
+	throw std::exception("not implementation.");
 }
 
-rainbow::real rainbow::scatterings::bidirectional_scattering_distribution_function::pdf(
-	const vector3& wo, const vector3& wi) const
+rainbow::spectrum rainbow::scatterings::bidirectional_scattering_distribution_function::rho(
+	const std::vector<vector2>& sample0, const std::vector<vector2>& sample1) const
 {
-	return same_hemisphere(wo, wi) ? cosine_sample_hemisphere_pdf(abs(cos_theta(wi))) : 0;
+	throw std::exception("not implementation.");
 }
 
 rainbow::scatterings::scattering_type rainbow::scatterings::bidirectional_scattering_distribution_function::type() const noexcept

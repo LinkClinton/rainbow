@@ -6,6 +6,8 @@
 #include "../shared/transform.hpp"
 #include "../shared/ray.hpp"
 
+#include <optional>
+
 namespace rainbow {
 
 	using namespace interactions;
@@ -14,15 +16,15 @@ namespace rainbow {
 
 		class shape : public interfaces::noncopyable {
 		public:
-			shape() = default;
-
 			explicit shape(const transform& transform);
 
+			~shape() = default;
+			
 			transform transform() const;
 
-			virtual surface_interaction intersect(const ray& ray) = 0;
+			virtual std::optional<surface_interaction> intersect(const ray& ray) = 0;
 		protected:
-			rainbow::transform mTransform;
+			rainbow::transform mLocalToWorld, mWorldToLocal;
 		}; 
 		
 	}

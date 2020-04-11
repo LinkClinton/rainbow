@@ -1,5 +1,10 @@
 #include "surface_interaction.hpp"
 
+rainbow::interactions::surface_interaction::surface_interaction() :
+	dp_du(0), dp_dv(0), uv(0)
+{
+}
+
 rainbow::interactions::surface_interaction::surface_interaction(
 	const vector3& dp_du, const vector3& dp_dv,
 	const vector3& point, const vector3& wo, const vector2& uv) :

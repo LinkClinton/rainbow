@@ -20,9 +20,6 @@
     <ClCompile Include="filters\filters.cpp">
       <Filter>filters</Filter>
     </ClCompile>
-    <ClCompile Include="shapes\shapes.cpp">
-      <Filter>shapes</Filter>
-    </ClCompile>
     <ClCompile Include="shared\spectrums\color_spectrum.cpp">
       <Filter>shared\spectrums</Filter>
     </ClCompile>
@@ -66,6 +63,24 @@
       <Filter>lights</Filter>
     </ClCompile>
     <ClCompile Include="shared\sample_function.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\specular_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\reflection_function.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\shape.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\sphere.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\utilities.cpp">
       <Filter>shared</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,6 +141,12 @@
     </Filter>
     <Filter Include="integrators">
       <UniqueIdentifier>{5b87df69-a9a7-4bad-81f3-15323fdfcb8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\reflection">
+      <UniqueIdentifier>{0234b703-6fb1-4ed4-83a1-cd828dbab630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\transmission">
+      <UniqueIdentifier>{3d491539-65d0-4297-9e31-cf41e041117b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +246,6 @@
     <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp">
       <Filter>shared\spectrums\detail</Filter>
     </ClInclude>
-    <ClInclude Include="shapes\shapes.hpp">
-      <Filter>shapes</Filter>
-    </ClInclude>
     <ClInclude Include="shared\spectrums\color_spectrum.hpp">
       <Filter>shared\spectrums</Filter>
     </ClInclude>
@@ -278,6 +296,21 @@
     </ClInclude>
     <ClInclude Include="shared\sample_function.hpp">
       <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\specular_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\reflection_function.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\sphere.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\shape.hpp">
+      <Filter>shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

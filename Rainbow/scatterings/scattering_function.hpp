@@ -62,7 +62,8 @@ namespace rainbow {
 			reflection = 1 << 0,
 			transmission = 1 << 1,
 			specular = 1 << 2,
-			all = reflection | transmission | specular
+			diffuse = 1 << 3,
+			all = reflection | transmission | specular | diffuse
 		};
 
 		scattering_type operator|(const scattering_type& left, const scattering_type& right);
@@ -96,17 +97,17 @@ namespace rainbow {
 
 			virtual spectrum evaluate(const vector3& wo, const vector3& wi) const = 0;
 
-			virtual scattering_sample sample(const vector3& wo, const vector2& sample) const;
+			virtual scattering_sample sample(const vector3& wo, const vector2& sample) const = 0;
 			
-			virtual spectrum rho(const vector3& wo, const std::vector<vector2>& samples) const = 0;
+			virtual spectrum rho(const vector3& wo, const std::vector<vector2>& samples) const;
 
-			virtual spectrum rho(const std::vector<vector2>& sample0, const std::vector<vector2>& sample1) const = 0;
+			virtual spectrum rho(const std::vector<vector2>& sample0, const std::vector<vector2>& sample1) const;
 
-			virtual real pdf(const vector3& wo, const vector3& wi) const;
+			virtual real pdf(const vector3& wo, const vector3& wi) const = 0;
 
 			scattering_type type() const noexcept;
 		protected:
-			scattering_type mType;
+			scattering_type mType = scattering_type::unknown;
 		};
 
 		using scattering_function = bidirectional_scattering_distribution_function;

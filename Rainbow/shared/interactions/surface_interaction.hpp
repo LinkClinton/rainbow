@@ -14,7 +14,7 @@ namespace rainbow {
 			vector3 dp_du, dp_dv;
 			vector2 uv;
 			
-			surface_interaction() = default;
+			surface_interaction();
 
 			surface_interaction(
 				const vector3& dp_du, const vector3& dp_dv,

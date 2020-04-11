@@ -165,10 +165,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
+    <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp" />
+    <ClCompile Include="scatterings\reflection\reflection_function.cpp" />
+    <ClCompile Include="scatterings\reflection\specular_reflection.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
     <ClCompile Include="scenes\scene.cpp" />
-    <ClCompile Include="shapes\shapes.cpp" />
+    <ClCompile Include="shapes\shape.cpp" />
+    <ClCompile Include="shapes\sphere.cpp" />
     <ClCompile Include="shared\coordinate_system.cpp" />
     <ClCompile Include="shared\interactions\interaction.cpp" />
     <ClCompile Include="shared\interactions\surface_interaction.cpp" />
@@ -177,6 +181,7 @@
     <ClCompile Include="shared\sample_function.cpp" />
     <ClCompile Include="shared\spectrums\color_spectrum.cpp" />
     <ClCompile Include="shared\transform.cpp" />
+    <ClCompile Include="shared\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp" />
@@ -194,10 +199,14 @@
     <ClInclude Include="samplers\random_sampler.hpp" />
     <ClInclude Include="samplers\samplers.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
+    <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp" />
+    <ClInclude Include="scatterings\reflection\reflection_function.hpp" />
+    <ClInclude Include="scatterings\reflection\specular_reflection.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />
     <ClInclude Include="scatterings\scattering_function_collection.hpp" />
     <ClInclude Include="scenes\scene.hpp" />
-    <ClInclude Include="shapes\shapes.hpp" />
+    <ClInclude Include="shapes\shape.hpp" />
+    <ClInclude Include="shapes\sphere.hpp" />
     <ClInclude Include="shared\assert.hpp" />
     <ClInclude Include="shared\coordinate_system.hpp" />
     <ClInclude Include="shared\interactions\interaction.hpp" />

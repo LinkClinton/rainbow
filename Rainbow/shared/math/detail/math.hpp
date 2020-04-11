@@ -15,6 +15,30 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T cos(const T value)
+		{
+			return glm::cos(value);
+		}
+
+		template <typename T>
+		T sin(const T value)
+		{
+			return glm::sin(value);
+		}
+
+		template <typename T>
+		T atan2(const T y, const T x)
+		{
+			return glm::atan(y, x);
+		}
+
+		template <typename T>
+		T acos(const T value)
+		{
+			return glm::acos(value);
+		}
+
+		template <typename T>
 		T clamp(const T& value, const T& min_limit, const T& max_limit)
 		{
 			return glm::clamp(value, min_limit, max_limit);

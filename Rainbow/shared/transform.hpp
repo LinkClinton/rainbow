@@ -1,11 +1,13 @@
 #pragma once
 
+#include "interactions/surface_interaction.hpp"
 #include "math/math.hpp"
 
 #include "ray.hpp"
 
 namespace rainbow {
-	
+
+	using namespace interactions;
 	using namespace math;
 	
 	class transform {
@@ -17,9 +19,8 @@ namespace rainbow {
 		transform& operator*=(const transform& right);
 		transform operator*(const transform& right) const;
 
-		vector4 operator()(const vector2& vec) const;
-		vector4 operator()(const vector3& vec) const;
-		vector4 operator()(const vector4& vec) const;
+		surface_interaction operator()(const surface_interaction& interaction) const;
+		
 		ray operator()(const ray& ray) const;
 
 		matrix4x4 inverse_matrix() const noexcept;
@@ -39,4 +40,10 @@ namespace rainbow {
 	transform scale(const vector3& vec);
 
 	transform perspective(const real fov, const real near = 0.01, const real far = 1000);
+
+	vector3 transform_point(const transform& transform, const vector3& point);
+
+	vector3 transform_vector(const transform& transform, const vector3& point);
+
+	vector3 transform_normal(const transform& transform, const vector3& normal);
 }

@@ -8,5 +8,6 @@ namespace rainbow {
 	using uint64 = unsigned;
 
 	using real = float;
-	
+
+	bool solve_quadratic_equation(real a, real b, real c, real* t0, real* t1);
 }

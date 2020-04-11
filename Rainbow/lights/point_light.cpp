@@ -2,7 +2,7 @@
 
 rainbow::lights::point_light::point_light(const transform& transform, const spectrum& irradiance) :
 	light(transform, light_type::delta_position),
-	mIrradiance(irradiance), mPosition(transform(vector3(0)))
+	mIrradiance(irradiance), mPosition(transform_point(transform, vector3(0)))
 {
 }
 

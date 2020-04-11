@@ -39,6 +39,18 @@ namespace rainbow {
 		T tan(const T value);
 
 		template <typename T>
+		T cos(const T value);
+
+		template <typename T>
+		T sin(const T value);
+
+		template <typename T>
+		T atan2(const T y, const T x);
+
+		template <typename T>
+		T acos(const T value);
+
+		template <typename T>
 		T clamp(const T& value, const T& min_limit, const T& max_limit);
 
 		template <typename T>

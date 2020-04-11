@@ -25,24 +25,23 @@ rainbow::transform rainbow::transform::operator*(const transform& right) const
 	);
 }
 
-rainbow::vector4 rainbow::transform::operator()(const vector2& vec) const
+rainbow::surface_interaction rainbow::transform::operator()(const surface_interaction& interaction) const
 {
-	return mTransform * vector4(vec, 0, 1);
-}
-
-rainbow::vector4 rainbow::transform::operator()(const vector3& vec) const
-{
-	return mTransform * vector4(vec, 1);
-}
-
-rainbow::vector4 rainbow::transform::operator()(const vector4& vec) const
-{
-	return mTransform * vec;
+	return surface_interaction(
+		transform_vector(*this, interaction.dp_du),
+		transform_vector(*this, interaction.dp_dv),
+		transform_point(*this, interaction.point),
+		normalize(transform_vector(*this, interaction.wo)),
+		interaction.uv
+	);
 }
 
 rainbow::ray rainbow::transform::operator()(const ray& ray) const
 {
-	return rainbow::ray((*this)(ray.direction), (*this)(ray.origin), ray.length);
+	return rainbow::ray(
+		normalize(transform_vector(*this, ray.direction)),
+		transform_point(*this, ray.origin), 
+		ray.length);
 }
 
 rainbow::matrix4x4 rainbow::transform::inverse_matrix() const noexcept
@@ -82,4 +81,23 @@ rainbow::transform rainbow::perspective(const real fov, const real near, const r
 	const auto matrix = math::perspective<real>(fov, near, far);
 	
 	return transform(matrix, inverse(matrix));
+}
+
+rainbow::vector3 rainbow::transform_point(const transform& transform, const vector3& point)
+{
+	const auto v = transform.matrix() * vector4(point, 1);
+
+	if (v.w == 1) return v;
+
+	return v / v.w;
+}
+
+rainbow::vector3 rainbow::transform_vector(const transform& transform, const vector3& point)
+{
+	return transform.matrix() * vector4(point, 0);
+}
+
+rainbow::vector3 rainbow::transform_normal(const transform& transform, const vector3& normal)
+{
+	return normalize(transpose(transform.inverse_matrix()) * vector4(normal, 0));
 }
