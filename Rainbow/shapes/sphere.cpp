@@ -1,7 +1,9 @@
 #include "sphere.hpp"
 
-rainbow::shapes::sphere::sphere(const rainbow::transform& transform, real radius) :
-	shape(transform), mRadius(radius)
+rainbow::shapes::sphere::sphere(
+	const std::shared_ptr<materials::material>& material,
+	const rainbow::transform& transform, real radius) :
+	shape(material, transform), mRadius(radius)
 {
 }
 
@@ -65,6 +67,7 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	const auto dp_dv = vector3(point_hit.z * cos_phi, point_hit.z * sin_phi, -mRadius * sin(theta)) * (theta_max - theta_min);
 
 	return surface_interaction(
+		shared_from_this(),
 		dp_du, dp_dv, point_hit, -ray_local.direction,
 		vector2(u, v)
 	);

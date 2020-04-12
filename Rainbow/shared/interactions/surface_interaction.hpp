@@ -5,11 +5,17 @@
 #include "interaction.hpp"
 
 namespace rainbow {
+
+	namespace shapes { class shape; }
+	
+	using namespace shapes;
 	
 	namespace interactions {
 
 		struct surface_interaction : public interaction {
 			coordinate_system shading_space;
+
+			std::shared_ptr<shape> shape;
 			
 			vector3 dp_du, dp_dv;
 			vector2 uv;
@@ -17,6 +23,7 @@ namespace rainbow {
 			surface_interaction();
 
 			surface_interaction(
+				const std::shared_ptr<shapes::shape>& shape,
 				const vector3& dp_du, const vector3& dp_dv,
 				const vector3& point, const vector3& wo,
 				const vector2& uv);

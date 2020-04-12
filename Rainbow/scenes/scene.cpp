@@ -19,3 +19,19 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(co
 
 	return interaction;
 }
+
+std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect_with_shadow_ray(const ray& ray) const
+{
+	return intersect(ray);
+}
+
+const std::vector<std::shared_ptr<rainbow::shape>>& rainbow::scenes::scene::shapes() const noexcept
+{
+	return mShapes;
+}
+
+const std::vector<std::shared_ptr<rainbow::light>>& rainbow::scenes::scene::lights() const noexcept
+{
+	return mLights;
+}
+

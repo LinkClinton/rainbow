@@ -7,21 +7,14 @@ namespace rainbow {
 	namespace textures {
 
 		template <size_t Dimension, typename T>
-		texture_t<2, T>::texture_t(size_t width, size_t height) : mWidth(width), mHeight(height)
+		texture_t<Dimension, T>::texture_t(const vector_t<Dimension, size_t>& size) : mSize(size)
 		{
-			
 		}
 
 		template <size_t Dimension, typename T>
-		size_t texture_t<2, T>::width() const noexcept
+		vector_t<Dimension, size_t> texture_t<Dimension, T>::size() const noexcept
 		{
-			return mWidth;
-		}
-
-		template <size_t Dimension, typename T>
-		size_t texture_t<2, T>::height() const noexcept
-		{
-			return mHeight;
+			return mSize;
 		}
 
 	}

@@ -83,6 +83,9 @@
     <ClCompile Include="shared\utilities.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="integrators\whitted_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -311,6 +314,15 @@
     </ClInclude>
     <ClInclude Include="shapes\shape.hpp">
       <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\constant_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\constant_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\whitted_integrator.hpp">
+      <Filter>integrators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

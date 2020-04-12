@@ -11,25 +11,23 @@ namespace rainbow {
 	
 	namespace textures {
 
+		template <size_t Dimension>
+		using texture_size = vector_t<Dimension, size_t>;
+		
 		template <size_t Dimension, typename T>
-		class texture_t;
-
-		template <size_t Dimension, typename T>
-		class texture_t<2, T> : public interfaces::noncopyable {
+		class texture_t : public interfaces::noncopyable {
 		public:
-			explicit texture_t(size_t width, size_t height);
+			explicit texture_t(const vector_t<Dimension, size_t>& size);
 
-			virtual T sample(const vector2& uv) const = 0;
-			
-			size_t width() const noexcept;
+			~texture_t() = default;
 
-			size_t height() const noexcept;
+			vector_t<Dimension, size_t> size() const noexcept;
+
+			virtual T sample(const vector_t<Dimension, real>& position) = 0;
 		protected:
-			size_t mWidth, mHeight;
+			vector_t<Dimension, size_t> mSize;
 		};
 		
-		template <typename T>
-		using texture2d = texture_t<2, T>;
 	}
 }
 

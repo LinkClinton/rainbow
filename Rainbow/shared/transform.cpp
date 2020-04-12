@@ -28,6 +28,7 @@ rainbow::transform rainbow::transform::operator*(const transform& right) const
 rainbow::surface_interaction rainbow::transform::operator()(const surface_interaction& interaction) const
 {
 	return surface_interaction(
+		interaction.shape,
 		transform_vector(*this, interaction.dp_du),
 		transform_vector(*this, interaction.dp_dv),
 		transform_point(*this, interaction.point),

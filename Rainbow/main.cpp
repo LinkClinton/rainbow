@@ -1,4 +1,4 @@
-#include "scatterings/reflection/specular_reflection.hpp"
+#include "textures/constant_texture.hpp"
 
 using namespace rainbow;
 
