@@ -23,7 +23,7 @@ void rainbow::integrators::sampler_integrator::render(
 	// loop all pixels that we will render
 	for (size_t y = bound.min.y; y < bound.max.y; y++) {
 		for (size_t x = bound.min.x; x < bound.max.x; x++) {
-			mCameraSampler.reset();
+			mCameraSampler->reset();
 
 			// loop all samples in one pixel
 			for (size_t index = 0; index < mCameraSampler->count(); index++) {

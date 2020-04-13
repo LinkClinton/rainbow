@@ -165,8 +165,10 @@
     <ClCompile Include="lights\point_light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="materials\material.cpp" />
+    <ClCompile Include="materials\matte_material.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
     <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp" />
+    <ClCompile Include="scatterings\reflection\oren_nayar_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\reflection_function.cpp" />
     <ClCompile Include="scatterings\reflection\specular_reflection.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
@@ -196,12 +198,14 @@
     <ClInclude Include="lights\light.hpp" />
     <ClInclude Include="lights\point_light.hpp" />
     <ClInclude Include="materials\material.hpp" />
+    <ClInclude Include="materials\matte_material.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
     <ClInclude Include="samplers\random_sampler.hpp" />
     <ClInclude Include="samplers\samplers.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
     <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp" />
+    <ClInclude Include="scatterings\reflection\oren_nayar_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\reflection_function.hpp" />
     <ClInclude Include="scatterings\reflection\specular_reflection.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />

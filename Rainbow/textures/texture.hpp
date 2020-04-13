@@ -1,12 +1,15 @@
 #pragma once
 
 #include "../interfaces/noncopyable.hpp"
+
+#include "../shared/interactions/surface_interaction.hpp"
 #include "../shared/math/math.hpp"
 
 #include <vector>
 
 namespace rainbow {
 
+	using namespace interactions;
 	using namespace math;
 	
 	namespace textures {
@@ -23,10 +26,13 @@ namespace rainbow {
 
 			vector_t<Dimension, size_t> size() const noexcept;
 
-			virtual T sample(const vector_t<Dimension, real>& position) = 0;
+			virtual T sample(const surface_interaction& interaction) = 0;
 		protected:
 			vector_t<Dimension, size_t> mSize;
 		};
+
+		template <typename T>
+		using texture2d = texture_t<2, T>;
 		
 	}
 }

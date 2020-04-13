@@ -13,7 +13,7 @@ namespace rainbow {
 		}
 
 		template <size_t Dimension, typename T>
-		T constant_texture_t<Dimension, T>::sample(const vector_t<Dimension, real>& position)
+		T constant_texture_t<Dimension, T>::sample(const surface_interaction& interaction)
 		{
 			return mValue;
 		}

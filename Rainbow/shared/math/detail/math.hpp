@@ -39,6 +39,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T radians(const T value)
+		{
+			return glm::radians(value);
+		}
+
+		template <typename T>
 		T clamp(const T& value, const T& min_limit, const T& max_limit)
 		{
 			return glm::clamp(value, min_limit, max_limit);

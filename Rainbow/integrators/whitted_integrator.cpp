@@ -43,7 +43,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 		// spawn a shadow ray to test the light is visible
 		if (scene->intersect_with_shadow_ray(shadow_ray).has_value())
 			continue;
-		
+
 		if (!function_value.is_black()) 
 			L += function_value * light_sample.irradiance * abs(dot(light_sample.wi, interaction->normal)) / light_sample.pdf;
 	}

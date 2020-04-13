@@ -51,6 +51,9 @@ namespace rainbow {
 		T acos(const T value);
 
 		template <typename T>
+		T radians(const T value);
+		
+		template <typename T>
 		T clamp(const T& value, const T& min_limit, const T& max_limit);
 
 		template <typename T>

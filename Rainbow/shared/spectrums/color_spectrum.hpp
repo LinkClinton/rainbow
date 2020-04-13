@@ -22,6 +22,8 @@ namespace rainbow {
 
 			color_spectrum(const vector3& color);
 
+			color_spectrum(real red, real green, real blue);
+
 			real red() const noexcept;
 
 			real green() const noexcept;

@@ -1,5 +1,13 @@
 #include "film.hpp"
 
+#ifdef __STB_WRITE_IMAGE__
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#include <stb_image_write.h>
+
+#endif
+
 rainbow::cameras::pixel::pixel() : pixel(spectrums::spectrum(0), 0)
 {
 	
@@ -43,6 +51,40 @@ rainbow::cameras::film::film(
 	);
 }
 
+#ifdef __STB_WRITE_IMAGE__
+
+void rainbow::cameras::film::write(const std::string& file_name) const noexcept
+{
+	using byte = unsigned char;
+	
+	const auto image_size = static_cast<size_t>(mResolution.x) * static_cast<size_t>(mResolution.y);
+
+	auto colors = std::vector<byte>(image_size * 4, 255);
+
+	for (size_t index = 0; index < image_size; index++) {
+		const auto x_position = index % mResolution.x;
+		const auto y_position = index / mResolution.x;
+
+		if (x_position < mPixelsBound.min.x || x_position >= mPixelsBound.max.x) continue;
+		if (y_position < mPixelsBound.min.y || y_position >= mPixelsBound.max.y) continue;
+		
+		const auto spectrum = mPixels[index].spectrum();
+		colors[index * 4 + 0] = static_cast<byte>(spectrum.red() * 255);
+		colors[index * 4 + 1] = static_cast<byte>(spectrum.green() * 255);
+		colors[index * 4 + 2] = static_cast<byte>(spectrum.blue() * 255);
+		colors[index * 4 + 3] = 255;
+	}
+
+	stbi_write_png((file_name + ".png").c_str(),
+		mResolution.x,
+		mResolution.y,
+		4,
+		colors.data(),
+		0);
+}
+
+#endif
+
 void rainbow::cameras::film::add_sample(const vector2& position, const spectrum& sample) noexcept
 {
 	// a sample can contribute some pixels that in a rectangle region with filter's radius.
@@ -68,7 +110,7 @@ void rainbow::cameras::film::add_sample(const vector2& position, const spectrum&
 				vector2(x - discrete_position.x, y - discrete_position.y));
 
 			auto& pixel = mPixels[pixel_index(vector2i(x, y))];
-
+			
 			pixel.add_sample(sample * filter_value, filter_value);
 		}
 	}

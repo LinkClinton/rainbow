@@ -32,7 +32,7 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	}
 	else t_hit = t0;
 
-	auto point_hit = ray.origin + ray.direction * t_hit;
+	auto point_hit = ray_local.origin + ray_local.direction * t_hit;
 
 	// if the point on the sphere, the distance of point should be radius
 	// so mRadius / length(point_hit) should be 1
@@ -66,9 +66,9 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	const auto dp_du = vector3(-phi_max * point_hit.y, phi_max * point_hit.x, 0);
 	const auto dp_dv = vector3(point_hit.z * cos_phi, point_hit.z * sin_phi, -mRadius * sin(theta)) * (theta_max - theta_min);
 
-	return surface_interaction(
+	return mLocalToWorld(surface_interaction(
 		shared_from_this(),
 		dp_du, dp_dv, point_hit, -ray_local.direction,
 		vector2(u, v)
-	);
+	));
 }

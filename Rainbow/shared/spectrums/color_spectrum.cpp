@@ -18,6 +18,11 @@ rainbow::spectrums::color_spectrum::color_spectrum(const vector3& color) :
 {
 }
 
+rainbow::spectrums::color_spectrum::color_spectrum(real red, real green, real blue) :
+	color_spectrum(std::array<real, 3>{ red, green, blue })
+{
+}
+
 rainbow::real rainbow::spectrums::color_spectrum::red() const noexcept
 {
 	return coefficient[0];
