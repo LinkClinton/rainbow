@@ -70,7 +70,7 @@ namespace rainbow {
 		scattering_type operator&(const scattering_type& left, const scattering_type& right);
 		
 		bool match(const scattering_type& target, const scattering_type& flag);
-		
+
 		struct scattering_sample {
 			scattering_type type = scattering_type::unknown;
 			spectrum value = spectrum(0);

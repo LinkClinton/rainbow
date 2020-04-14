@@ -83,5 +83,5 @@ rainbow::spectrum rainbow::scatterings::fresnel_effect_conductor::evaluate(real 
 
 rainbow::spectrum rainbow::scatterings::fresnel_effect_nop::evaluate(real cos_theta_i) const
 {
-	return 1;
+	return spectrum(1);
 }

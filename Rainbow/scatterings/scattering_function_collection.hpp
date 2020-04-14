@@ -45,7 +45,7 @@ namespace rainbow {
 
 			size_t size() const noexcept;
 		private:
-			std::vector<std::shared_ptr<scattering_function>> match(const scattering_type& type) const noexcept;
+			std::vector<std::shared_ptr<scattering_function>> match(const scattering_type& include) const noexcept;
 		private:
 			std::vector<std::shared_ptr<scattering_function>> mScatteringFunctions;
 		};

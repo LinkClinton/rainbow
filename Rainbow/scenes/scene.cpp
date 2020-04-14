@@ -12,12 +12,15 @@ void rainbow::scenes::scene::add_light(const std::shared_ptr<light>& light)
 
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(const ray& ray) const
 {
-	std::optional<surface_interaction> interaction;
+	std::optional<surface_interaction> nearest_interaction;
 
-	for (const auto& shape : mShapes)
-		interaction = shape->intersect(ray);
+	for (const auto& shape : mShapes) {
+		const auto interaction = shape->intersect(ray);
 
-	return interaction;
+		if (interaction.has_value()) nearest_interaction = interaction;
+	}
+
+	return nearest_interaction;
 }
 
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect_with_shadow_ray(const ray& ray) const

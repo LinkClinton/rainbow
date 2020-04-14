@@ -17,15 +17,15 @@ rainbow::scattering_function_collection rainbow::materials::matte_material::buil
 {
 	scattering_function_collection functions;
 
-	const auto reflectance = mDiffuse->sample(interaction);
+	const auto diffuse = mDiffuse->sample(interaction);
 	const auto sigma = clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));
 
-	if (reflectance.is_black()) return functions;
+	if (diffuse.is_black()) return functions;
 
 	if (sigma == 0)
-		functions.add_scattering_function(std::make_shared<lambertian_reflection>(reflectance));
+		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
 	else
-		functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(reflectance, sigma));
+		functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
 
 	return functions;
 }

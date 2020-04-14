@@ -27,7 +27,7 @@ namespace rainbow {
 		template <typename T>
 		matrix4x4_t<T> rotate(const T angle, const vector3_t<T>& axis)
 		{
-			return glm::rotate<T>(identity<T>(), angle, axis);
+			return glm::rotate<T>(identity<T>(), glm::radians(angle), axis);
 		}
 
 		template <typename T>

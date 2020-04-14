@@ -1,5 +1,7 @@
 #include "integrator.hpp"
 
+#define __PARALLEL_RENDER__
+
 #include <execution>
 
 rainbow::integrators::sampler_group::sampler_group(
@@ -22,6 +24,8 @@ void rainbow::integrators::sampler_integrator::render(
 	const auto film = camera->film();
 	const auto bound = film->pixels_bound();
 
+#ifdef __PARALLEL_RENDER__
+	
 	struct parallel_input {
 		vector2 position;
 
@@ -75,6 +79,24 @@ void rainbow::integrators::sampler_integrator::render(
 	// merge the samples into film
 	for (size_t index = 0; index < sample_count; index++) 
 		film->add_sample(inputs[index].position, outputs[index].value);
+	
+#else
+
+	for (size_t y = bound.min.y; y < bound.max.y; y++) {
+		for (size_t x = bound.min.x; x < bound.max.x; x++) {
+			mCameraSampler->reset();
+			
+			// loop all samples in one pixel
+			for (size_t index = 0; index < mCameraSampler->count(); index++) {
+				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
+				const auto spectrum = trace(scene, prepare_samplers(), camera->generate_ray(sample), 0);
+				
+				film->add_sample(sample, spectrum);
+			}
+		}
+	}
+	
+#endif
 }
 
 rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers()

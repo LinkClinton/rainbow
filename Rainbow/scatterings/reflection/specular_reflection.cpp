@@ -23,7 +23,7 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::specular_reflectio
 	// other vector is 0
 	return scattering_sample(
 		mType,
-		mFresnel->evaluate(cos_theta(wi)) / abs(cos_theta(wi)) * mReflectance,
+		mFresnel->evaluate(cos_theta(wi)) * mReflectance / abs(cos_theta(wi)),
 		wi,
 		1
 	);

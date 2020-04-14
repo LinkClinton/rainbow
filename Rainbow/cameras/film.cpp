@@ -76,6 +76,7 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 		if (y_position < mPixelsBound.min.y || y_position >= mPixelsBound.max.y) continue;
 		
 		const auto spectrum = mPixels[index].spectrum();
+		
 		colors[index * 4 + 0] = to_byte(spectrum.red());
 		colors[index * 4 + 1] = to_byte(spectrum.green());
 		colors[index * 4 + 2] = to_byte(spectrum.blue());

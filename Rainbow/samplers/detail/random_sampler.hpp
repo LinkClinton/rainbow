@@ -18,6 +18,23 @@ namespace rainbow {
 		}
 
 		template <size_t Dimension>
+		typename sampler_t<Dimension>::sample_type random_sampler_t<Dimension>::next_sample()
+		{
+			if (this->mCurrentSampleIndex < this->mSamples.size())
+				return this->mSamples[this->mCurrentSampleIndex++];
+
+			++this->mCurrentSampleIndex;
+
+			typename sampler_t<Dimension>::sample_type sample;
+
+			for (auto dimension = 0; dimension < Dimension; dimension++) {
+				sample[dimension] = this->mRandomGenerator.normalize_real();
+			}
+
+			return sample;
+		}
+
+		template <size_t Dimension>
 		void random_sampler_t<Dimension>::reset()
 		{
 			for (size_t index = 0; index < this->mSamples.size(); index++) {

@@ -92,6 +92,12 @@
     <ClCompile Include="materials\matte_material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="shapes\disk.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\mirror_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -337,6 +343,12 @@
       <Filter>scatterings\reflection</Filter>
     </ClInclude>
     <ClInclude Include="materials\matte_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\disk.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\mirror_material.hpp">
       <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>

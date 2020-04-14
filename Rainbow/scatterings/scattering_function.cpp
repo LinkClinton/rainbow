@@ -117,7 +117,7 @@ rainbow::scatterings::scattering_type rainbow::scatterings::operator&(const scat
 
 bool rainbow::scatterings::match(const scattering_type& target, const scattering_type& flag)
 {
-	return (target & flag) != scattering_type::unknown;
+	return (target & flag) == flag;
 }
 
 rainbow::scatterings::scattering_sample::scattering_sample(

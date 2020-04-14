@@ -21,9 +21,9 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate
 
 	spectrum f = 0;
 
-	for (const auto& function : mScatteringFunctions) 
-		if (scatterings::match(function->type(), include) && 
-			scatterings::match(function->type(), type)) 
+	for (const auto& function : mScatteringFunctions)
+		if (scatterings::match(include, function->type()) &&
+			scatterings::match(function->type(), type))
 			f += function->evaluate(wo, wi);
 
 	return f;
@@ -92,7 +92,7 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(
 	spectrum spectrum = 0;
 
 	for (const auto& function : mScatteringFunctions)
-		if (scatterings::match(function->type(), include)) 
+		if (scatterings::match(include, function->type()))
 			spectrum += function->rho(wo, samples);
 
 	return spectrum;
@@ -106,7 +106,7 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(
 	spectrum spectrum = 0;
 
 	for (const auto& function : mScatteringFunctions)
-		if (scatterings::match(function->type(), include))
+		if (scatterings::match(include, function->type()))
 			spectrum += function->rho(samples0, samples1);
 
 	return spectrum;
@@ -121,7 +121,7 @@ rainbow::real rainbow::scatterings::scattering_function_collection::pdf(
 	real pdf = 0;
 
 	for (const auto& function : mScatteringFunctions) {
-		if (scatterings::match(function->type(), include)) {
+		if (scatterings::match(include, function->type())) {
 			pdf = pdf + function->pdf(wo, wi);
 
 			count++;
@@ -137,12 +137,12 @@ size_t rainbow::scatterings::scattering_function_collection::size() const noexce
 }
 
 std::vector<std::shared_ptr<rainbow::scatterings::scattering_function>>
-	rainbow::scatterings::scattering_function_collection::match(const scattering_type& type) const noexcept
+rainbow::scatterings::scattering_function_collection::match(const scattering_type& include) const noexcept
 {
 	std::vector<std::shared_ptr<scattering_function>> functions;
 
-	for (const auto& function : mScatteringFunctions) 
-		if (scatterings::match(function->type(), type)) functions.push_back(function);
+	for (const auto& function : mScatteringFunctions)
+		if (scatterings::match(include, function->type())) functions.push_back(function);
 
 	return functions;
 }
