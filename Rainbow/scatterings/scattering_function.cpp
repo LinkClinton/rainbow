@@ -76,6 +76,20 @@ bool rainbow::scatterings::same_hemisphere(const vector3& v0, const vector3& v1)
 	return v0.z * v1.z > 0;
 }
 
+rainbow::vector3 rainbow::scatterings::face_forward(const vector3& v, const vector3& forward)
+{
+	return dot(v, forward) > 0 ? v : -v;
+}
+
+rainbow::vector3 rainbow::scatterings::spherical_direction(real sin_theta, real cos_theta, real phi)
+{
+	return vector3(
+		sin_theta * cos(phi),
+		sin_theta * sin(phi),
+		cos_theta
+	);
+}
+
 rainbow::vector3 rainbow::scatterings::reflect(const vector3& wi, const vector3& normal)
 {
 	// because the origin of wi and wo is (0, 0, 0)

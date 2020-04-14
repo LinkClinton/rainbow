@@ -98,6 +98,18 @@
     <ClCompile Include="materials\mirror_material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\microfacet_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\plastic_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -349,6 +361,18 @@
       <Filter>shapes</Filter>
     </ClInclude>
     <ClInclude Include="materials\mirror_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\microfacet_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\plastic_material.hpp">
       <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>

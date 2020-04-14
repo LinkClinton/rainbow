@@ -71,14 +71,17 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
 		interaction, samplers.sampler2d->next_sample(),
 		scattering_type::reflection | scattering_type::specular);
 
-	const auto wi = local_to_world(interaction.shading_space, scattering_sample.wi);
-	const auto dot_value = abs(dot(wi, interaction.normal));
+	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));
 	
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
 		return 0;
+
+	if (depth == 1) {
+		int x = 2;
+	}
 	
-	const auto L = trace(scene, samplers, interaction.spawn_ray(wi), depth + 1);
+	const auto L = trace(scene, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
 	
 	return scattering_sample.value * L * dot_value / scattering_sample.pdf;
 }
@@ -92,14 +95,13 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
 		interaction, samplers.sampler2d->next_sample(),
 		scattering_type::transmission | scattering_type::specular);
 
-	const auto wi = local_to_world(interaction.shading_space, scattering_sample.wi);
-	const auto dot_value = abs(dot(wi, interaction.normal));
+	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));
 
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
 		return 0;
 
-	const auto L = trace(scene, samplers, interaction.spawn_ray(wi), depth + 1);
+	const auto L = trace(scene, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
 
 	return scattering_sample.value * L * dot_value / scattering_sample.pdf;
 }

@@ -81,6 +81,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T log(const T& x)
+		{
+			return glm::log(x);
+		}
+
+		template <typename T>
 		T one_over_two_pi()
 		{
 			return glm::one_over_two_pi<T>();

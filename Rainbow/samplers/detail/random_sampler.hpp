@@ -9,6 +9,7 @@ namespace rainbow {
 		template <size_t Dimension>
 		random_sampler_t<Dimension>::random_sampler_t(const uint64 samples) : sampler_t<Dimension>(samples)
 		{
+			random_sampler_t<Dimension>::reset();
 		}
 
 		template <size_t Dimension>

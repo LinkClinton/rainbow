@@ -72,6 +72,9 @@ namespace rainbow {
 		T abs(const T& v);
 
 		template <typename T>
+		T log(const T& x);
+
+		template <typename T>
 		T one_over_two_pi();
 
 		template <typename T>

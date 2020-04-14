@@ -32,6 +32,10 @@ namespace rainbow {
 		real sin_phi_pow2(const vector3& w);
 
 		bool same_hemisphere(const vector3& v0, const vector3& v1);
+
+		vector3 face_forward(const vector3& v, const vector3& forward);
+		
+		vector3 spherical_direction(real sin_theta, real cos_theta, real phi);
 		
 		/*
 		 * reflection : theta_o = theta_i, phi_o = phi_i + pi
@@ -63,7 +67,8 @@ namespace rainbow {
 			transmission = 1 << 1,
 			specular = 1 << 2,
 			diffuse = 1 << 3,
-			all = reflection | transmission | specular | diffuse
+			glossy = 1 << 4,
+			all = reflection | transmission | specular | diffuse | glossy
 		};
 
 		scattering_type operator|(const scattering_type& left, const scattering_type& right);

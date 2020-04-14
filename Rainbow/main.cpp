@@ -1,6 +1,7 @@
 #include "integrators/whitted_integrator.hpp"
 #include "cameras/perspective_camera.hpp"
 #include "textures/constant_texture.hpp"
+#include "materials/plastic_material.hpp"
 #include "materials/mirror_material.hpp"
 #include "materials/matte_material.hpp"
 #include "samplers/random_sampler.hpp"
@@ -39,24 +40,25 @@ int main() {
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	scene->add_shape(
+	/*scene->add_shape(
 		std::make_shared<sphere>(
 			std::make_shared<mirror_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f))//,
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f))//,
 				//std::make_shared<constant_texture2d<real>>(0.f)
 				),
 			translate(vector3(-11, 0, 10)),
 			10.f
 			)
-	);
+	);*/
 
 	scene->add_shape(
 		std::make_shared<sphere>(
-			std::make_shared<matte_material>(
+			std::make_shared<plastic_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.1f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.f)
+				std::make_shared<constant_texture2d<real>>(0.5f)
 				),
-			translate(vector3(11, 0, 10)),
+			translate(vector3(0, 0, 10)),
 			10.f
 			)
 	);
@@ -84,8 +86,8 @@ int main() {
 
 	const auto integrator = std::make_shared<integrators::whitted_integrator>(
 		std::make_shared<random_sampler2d>(4),
-		std::make_shared<random_sampler2d>(32),
-		3
+		std::make_shared<random_sampler2d>(0),
+		5
 		);
 
 	integrator->render(camera, scene);
