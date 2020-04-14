@@ -59,6 +59,8 @@ namespace rainbow {
 			vector2i mResolution;
 			bound2i mPixelsBound;
 		};
+
+		real gamma_correct(real value);
 		
 	}
 }

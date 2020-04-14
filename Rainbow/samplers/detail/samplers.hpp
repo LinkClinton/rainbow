@@ -22,6 +22,12 @@ namespace rainbow {
 		{
 			return mSamples.size();
 		}
+
+		template <size_t Dimension>
+		std::shared_ptr<sampler_t<Dimension>> sampler_t<Dimension>::clone() const {
+			return std::make_shared<sampler_t<Dimension>>(static_cast<uint64>(mSamples.size()));
+		}
+
 		
 		template <size_t Dimension>
 		typename sampler_t<Dimension>::sample_type sampler_t<Dimension>::next_sample()

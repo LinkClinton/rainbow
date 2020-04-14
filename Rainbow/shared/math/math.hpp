@@ -63,6 +63,9 @@ namespace rainbow {
 		T min(const T& v0, const T& v1);
 
 		template <typename T>
+		T pow(const T& x, const T& y);
+		
+		template <typename T>
 		T sqrt(const T& v);
 
 		template <typename T>

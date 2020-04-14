@@ -16,7 +16,7 @@ int main() {
 	const auto film = std::make_shared<cameras::film>(
 		std::make_shared<box_filter>(vector2(1.f)),
 		vector2i(resolution.x, resolution.y),
-		bound2(vector2(0.3f), vector2(0.7f))
+		bound2(vector2(0.f), vector2(1.f))
 		);
 	
 	const auto camera = std::make_shared<perspective_camera>(
@@ -38,23 +38,23 @@ int main() {
 				std::make_shared<constant_texture2d<real>>(0.f)
 				),
 			translate(vector3(0, 0, -20.f)),
-			5.f
+			10.f
 			)
 	);
 
 	scene->add_light(std::make_shared<point_light>(
 		translate(vector3(0, 20, 0)),
-		spectrum(1000)
+		spectrum(200)
 		));
 
 	scene->add_light(std::make_shared<point_light>(
 		translate(vector3(0, 0, 0)),
-		spectrum(300)
+		spectrum(200)
 		));
 
 	const auto integrator = std::make_shared<integrators::whitted_integrator>(
 		std::make_shared<random_sampler2d>(4),
-		std::make_shared<random_sampler2d>(64),
+		std::make_shared<random_sampler2d>(32),
 		5
 		);
 

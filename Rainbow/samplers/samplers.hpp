@@ -23,6 +23,8 @@ namespace rainbow {
 			sample_type sample(const size_t index) const;
 
 			size_t count() const noexcept;
+
+			virtual std::shared_ptr<sampler_t<Dimension>> clone() const;
 			
 			virtual sample_type next_sample();
 

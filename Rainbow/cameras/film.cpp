@@ -58,7 +58,14 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 	using byte = unsigned char;
 	
 	const auto image_size = static_cast<size_t>(mResolution.x) * static_cast<size_t>(mResolution.y);
-
+	const auto to_byte = [](real value)
+	{
+		return static_cast<byte>(clamp(
+			255 * gamma_correct(value) + 0.5f,
+			static_cast<real>(0),
+			static_cast<real>(255)));
+	};
+	
 	auto colors = std::vector<byte>(image_size * 4, 255);
 
 	for (size_t index = 0; index < image_size; index++) {
@@ -69,9 +76,9 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 		if (y_position < mPixelsBound.min.y || y_position >= mPixelsBound.max.y) continue;
 		
 		const auto spectrum = mPixels[index].spectrum();
-		colors[index * 4 + 0] = static_cast<byte>(spectrum.red() * 255);
-		colors[index * 4 + 1] = static_cast<byte>(spectrum.green() * 255);
-		colors[index * 4 + 2] = static_cast<byte>(spectrum.blue() * 255);
+		colors[index * 4 + 0] = to_byte(spectrum.red());
+		colors[index * 4 + 1] = to_byte(spectrum.green());
+		colors[index * 4 + 2] = to_byte(spectrum.blue());
 		colors[index * 4 + 3] = 255;
 	}
 
@@ -129,4 +136,11 @@ rainbow::bound2i rainbow::cameras::film::pixels_bound() const noexcept
 rainbow::int32 rainbow::cameras::film::pixel_index(const vector2i& position) const noexcept
 {
 	return position.y * mResolution.x + position.x;
+}
+
+rainbow::real rainbow::cameras::gamma_correct(real value)
+{
+	if (value <= 0.0031308f) return 12.92f * value;
+
+	return 1.055f * pow(value, 1.f / 2.4f) - 0.055f;
 }

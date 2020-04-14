@@ -7,7 +7,7 @@ rainbow::random_generator::random_generator() : random_generator(static_cast<uin
 	
 }
 
-rainbow::random_generator::random_generator(const uint64 seed) : mEngine(seed), mDistribution(0, 1)
+rainbow::random_generator::random_generator(const uint64 seed) : mEngine(static_cast<unsigned>(seed)), mDistribution(0, 1)
 {
 }
 

@@ -12,6 +12,12 @@ namespace rainbow {
 		}
 
 		template <size_t Dimension>
+		std::shared_ptr<sampler_t<Dimension>> random_sampler_t<Dimension>::clone() const
+		{
+			return std::make_shared<random_sampler_t<Dimension>>(static_cast<uint64>(this->mSamples.size()));
+		}
+
+		template <size_t Dimension>
 		void random_sampler_t<Dimension>::reset()
 		{
 			for (size_t index = 0; index < this->mSamples.size(); index++) {

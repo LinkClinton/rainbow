@@ -63,6 +63,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T pow(const T& x, const T& y)
+		{
+			return glm::pow(x, y);
+		}
+
+		template <typename T>
 		T sqrt(const T& v)
 		{
 			return glm::sqrt(v);

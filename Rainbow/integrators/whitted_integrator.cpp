@@ -59,9 +59,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 
 rainbow::integrators::sampler_group rainbow::integrators::whitted_integrator::prepare_samplers()
 {
-	mSampler->reset();
-
-	return sampler_group(nullptr, mSampler);
+	return sampler_group(nullptr, mSampler->clone());
 }
 
 rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(

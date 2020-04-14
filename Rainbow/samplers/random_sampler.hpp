@@ -11,6 +11,8 @@ namespace rainbow {
 		public:
 			explicit random_sampler_t(const uint64 samples);
 
+			std::shared_ptr<sampler_t<Dimension>> clone() const override;
+			
 			void reset() override;
 		};
 
