@@ -4,6 +4,7 @@
 #include "materials/plastic_material.hpp"
 #include "materials/mirror_material.hpp"
 #include "materials/matte_material.hpp"
+#include "materials/glass_material.hpp"
 #include "samplers/random_sampler.hpp"
 #include "filters/box_filter.hpp"
 #include "lights/point_light.hpp"
@@ -42,9 +43,11 @@ int main() {
 
 	scene->add_shape(
 		std::make_shared<sphere>(
-			std::make_shared<mirror_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f))//,
-				//std::make_shared<constant_texture2d<real>>(0.f)
+			std::make_shared<glass_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.0f)),
+				std::make_shared<constant_texture2d<real>>(1.f / 1.5f)
 				),
 			translate(vector3(-11, 0, 10)),
 			10.f
@@ -56,7 +59,7 @@ int main() {
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.1f)
+				std::make_shared<constant_texture2d<real>>(1.f)
 				),
 			translate(vector3(11, 0, 10)),
 			10.f

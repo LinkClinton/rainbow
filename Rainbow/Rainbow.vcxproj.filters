@@ -110,6 +110,21 @@
     <ClCompile Include="materials\plastic_material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="scatterings\transmission\transmission_function.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\lambertian_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\specular_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\microfacet_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\glass_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -373,6 +388,21 @@
       <Filter>scatterings\reflection</Filter>
     </ClInclude>
     <ClInclude Include="materials\plastic_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\transmission_function.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\lambertian_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\specular_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\microfacet_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\glass_material.hpp">
       <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>

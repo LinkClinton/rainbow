@@ -164,6 +164,7 @@
     <ClCompile Include="lights\light.cpp" />
     <ClCompile Include="lights\point_light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="materials\matte_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
@@ -178,6 +179,10 @@
     <ClCompile Include="scatterings\reflection\specular_reflection.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
+    <ClCompile Include="scatterings\transmission\lambertian_transmission.cpp" />
+    <ClCompile Include="scatterings\transmission\microfacet_transmission.cpp" />
+    <ClCompile Include="scatterings\transmission\specular_transmission.cpp" />
+    <ClCompile Include="scatterings\transmission\transmission_function.cpp" />
     <ClCompile Include="scenes\scene.cpp" />
     <ClCompile Include="shapes\disk.cpp" />
     <ClCompile Include="shapes\shape.cpp" />
@@ -203,6 +208,7 @@
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="lights\light.hpp" />
     <ClInclude Include="lights\point_light.hpp" />
+    <ClInclude Include="materials\glass_material.hpp" />
     <ClInclude Include="materials\material.hpp" />
     <ClInclude Include="materials\matte_material.hpp" />
     <ClInclude Include="materials\mirror_material.hpp" />
@@ -221,6 +227,10 @@
     <ClInclude Include="scatterings\reflection\specular_reflection.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />
     <ClInclude Include="scatterings\scattering_function_collection.hpp" />
+    <ClInclude Include="scatterings\transmission\lambertian_transmission.hpp" />
+    <ClInclude Include="scatterings\transmission\microfacet_transmission.hpp" />
+    <ClInclude Include="scatterings\transmission\specular_transmission.hpp" />
+    <ClInclude Include="scatterings\transmission\transmission_function.hpp" />
     <ClInclude Include="scenes\scene.hpp" />
     <ClInclude Include="shapes\disk.hpp" />
     <ClInclude Include="shapes\shape.hpp" />
