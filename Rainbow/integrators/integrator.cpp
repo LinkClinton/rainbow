@@ -4,6 +4,11 @@
 
 #include <execution>
 
+rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel) :
+	pixel(pixel)
+{
+}
+
 rainbow::integrators::sampler_group::sampler_group(
 	const std::shared_ptr<samplers::sampler1d>& sampler1d,
 	const std::shared_ptr<samplers::sampler2d>& sampler2d) :
@@ -71,8 +76,12 @@ void rainbow::integrators::sampler_integrator::render(
 	// all samples in samplers should build before rendering
 	std::for_each(std::execution::par, inputs.begin(), inputs.end(), [&](const parallel_input& input)
 		{
+			const auto debug = integrator_debug_info(
+				vector2i(input.position.x, input.position.y)
+			);
+		
 			outputs[input.index] = {
-				trace(scene, prepare_samplers(), camera->generate_ray(input.position), 0)
+				trace(scene, debug, prepare_samplers(), camera->generate_ray(input.position), 0)
 			};
 		});
 
@@ -88,8 +97,12 @@ void rainbow::integrators::sampler_integrator::render(
 			
 			// loop all samples in one pixel
 			for (size_t index = 0; index < mCameraSampler->count(); index++) {
+				const auto debug = integrator_debug_info(
+					vector2i(x, y)
+				);
+
 				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
-				const auto spectrum = trace(scene, prepare_samplers(), camera->generate_ray(sample), 0);
+				const auto spectrum = trace(scene, debug, prepare_samplers(), camera->generate_ray(sample), 0);
 				
 				film->add_sample(sample, spectrum);
 			}

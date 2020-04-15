@@ -9,7 +9,9 @@ rainbow::integrators::whitted_integrator::whitted_integrator(
 
 rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	const std::shared_ptr<scene>& scene,
-	const sampler_group& samplers, const ray& ray, size_t depth)
+	const integrator_debug_info& debug,
+	const sampler_group& samplers, 
+	const ray& ray, size_t depth)
 {
 	spectrum L = 0;
 
@@ -26,7 +28,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	// when the scattering functions is empty, we can think it is a invisible shape
 	// we will continue spawn a ray without changing the direction
 	if (scattering_functions.size() == 0)
-		return trace(scene, samplers, interaction->spawn_ray(ray.direction), depth);
+		return trace(scene, debug, samplers, interaction->spawn_ray(ray.direction), depth);
 
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
@@ -35,6 +37,10 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 		
 		if (light_sample.irradiance.is_black() || light_sample.pdf == 0) continue;
 
+		if (debug.pixel == vector2i(287, 132) && depth == 1) {
+			int x = 2;
+		}
+		
 		// notice : the value of specular functions is zero
 		const auto wi = world_to_local(interaction->shading_space, light_sample.wi);
 		const auto function_value = scattering_functions.evaluate(wo, wi);
@@ -50,8 +56,8 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 
 	// trace the rays with specular
 	if (depth + 1 < mMaxDepth) {
-		L += specular_reflect(scene, samplers, ray, interaction.value(), scattering_functions, depth);
-		L += specular_refract(scene, samplers, ray, interaction.value(), scattering_functions, depth);
+		L += specular_reflect(scene, debug, samplers, ray, interaction.value(), scattering_functions, depth);
+		L += specular_refract(scene, debug, samplers, ray, interaction.value(), scattering_functions, depth);
 	}
 
 	return L;
@@ -63,7 +69,9 @@ rainbow::integrators::sampler_group rainbow::integrators::whitted_integrator::pr
 }
 
 rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
-	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const std::shared_ptr<scene>& scene,
+	const integrator_debug_info& debug,
+	const sampler_group& samplers, 
 	const ray& ray, const surface_interaction& interaction,
 	const scattering_function_collection& functions, size_t depth)
 {	
@@ -76,18 +84,16 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
 		return 0;
-
-	if (depth == 1) {
-		int x = 2;
-	}
 	
-	const auto L = trace(scene, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
+	const auto L = trace(scene, debug, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
 	
 	return scattering_sample.value * L * dot_value / scattering_sample.pdf;
 }
 
 rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
-	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const std::shared_ptr<scene>& scene,
+	const integrator_debug_info& debug,
+	const sampler_group& samplers, 
 	const ray& ray, const surface_interaction& interaction,
 	const scattering_function_collection& functions, size_t depth)
 {
@@ -101,7 +107,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
 		return 0;
 
-	const auto L = trace(scene, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
+	const auto L = trace(scene, debug, samplers, interaction.spawn_ray(scattering_sample.wi), depth + 1);
 
 	return scattering_sample.value * L * dot_value / scattering_sample.pdf;
 }

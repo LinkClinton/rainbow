@@ -15,17 +15,26 @@ namespace rainbow {
 
 			~whitted_integrator() = default;
 			
-			spectrum trace(const std::shared_ptr<scene>& scene, const sampler_group& samplers, const ray& ray, size_t depth) override;
+			spectrum trace(
+				const std::shared_ptr<scene>& scene,
+				const integrator_debug_info& debug,
+				const sampler_group& samplers, 
+				const ray& ray, 
+				size_t depth) override;
 		protected:
 			sampler_group prepare_samplers() override;
 		private:
 			spectrum specular_reflect(
-				const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+				const std::shared_ptr<scene>& scene, 
+				const integrator_debug_info& debug, 
+				const sampler_group& samplers,
 				const ray& ray, const surface_interaction& interaction, 
 				const scattering_function_collection& functions, size_t depth);
 
 			spectrum specular_refract(
-				const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+				const std::shared_ptr<scene>& scene,
+				const integrator_debug_info& debug,
+				const sampler_group& samplers,
 				const ray& ray, const surface_interaction& interaction, 
 				const scattering_function_collection& functions, size_t depth);
 

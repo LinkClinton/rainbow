@@ -54,7 +54,7 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	
 	// parametric representation of sphere hit
 	const auto theta = acos(clamp(point_hit.z / mRadius, static_cast<real>(-1), static_cast<real>(1)));
-	const auto u = phi / two_pi<real>();
+	const auto u = phi / phi_max;
 	const auto v = (theta - theta_min) / (theta_max - theta_min);
 
 	// compute the dp_du, dp_dv

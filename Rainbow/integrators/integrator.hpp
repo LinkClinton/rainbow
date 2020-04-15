@@ -16,6 +16,14 @@ namespace rainbow {
 	
 	namespace integrators {
 
+		struct integrator_debug_info {
+			vector2i pixel = vector2i(0);
+
+			integrator_debug_info() = default;
+
+			integrator_debug_info(const vector2i& pixel);
+		};
+		
 		class integrator : public interfaces::noncopyable {
 		public:
 			integrator() = default;
@@ -51,7 +59,10 @@ namespace rainbow {
 				const std::shared_ptr<scene>& scene) override;
 
 			virtual spectrum trace(
-				const std::shared_ptr<scene>& scene, const sampler_group& samplers, const ray& ray, size_t depth) = 0;
+				const std::shared_ptr<scene>& scene,
+				const integrator_debug_info& debug,
+				const sampler_group& samplers, 
+				const ray& ray, size_t depth) = 0;
 		protected:
 			virtual sampler_group prepare_samplers();
 			

@@ -7,11 +7,11 @@ rainbow::real rainbow::scatterings::fresnel_reflect_dielectric(
 
 	// when cos_theta_i is less than 0, the input vector and normal are not the same hemisphere
 	// so we need swap the eta_i and eta_o
-	/*if (cos_theta_i < 0.f) {
+	if (cos_theta_i < 0.f) {
 		std::swap(eta_i, eta_o);
 
 		cos_theta_i = abs(cos_theta_i);
-	}*/
+	}
 
 	const auto sin_theta_i = sqrt(max(static_cast<real>(0), 1 - cos_theta_i * cos_theta_i));
 	const auto sin_theta_o = sin_theta_i * eta_i / eta_o;
