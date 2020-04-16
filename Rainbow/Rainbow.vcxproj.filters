@@ -125,6 +125,12 @@
     <ClCompile Include="materials\glass_material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="integrators\path_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="integrators\sampler_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -404,6 +410,12 @@
     </ClInclude>
     <ClInclude Include="materials\glass_material.hpp">
       <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\path_integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\sampler_integrator.hpp">
+      <Filter>integrators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

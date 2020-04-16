@@ -115,7 +115,7 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::rho(
 rainbow::real rainbow::scatterings::scattering_function_collection::pdf(
 	const vector3& wo, const vector3& wi, const scattering_type& include) const
 {
-	if (size() == 0 || wo.z == 0) return 0;
+	if (count() == 0 || wo.z == 0) return 0;
 
 	size_t count = 0;
 	real pdf = 0;
@@ -131,7 +131,17 @@ rainbow::real rainbow::scatterings::scattering_function_collection::pdf(
 	return count != 0 ? pdf / count : 0;
 }
 
-size_t rainbow::scatterings::scattering_function_collection::size() const noexcept
+size_t rainbow::scatterings::scattering_function_collection::count(const scattering_type& include) const noexcept
+{
+	size_t count = 0;
+	
+	for (const auto& function : mScatteringFunctions)
+		if (scatterings::match(include, function->type())) count++;
+
+	return count;
+}
+
+size_t rainbow::scatterings::scattering_function_collection::count() const noexcept
 {
 	return mScatteringFunctions.size();
 }

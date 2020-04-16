@@ -22,6 +22,8 @@ namespace rainbow {
 			coefficient_spectrum(const std::array<real, NumSpectrumSamples>& samples);
 
 			bool is_black() const noexcept;
+
+			real max_component() const noexcept;
 			
 			type& operator+=(const coefficient_spectrum<NumSpectrumSamples>& right) noexcept;
 			type operator+(const coefficient_spectrum<NumSpectrumSamples>& right) const noexcept;

@@ -23,17 +23,6 @@ namespace rainbow {
 
 			integrator_debug_info(const vector2i& pixel);
 		};
-		
-		class integrator : public interfaces::noncopyable {
-		public:
-			integrator() = default;
-
-			~integrator() = default;
-
-			virtual void render(
-				const std::shared_ptr<camera>& camera,
-				const std::shared_ptr<scene>& scene) = 0;
-		};
 
 		struct sampler_group {
 			std::shared_ptr<sampler1d> sampler1d;
@@ -46,30 +35,27 @@ namespace rainbow {
 				const std::shared_ptr<samplers::sampler2d>& sampler2d);
 		};
 		
-		class sampler_integrator : public integrator {
+		class integrator : public interfaces::noncopyable {
 		public:
-			explicit sampler_integrator(
-				const std::shared_ptr<sampler2d>& camera_sampler,
-				size_t max_depth = 5);
+			integrator() = default;
 
-			~sampler_integrator() = default;
-			
-			void render(
-				const std::shared_ptr<camera>& camera, 
-				const std::shared_ptr<scene>& scene) override;
+			~integrator() = default;
 
-			virtual spectrum trace(
-				const std::shared_ptr<scene>& scene,
-				const integrator_debug_info& debug,
-				const sampler_group& samplers, 
-				const ray& ray, size_t depth) = 0;
-		protected:
-			virtual sampler_group prepare_samplers();
-			
-			const size_t mMaxDepth = 5;
-		private:
-			std::shared_ptr<sampler2d> mCameraSampler;
+			virtual void render(
+				const std::shared_ptr<camera>& camera,
+				const std::shared_ptr<scene>& scene) = 0;
 		};
-		
+
+		spectrum uniform_sample_one_light(
+			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+			const surface_interaction& interaction,
+			const scattering_function_collection& functions);
+
+		spectrum estimate_lighting(
+			const std::shared_ptr<scene>& scene,
+			const std::shared_ptr<light>& light,
+			const sampler_group& samplers,
+			const surface_interaction& interaction,
+			const scattering_function_collection& functions);
 	}
 }

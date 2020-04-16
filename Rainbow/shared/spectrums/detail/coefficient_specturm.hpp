@@ -30,6 +30,19 @@ namespace rainbow {
 		}
 
 		template <size_t NumSpectrumSamples>
+		real coefficient_spectrum<NumSpectrumSamples>::max_component() const noexcept
+		{
+			if (NumSpectrumSamples == 0) return 0;
+
+			auto max_value = coefficient[0];
+
+			for (size_t index = 1; index < NumSpectrumSamples; index++)
+				max_value = math::max(max_value, coefficient[index]);
+
+			return max_value;
+		}
+
+		template <size_t NumSpectrumSamples>
 		typename coefficient_spectrum<NumSpectrumSamples>::type& coefficient_spectrum<NumSpectrumSamples>::operator+=(
 			const coefficient_spectrum<NumSpectrumSamples>& right) noexcept
 		{

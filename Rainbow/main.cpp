@@ -1,4 +1,5 @@
 #include "integrators/whitted_integrator.hpp"
+#include "integrators/path_integrator.hpp"
 #include "cameras/perspective_camera.hpp"
 #include "textures/constant_texture.hpp"
 #include "materials/plastic_material.hpp"
@@ -88,9 +89,17 @@ int main() {
 		spectrum(400)
 		));
 
-	const auto integrator = std::make_shared<integrators::whitted_integrator>(
-		std::make_shared<random_sampler2d>(4),
+	
+	/*const auto integrator = std::make_shared<integrators::whitted_integrator>(
+		std::make_shared<random_sampler2d>(64),
 		std::make_shared<random_sampler2d>(0),
+		5
+		);*/
+	
+	const auto integrator = std::make_shared<integrators::path_integrator>(
+		std::make_shared<random_sampler2d>(16),
+		std::make_shared<random_sampler2d>(0),
+		std::make_shared<random_sampler1d>(0),
 		5
 		);
 

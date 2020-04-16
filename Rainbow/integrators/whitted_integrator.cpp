@@ -27,7 +27,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 
 	// when the scattering functions is empty, we can think it is a invisible shape
 	// we will continue spawn a ray without changing the direction
-	if (scattering_functions.size() == 0)
+	if (scattering_functions.count() == 0)
 		return trace(scene, debug, samplers, interaction->spawn_ray(ray.direction), depth);
 
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
@@ -59,9 +59,9 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	return L;
 }
 
-rainbow::integrators::sampler_group rainbow::integrators::whitted_integrator::prepare_samplers()
+rainbow::integrators::sampler_group rainbow::integrators::whitted_integrator::prepare_samplers(uint64 seed)
 {
-	return sampler_group(nullptr, mSampler->clone());
+	return sampler_group(nullptr, mSampler->clone(seed));
 }
 
 rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(

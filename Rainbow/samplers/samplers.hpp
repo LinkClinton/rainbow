@@ -18,13 +18,15 @@ namespace rainbow {
 		public:
 			using sample_type = math::vector_t<Dimension, real>;
 		public:
-			explicit sampler_t(const uint64 samples);
+			explicit sampler_t(uint64 samples);
+			
+			explicit sampler_t(uint64 samples, uint64 seed);
 
 			sample_type sample(const size_t index) const;
 
 			size_t count() const noexcept;
 
-			virtual std::shared_ptr<sampler_t<Dimension>> clone() const;
+			virtual std::shared_ptr<sampler_t<Dimension>> clone(uint64 seed) const;
 			
 			virtual sample_type next_sample();
 

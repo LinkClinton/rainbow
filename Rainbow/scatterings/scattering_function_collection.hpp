@@ -43,7 +43,9 @@ namespace rainbow {
 
 			real pdf(const vector3& wo, const vector3& wi, const scattering_type& include = scattering_type::all) const;
 
-			size_t size() const noexcept;
+			size_t count(const scattering_type& include) const noexcept;
+			
+			size_t count() const noexcept;
 		private:
 			std::vector<std::shared_ptr<scattering_function>> match(const scattering_type& include) const noexcept;
 		private:

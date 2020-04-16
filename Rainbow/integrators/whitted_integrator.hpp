@@ -1,6 +1,6 @@
 #pragma once
 
-#include "integrator.hpp"
+#include "sampler_integrator.hpp"
 
 namespace rainbow {
 
@@ -22,7 +22,7 @@ namespace rainbow {
 				const ray& ray, 
 				size_t depth) override;
 		protected:
-			sampler_group prepare_samplers() override;
+			sampler_group prepare_samplers(uint64 seed) override;
 		private:
 			spectrum specular_reflect(
 				const std::shared_ptr<scene>& scene, 

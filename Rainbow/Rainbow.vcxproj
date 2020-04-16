@@ -160,6 +160,8 @@
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
     <ClCompile Include="integrators\integrator.cpp" />
+    <ClCompile Include="integrators\path_integrator.cpp" />
+    <ClCompile Include="integrators\sampler_integrator.cpp" />
     <ClCompile Include="integrators\whitted_integrator.cpp" />
     <ClCompile Include="lights\light.cpp" />
     <ClCompile Include="lights\point_light.cpp" />
@@ -204,6 +206,8 @@
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
     <ClInclude Include="integrators\integrator.hpp" />
+    <ClInclude Include="integrators\path_integrator.hpp" />
+    <ClInclude Include="integrators\sampler_integrator.hpp" />
     <ClInclude Include="integrators\whitted_integrator.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="lights\light.hpp" />

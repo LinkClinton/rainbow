@@ -1,9 +1,5 @@
 #include "integrator.hpp"
 
-#define __PARALLEL_RENDER__
-
-#include <execution>
-
 rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel) :
 	pixel(pixel)
 {
@@ -16,103 +12,52 @@ rainbow::integrators::sampler_group::sampler_group(
 {
 }
 
-rainbow::integrators::sampler_integrator::sampler_integrator(
-	const std::shared_ptr<sampler2d>& camera_sampler, size_t max_depth) :
-	mMaxDepth(max_depth), mCameraSampler(camera_sampler)
+
+
+rainbow::spectrum rainbow::integrators::uniform_sample_one_light(
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const surface_interaction& interaction,
+	const scattering_function_collection& functions)
 {
+	// when there are no lights in scene, we only return 0
+	if (scene->lights().size() == 0) return 0;
+
+	const auto& lights = scene->lights();
+	
+	const auto which = std::min(
+		static_cast<size_t>(std::floor(samplers.sampler1d->next_sample().x * lights.size())),
+		lights.size() - 1);
+	const auto pdf = static_cast<real>(1) / lights.size();
+
+	return estimate_lighting(scene, lights[which], samplers, interaction, functions) / pdf;
 }
 
-void rainbow::integrators::sampler_integrator::render(
-	const std::shared_ptr<camera>& camera,
-	const std::shared_ptr<scene>& scene)
+rainbow::spectrum rainbow::integrators::estimate_lighting(
+	const std::shared_ptr<scene>& scene,
+	const std::shared_ptr<light>& light, 
+	const sampler_group& samplers, 
+	const surface_interaction& interaction,
+	const scattering_function_collection& functions)
 {
-	const auto film = camera->film();
-	const auto bound = film->pixels_bound();
+	spectrum L = 0;
 
-#ifdef __PARALLEL_RENDER__
+	const auto light_sample = light->sample(interaction.point, samplers.sampler2d->next_sample());
+
+	if (light_sample.irradiance.is_black() || light_sample.pdf == 0) return L;
+
+	const auto wi = world_to_local(interaction.shading_space, light_sample.wi);
+	const auto wo = world_to_local(interaction.shading_space, interaction.wo);
+	const auto type = scattering_type::all ^ scattering_type::specular;
 	
-	struct parallel_input {
-		vector2 position;
-
-		size_t index;
-	};
-
-	struct parallel_output {
-		spectrum value;
-	};
-
-	const auto bound_size = vector2i(
-		bound.max.x - bound.min.x,
-		bound.max.y - bound.min.y);
-
-	const auto sample_count =
-		static_cast<size_t>(bound_size.x) *
-		static_cast<size_t>(bound_size.y) *
-		mCameraSampler->count();
+	const auto functions_value = functions.evaluate(wo, wi, type);
 	
-	auto outputs = std::vector<parallel_output>(sample_count);
-	auto inputs = std::vector<parallel_input>(sample_count);
+	if (!functions_value.is_black()) {
+		const auto shadow_ray = interaction.spawn_ray_to(light_sample.position);
 
-	// loop all pixels that we will render to build samples
-	// the samples we will use std::for_each to get the value of sample parallel
-	for (size_t y = bound.min.y; y < bound.max.y; y++) {
-		for (size_t x = bound.min.x; x < bound.max.x; x++) {
-			mCameraSampler->reset();
-
-			// loop all samples in one pixel
-			for (size_t index = 0; index < mCameraSampler->count(); index++) {
-				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
-				const auto sample_index = ((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * mCameraSampler->count() + index;
-
-				inputs[sample_index] = {
-					sample,
-					sample_index
-				};
-			}
-		}
-	}
-
-	// trace the ray with samples, the prepare_samplers() should be independent per sample
-	// all samples in samplers should build before rendering
-	std::for_each(std::execution::par, inputs.begin(), inputs.end(), [&](const parallel_input& input)
-		{
-			const auto debug = integrator_debug_info(
-				vector2i(input.position.x, input.position.y)
-			);
+		if (scene->intersect_with_shadow_ray(shadow_ray).has_value()) return L;
 		
-			outputs[input.index] = {
-				trace(scene, debug, prepare_samplers(), camera->generate_ray(input.position), 0)
-			};
-		});
-
-	// merge the samples into film
-	for (size_t index = 0; index < sample_count; index++) 
-		film->add_sample(inputs[index].position, outputs[index].value);
-	
-#else
-
-	for (size_t y = bound.min.y; y < bound.max.y; y++) {
-		for (size_t x = bound.min.x; x < bound.max.x; x++) {
-			mCameraSampler->reset();
-			
-			// loop all samples in one pixel
-			for (size_t index = 0; index < mCameraSampler->count(); index++) {
-				const auto debug = integrator_debug_info(
-					vector2i(x, y)
-				);
-
-				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
-				const auto spectrum = trace(scene, debug, prepare_samplers(), camera->generate_ray(sample), 0);
-				
-				film->add_sample(sample, spectrum);
-			}
-		}
+		L += functions_value * light_sample.irradiance * abs(dot(light_sample.wi, interaction.normal)) / light_sample.pdf;
 	}
 	
-#endif
-}
-
-rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers()
-{
-	return {};
+	return L;
 }
