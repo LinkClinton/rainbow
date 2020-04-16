@@ -10,6 +10,15 @@ rainbow::ray rainbow::interactions::interaction::spawn_ray(const vector3& direct
 	return ray(direction, offset_ray_origin(*this, direction));
 }
 
+rainbow::ray rainbow::interactions::interaction::spawn_ray_to(const vector3& point) const noexcept
+{
+	const auto ray = spawn_ray(normalize(point - this->point));
+
+	ray.length = length(point - this->point);
+
+	return ray;
+}
+
 rainbow::vector3 rainbow::interactions::offset_ray_origin(const interaction& interaction, const vector3& direction)
 {
 	// to avoid the ray intersect the surface that old ray intersect, we need offset the origin of the ray

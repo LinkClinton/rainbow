@@ -129,6 +129,12 @@ rainbow::scatterings::scattering_type rainbow::scatterings::operator&(const scat
 	return static_cast<scattering_type>(static_cast<uint32>(left) & static_cast<uint32>(right));
 }
 
+rainbow::scatterings::scattering_type rainbow::scatterings::operator^(const scattering_type& left,
+	const scattering_type& right)
+{
+	return static_cast<scattering_type>(static_cast<uint32>(left) ^ static_cast<uint32>(right));
+}
+
 bool rainbow::scatterings::match(const scattering_type& target, const scattering_type& flag)
 {
 	return (target & flag) == flag;

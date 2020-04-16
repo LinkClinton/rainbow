@@ -17,8 +17,8 @@ using namespace rainbow;
 vector2 resolution(1280 / 2, 720 / 2);
 
 int main() {
-	//const auto crop_window_min = vector2(0.3f);
-	//const auto crop_window_max = vector2(0.5f);
+	//const auto crop_window_min = vector2(0.0f, 0.f);
+	//const auto crop_window_max = vector2(0.5f, 1.f);
 	
 	const auto crop_window_min = vector2(0.0f, 0.0f);
 	const auto crop_window_max = vector2(1.0f, 1.0f);
@@ -46,7 +46,7 @@ int main() {
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.0f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.5f)),
 				std::make_shared<constant_texture2d<real>>(1.f / 1.5f)
 				),
 			translate(vector3(-11, 0, 10)),

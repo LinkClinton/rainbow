@@ -10,6 +10,7 @@ rainbow::lights::light_sample rainbow::lights::point_light::sample(const vector3
 {
 	return light_sample(
 		mIrradiance / distance_squared(mPosition, point),
+		mPosition,
 		normalize(mPosition - point),
 		1
 	);

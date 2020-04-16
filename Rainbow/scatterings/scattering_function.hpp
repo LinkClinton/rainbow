@@ -73,6 +73,7 @@ namespace rainbow {
 
 		scattering_type operator|(const scattering_type& left, const scattering_type& right);
 		scattering_type operator&(const scattering_type& left, const scattering_type& right);
+		scattering_type operator^(const scattering_type& left, const scattering_type& right);
 		
 		bool match(const scattering_type& target, const scattering_type& flag);
 

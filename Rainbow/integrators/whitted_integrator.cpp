@@ -36,16 +36,12 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 		const auto light_sample = light->sample(interaction->point, samplers.sampler2d->next_sample());
 		
 		if (light_sample.irradiance.is_black() || light_sample.pdf == 0) continue;
-
-		if (debug.pixel == vector2i(287, 132) && depth == 1) {
-			int x = 2;
-		}
 		
 		// notice : the value of specular functions is zero
 		const auto wi = world_to_local(interaction->shading_space, light_sample.wi);
 		const auto function_value = scattering_functions.evaluate(wo, wi);
-		const auto shadow_ray = interaction->spawn_ray(light_sample.wi);
-
+		const auto shadow_ray = interaction->spawn_ray_to(light_sample.position);
+	
 		// spawn a shadow ray to test the light is visible
 		if (scene->intersect_with_shadow_ray(shadow_ray).has_value())
 			continue;

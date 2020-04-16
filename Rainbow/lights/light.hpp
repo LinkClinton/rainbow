@@ -19,12 +19,13 @@ namespace rainbow {
 
 		struct light_sample {
 			spectrum irradiance = 0;
+			vector3 position = vector3(0);
 			vector3 wi = vector3(0);
 			real pdf = 0;
 
 			light_sample() = default;
 
-			light_sample(const spectrum& irradiance, const vector3& wi, real pdf);
+			light_sample(const spectrum& irradiance, const vector3& position, const vector3& wi, real pdf);
 		};
 
 		class light : public interfaces::noncopyable {
