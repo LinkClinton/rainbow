@@ -159,6 +159,7 @@
     <ClCompile Include="cameras\perspective_camera.cpp" />
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
+    <ClCompile Include="filters\gaussian_filter.cpp" />
     <ClCompile Include="integrators\integrator.cpp" />
     <ClCompile Include="integrators\path_integrator.cpp" />
     <ClCompile Include="integrators\sampler_integrator.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="cameras\perspective_camera.hpp" />
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
+    <ClInclude Include="filters\gaussian_filter.hpp" />
     <ClInclude Include="integrators\integrator.hpp" />
     <ClInclude Include="integrators\path_integrator.hpp" />
     <ClInclude Include="integrators\sampler_integrator.hpp" />

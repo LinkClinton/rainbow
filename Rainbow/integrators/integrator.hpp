@@ -61,5 +61,7 @@ namespace rainbow {
 			const sampler_group& samplers,
 			const surface_interaction& interaction,
 			const scattering_function_collection& functions);
+
+		real power_heuristic(real f_pdf, real g_pdf);
 	}
 }

@@ -72,3 +72,8 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 	
 	return L;
 }
+
+rainbow::real rainbow::integrators::power_heuristic(real f_pdf, real g_pdf)
+{
+	return (f_pdf * f_pdf) / (f_pdf * f_pdf + g_pdf * g_pdf);
+}

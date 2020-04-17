@@ -131,6 +131,9 @@
     <ClCompile Include="integrators\sampler_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
+    <ClCompile Include="filters\gaussian_filter.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -422,6 +425,9 @@
     </ClInclude>
     <ClInclude Include="samplers\detail\stratified_sampler.hpp">
       <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\gaussian_filter.hpp">
+      <Filter>filters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

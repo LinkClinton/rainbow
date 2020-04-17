@@ -16,7 +16,7 @@ namespace rainbow {
 		
 		explicit random_generator(const uint64 seed);
 
-		real normalize_real();
+		real uniform_real();
 		
 		real real(real min = 0, real max = 1);
 

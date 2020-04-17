@@ -30,7 +30,7 @@ namespace rainbow {
 			typename sampler_t<Dimension>::sample_type sample;
 
 			for (auto index = 0; index < Dimension; index++) 
-				sample[index] = this->mRandomGenerator.normalize_real();
+				sample[index] = this->mRandomGenerator.uniform_real();
 
 			return sample;
 		}

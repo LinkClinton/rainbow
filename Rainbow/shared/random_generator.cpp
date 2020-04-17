@@ -11,7 +11,7 @@ rainbow::random_generator::random_generator(const uint64 seed) : mEngine(static_
 {
 }
 
-rainbow::real rainbow::random_generator::normalize_real() 
+rainbow::real rainbow::random_generator::uniform_real() 
 {
 	return mDistribution(mEngine);
 }

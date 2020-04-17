@@ -39,7 +39,7 @@ namespace rainbow {
 			typename sampler_t<Dimension>::sample_type sample;
 
 			for (auto index = 0; index < Dimension; index++)
-				sample[index] = this->mRandomGenerator.normalize_real();
+				sample[index] = this->mRandomGenerator.uniform_real();
 
 			return sample;
 		}
@@ -58,7 +58,7 @@ namespace rainbow {
 			for (size_t index = 0; index < mSamples.size(); index++) {
 				stratified_sample(mSamples[index]);
 
-				shuffle(mSamples[index]);
+				//shuffle(mSamples[index]);
 			}
 			
 			sampler_t<Dimension>::reset();
@@ -71,7 +71,7 @@ namespace rainbow {
 			const auto one = 1 - std::numeric_limits<real>::epsilon();
 
 			for (size_t index = 0; index < samples.size(); index++) {
-				const auto delta = mRandomGenerator.normalize_real();
+				const auto delta = mRandomGenerator.uniform_real();
 
 				samples[index].x = math::min((index + delta) * inv_samples, one);
 			}
@@ -98,8 +98,8 @@ namespace rainbow {
 			
 			for (size_t y = 0; y < mSamplesPerPixelY; y++) {
 				for (size_t x = 0; x < mSamplesPerPixelX; x++) {
-					const auto delta_x = mRandomGenerator.normalize_real();
-					const auto delta_y = mRandomGenerator.normalize_real();
+					const auto delta_x = mRandomGenerator.uniform_real();
+					const auto delta_y = mRandomGenerator.uniform_real();
 
 					samples[index].x = math::min((x + delta_x) * dx, one);
 					samples[index].y = math::min((y + delta_y) * dy, one);
