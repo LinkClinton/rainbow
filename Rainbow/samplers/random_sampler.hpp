@@ -9,15 +9,13 @@ namespace rainbow {
 		template <size_t Dimension>
 		class random_sampler_t : public sampler_t<Dimension> {
 		public:
-			explicit random_sampler_t(uint64 samples);
+			explicit random_sampler_t(size_t samples_per_pixel);
 			
-			explicit random_sampler_t(uint64 samples, uint64 seed);
+			explicit random_sampler_t(size_t samples_per_pixel, size_t seed);
 
-			std::shared_ptr<sampler_t<Dimension>> clone(uint64 seed) const override;
+			std::shared_ptr<sampler_t<Dimension>> clone(size_t seed) const override;
 
-			typename sampler_t<Dimension>::sample_type next_sample() override;
-			
-			void reset() override;
+			typename sampler_t<Dimension>::sample_type next() override;
 		};
 
 		using random_sampler1d = random_sampler_t<1>;

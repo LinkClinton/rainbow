@@ -9,7 +9,7 @@ namespace rainbow {
 		class sampler_integrator : public integrator {
 		public:
 			explicit sampler_integrator(
-				const std::shared_ptr<sampler2d>& camera_sampler,
+				const std::shared_ptr<sampler2d>& sampler2d,
 				size_t max_depth = 5);
 
 			~sampler_integrator() = default;
@@ -26,9 +26,9 @@ namespace rainbow {
 		protected:
 			virtual sampler_group prepare_samplers(uint64 seed);
 
+			std::shared_ptr<sampler2d> mSampler2D;
+			
 			const size_t mMaxDepth = 5;
-		private:
-			std::shared_ptr<sampler2d> mCameraSampler;
 		};
 
 		

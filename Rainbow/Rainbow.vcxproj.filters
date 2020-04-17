@@ -417,5 +417,11 @@
     <ClInclude Include="integrators\sampler_integrator.hpp">
       <Filter>integrators</Filter>
     </ClInclude>
+    <ClInclude Include="samplers\stratified_sampler.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\stratified_sampler.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

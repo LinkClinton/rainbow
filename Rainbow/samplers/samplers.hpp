@@ -18,25 +18,24 @@ namespace rainbow {
 		public:
 			using sample_type = math::vector_t<Dimension, real>;
 		public:
-			explicit sampler_t(uint64 samples);
+			explicit sampler_t(size_t samples_per_pixel);
 			
-			explicit sampler_t(uint64 samples, uint64 seed);
+			explicit sampler_t(size_t samples_per_pixel, size_t seed);
 
-			sample_type sample(const size_t index) const;
-
-			size_t count() const noexcept;
-
-			virtual std::shared_ptr<sampler_t<Dimension>> clone(uint64 seed) const;
+			size_t samples_per_pixel() const noexcept;
 			
-			virtual sample_type next_sample();
+			virtual std::shared_ptr<sampler_t<Dimension>> clone(size_t seed) const = 0;
+
+			virtual sample_type next() = 0;
+			
+			virtual void next_sample();
 
 			virtual void reset();
 		protected:
-			std::vector<sample_type> mSamples;
-
 			random_generator mRandomGenerator;
-			
+
 			size_t mCurrentSampleIndex;
+			size_t mSamplesPerPixel;
 		};
 
 		using sampler1d = sampler_t<1>;

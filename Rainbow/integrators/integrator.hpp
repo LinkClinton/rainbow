@@ -34,6 +34,8 @@ namespace rainbow {
 				const std::shared_ptr<samplers::sampler1d>& sampler1d,
 				const std::shared_ptr<samplers::sampler2d>& sampler2d);
 
+			void next_sample() const noexcept;
+			
 			void reset() const noexcept;
 		};
 		

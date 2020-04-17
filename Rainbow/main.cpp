@@ -6,6 +6,7 @@
 #include "materials/mirror_material.hpp"
 #include "materials/matte_material.hpp"
 #include "materials/glass_material.hpp"
+#include "samplers/stratified_sampler.hpp"
 #include "samplers/random_sampler.hpp"
 #include "filters/box_filter.hpp"
 #include "lights/point_light.hpp"
@@ -47,7 +48,7 @@ int main() {
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.0001f)),
 				std::make_shared<constant_texture2d<real>>(1.f / 1.5f)
 				),
 			translate(vector3(-11, 0, 10)),
@@ -89,17 +90,20 @@ int main() {
 		spectrum(400)
 		));
 
+
+	const auto samples_per_pixel_x = static_cast<size_t>(8);
+	const auto samples_per_pixel_y = static_cast<size_t>(8);
+	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
+	const auto dimension = 16;
 	
 	/*const auto integrator = std::make_shared<integrators::whitted_integrator>(
-		std::make_shared<random_sampler2d>(64),
-		std::make_shared<random_sampler2d>(0),
+		std::make_shared<random_sampler2d>(samples_per_pixel),
 		5
 		);*/
 	
 	const auto integrator = std::make_shared<integrators::path_integrator>(
-		std::make_shared<random_sampler2d>(32),
-		std::make_shared<random_sampler2d>(0),
-		std::make_shared<random_sampler1d>(0),
+		std::make_shared<stratified_sampler2d>(samples_per_pixel_x, samples_per_pixel_y, dimension),
+		std::make_shared<stratified_sampler1d>(samples_per_pixel_x, samples_per_pixel_y, dimension),
 		5
 		);
 

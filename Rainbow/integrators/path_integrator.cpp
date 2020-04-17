@@ -1,10 +1,9 @@
 #include "path_integrator.hpp"
 
 rainbow::integrators::path_integrator::path_integrator(
-	const std::shared_ptr<sampler2d>& camera_sampler,
 	const std::shared_ptr<sampler2d>& sampler2d, 
 	const std::shared_ptr<sampler1d>& sampler1d, size_t max_depth) :
-	sampler_integrator(camera_sampler, max_depth), mSampler2D(sampler2d), mSampler1D(sampler1d)
+	sampler_integrator(sampler2d, max_depth), mSampler1D(sampler1d)
 {
 }
 
@@ -48,7 +47,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		if (scattering_functions.count(scattering_type::all ^ scattering_type::specular) != 0)
 			L += beta * uniform_sample_one_light(scene, samplers, interaction.value(), scattering_functions);
 
-		const auto scattering_sample = scattering_functions.sample(interaction.value(), samplers.sampler2d->next_sample());
+		const auto scattering_sample = scattering_functions.sample(interaction.value(), samplers.sampler2d->next());
 
 		if (scattering_sample.value.is_black() || scattering_sample.pdf == 0) break;
 
@@ -59,7 +58,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		if (bounces > 3) {
 			const auto q = max(static_cast<real>(0.05), 1 - beta.max_component());
 			
-			if (samplers.sampler1d->next_sample().x < q) break;
+			if (samplers.sampler1d->next().x < q) break;
 
 			beta = beta / (1 - q);
 		}

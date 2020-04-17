@@ -9,7 +9,6 @@ namespace rainbow {
 		class path_integrator final : public sampler_integrator {
 		public:
 			explicit path_integrator(
-				const std::shared_ptr<sampler2d>& camera_sampler,
 				const std::shared_ptr<sampler2d>& sampler2d,
 				const std::shared_ptr<sampler1d>& sampler1d,
 				size_t max_depth = 5);
@@ -25,7 +24,6 @@ namespace rainbow {
 		protected:
 			sampler_group prepare_samplers(uint64 seed) override;
 		private:
-			std::shared_ptr<sampler2d> mSampler2D;
 			std::shared_ptr<sampler1d> mSampler1D;
 		};
 		

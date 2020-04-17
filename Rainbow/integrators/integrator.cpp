@@ -12,6 +12,12 @@ rainbow::integrators::sampler_group::sampler_group(
 {
 }
 
+void rainbow::integrators::sampler_group::next_sample() const noexcept
+{
+	if (sampler1d != nullptr) sampler1d->next_sample();
+	if (sampler2d != nullptr) sampler2d->next_sample();
+}
+
 void rainbow::integrators::sampler_group::reset() const noexcept
 {
 	if (sampler1d != nullptr) sampler1d->reset();
@@ -30,7 +36,7 @@ rainbow::spectrum rainbow::integrators::uniform_sample_one_light(
 	const auto& lights = scene->lights();
 	
 	const auto which = std::min(
-		static_cast<size_t>(std::floor(samplers.sampler1d->next_sample().x * lights.size())),
+		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * lights.size())),
 		lights.size() - 1);
 	const auto pdf = static_cast<real>(1) / lights.size();
 
@@ -46,7 +52,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 {
 	spectrum L = 0;
 
-	const auto light_sample = light->sample(interaction.point, samplers.sampler2d->next_sample());
+	const auto light_sample = light->sample(interaction.point, samplers.sampler2d->next());
 
 	if (light_sample.irradiance.is_black() || light_sample.pdf == 0) return L;
 

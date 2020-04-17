@@ -1,9 +1,8 @@
 #include "whitted_integrator.hpp"
 
-rainbow::integrators::whitted_integrator::whitted_integrator(
-	const std::shared_ptr<sampler2d>& camera_sampler, 
-	const std::shared_ptr<sampler2d>& sampler, size_t max_depth) :
-	sampler_integrator(camera_sampler, max_depth), mSampler(sampler)
+rainbow::integrators::whitted_integrator::whitted_integrator( 
+	const std::shared_ptr<sampler2d>& sampler2d, size_t max_depth) :
+	sampler_integrator(sampler2d, max_depth)
 {
 }
 
@@ -33,7 +32,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
 	for (const auto& light : scene->lights()) {
-		const auto light_sample = light->sample(interaction->point, samplers.sampler2d->next_sample());
+		const auto light_sample = light->sample(interaction->point, samplers.sampler2d->next());
 		
 		if (light_sample.irradiance.is_black() || light_sample.pdf == 0) continue;
 		
@@ -59,11 +58,6 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	return L;
 }
 
-rainbow::integrators::sampler_group rainbow::integrators::whitted_integrator::prepare_samplers(uint64 seed)
-{
-	return sampler_group(nullptr, mSampler->clone(seed));
-}
-
 rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
 	const std::shared_ptr<scene>& scene,
 	const integrator_debug_info& debug,
@@ -72,7 +66,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
 	const scattering_function_collection& functions, size_t depth)
 {	
 	const auto scattering_sample = functions.sample(
-		interaction, samplers.sampler2d->next_sample(),
+		interaction, samplers.sampler2d->next(),
 		scattering_type::reflection | scattering_type::specular);
 
 	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));
@@ -94,7 +88,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
 	const scattering_function_collection& functions, size_t depth)
 {
 	const auto scattering_sample = functions.sample(
-		interaction, samplers.sampler2d->next_sample(),
+		interaction, samplers.sampler2d->next(),
 		scattering_type::transmission | scattering_type::specular);
 
 	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));

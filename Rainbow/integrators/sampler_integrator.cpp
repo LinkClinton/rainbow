@@ -5,8 +5,8 @@
 #include <execution>
 
 rainbow::integrators::sampler_integrator::sampler_integrator(
-	const std::shared_ptr<sampler2d>& camera_sampler, size_t max_depth) :
-	mMaxDepth(max_depth), mCameraSampler(camera_sampler)
+	const std::shared_ptr<sampler2d>& sampler2d, size_t max_depth) :
+	mSampler2D(sampler2d), mMaxDepth(max_depth)
 {
 }
 
@@ -29,16 +29,16 @@ void rainbow::integrators::sampler_integrator::render(
 	const auto sample_count =
 		static_cast<size_t>(bound_size.x) *
 		static_cast<size_t>(bound_size.y) *
-		mCameraSampler->count();
+		mSampler2D->samples_per_pixel();
 
 	struct parallel_input {
-		vector2i position;
+		vector2i position = vector2i(0);
 
 		bound2i tile;
 	};
 
 	struct parallel_output {
-		vector2 position;
+		vector2 position = vector2(0);
 
 		spectrum value;
 	};
@@ -68,23 +68,23 @@ void rainbow::integrators::sampler_integrator::render(
 	const auto execution_policy = std::execution::seq;
 #endif
 
+	const auto samples_per_pixel = mSampler2D->samples_per_pixel();
+	
 	std::for_each(execution_policy, inputs.begin(), inputs.end(), [&](const parallel_input& input)
 		{
 			const auto seed = input.position.y * tile_count.x + input.position.x;
 
-			const auto camera_sampler = mCameraSampler->clone(seed);
 			const auto trace_samplers = prepare_samplers(seed);
 
 			for (size_t y = input.tile.min.y; y < input.tile.max.y; y++) {
 				for (size_t x = input.tile.min.x; x < input.tile.max.x; x++) {
-					camera_sampler->reset();
 					trace_samplers.reset();
 
-					for (size_t index = 0; index < camera_sampler->count(); index++) {
+					for (size_t index = 0; index < samples_per_pixel; index++) {
 						const auto position = vector2i(x, y);
-						const auto sample = vector2(x, y) + camera_sampler->sample(index);
+						const auto sample = vector2(x, y) + trace_samplers.sampler2d->next();
 						const auto sample_index =
-							((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * camera_sampler->count() + index;
+							((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * samples_per_pixel + index;
 
 						const auto debug = integrator_debug_info(position);
 
@@ -92,6 +92,8 @@ void rainbow::integrators::sampler_integrator::render(
 							sample,
 							trace(scene, debug, trace_samplers, camera->generate_ray(sample), 0)
 						};
+
+						trace_samplers.next_sample();
 					}
 				}
 			}
@@ -103,6 +105,8 @@ void rainbow::integrators::sampler_integrator::render(
 
 rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers(uint64 seed)
 {
-	return {};
+	return sampler_group(
+		nullptr, mSampler2D->clone(seed)
+	);
 }
 

@@ -18,7 +18,9 @@ namespace rainbow {
 
 		real normalize_real();
 		
-		real real(const real min = 0, const real max = 1);
+		real real(real min = 0, real max = 1);
+
+		uint32 uint32(uint32 min, uint32 max);
 	private:
 		std::default_random_engine mEngine;
 		

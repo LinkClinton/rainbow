@@ -219,8 +219,10 @@
     <ClInclude Include="materials\plastic_material.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
+    <ClInclude Include="samplers\detail\stratified_sampler.hpp" />
     <ClInclude Include="samplers\random_sampler.hpp" />
     <ClInclude Include="samplers\samplers.hpp" />
+    <ClInclude Include="samplers\stratified_sampler.hpp" />
     <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp" />
     <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />

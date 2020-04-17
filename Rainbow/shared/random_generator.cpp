@@ -16,9 +16,16 @@ rainbow::real rainbow::random_generator::normalize_real()
 	return mDistribution(mEngine);
 }
 
-rainbow::real rainbow::random_generator::real(const rainbow::real min, const rainbow::real max) 
+rainbow::real rainbow::random_generator::real(rainbow::real min, rainbow::real max) 
 {
 	const auto distribution = std::uniform_real_distribution<rainbow::real>(min, max);
+
+	return distribution(mEngine);
+}
+
+rainbow::uint32 rainbow::random_generator::uint32(rainbow::uint32 min, rainbow::uint32 max)
+{
+	const auto distribution = std::uniform_int_distribution<rainbow::uint32>(min, max);
 
 	return distribution(mEngine);
 }
