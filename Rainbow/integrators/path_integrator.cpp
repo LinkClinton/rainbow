@@ -19,7 +19,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 
 	// ray is the current ray in current bounces
 	auto ray = first_ray;
-	
+
 	for (auto bounces = depth; bounces < mMaxDepth; bounces++) {
 		const auto interaction = scene->intersect(ray);
 
@@ -41,7 +41,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 
 			continue;
 		}
-
+		
 		// we will sample the lights to compute the path contribution
 		// when the functions do not have any functions without specular we do not sample it
 		// because the f(wo, wi) of specular functions is 0, the result must be 0.
@@ -55,6 +55,14 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		beta = beta * scattering_sample.value * abs(dot(scattering_sample.wi, interaction->normal)) / scattering_sample.pdf;
 
 		ray = interaction->spawn_ray(scattering_sample.wi);
+
+		if (bounces > 3) {
+			const auto q = max(static_cast<real>(0.05), 1 - beta.max_component());
+			
+			if (samplers.sampler1d->next_sample().x < q) break;
+
+			beta = beta / (1 - q);
+		}
 	}
 
 	return L;

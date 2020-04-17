@@ -26,11 +26,12 @@ rainbow::spectrum rainbow::scatterings::microfacet_transmission::evaluate(const 
 	const auto fresnel = mFresnel->evaluate(dot(wo, wh));
 	const auto denominator = dot(wo, wh) + eta * dot(wi, wh);
 
+	const auto factor = (1 / eta);
 	const auto distribution = mDistribution->distribution(wh);
 	const auto masking_shadowing = mDistribution->masking_shadowing(wo, wi);
 	
 	return (spectrum(1) - fresnel) * mTransmission * abs(
-		distribution * masking_shadowing * eta * eta * abs(dot(wi, wh)) * abs(dot(wo, wh)) /
+		distribution * masking_shadowing * eta * eta * abs(dot(wi, wh)) * abs(dot(wo, wh) * factor * factor) /
 		(cos_theta_i * cos_theta_o * denominator * denominator));
 }
 

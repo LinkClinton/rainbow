@@ -31,7 +31,8 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::specular_transmiss
 	// if entering == true, the cos_theta(wi) should less than 0, so the eta_i and eta_o will be swapped in fresnel
 	// if entering == false, the cos_theta(wi) should greater than 0
 	const auto fresnel = mFresnel->evaluate(cos_theta(wi));
-	const auto value = mTransmission * (spectrum(1) - fresnel) / abs(cos_theta(wi));
+	const auto factor = (eta_i * eta_i) / (eta_o * eta_o);
+	const auto value = mTransmission * (spectrum(1) - fresnel) * factor / abs(cos_theta(wi));
 	
 	return scattering_sample(
 		mType,

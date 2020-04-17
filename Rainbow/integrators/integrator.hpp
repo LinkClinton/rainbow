@@ -33,6 +33,8 @@ namespace rainbow {
 			sampler_group(
 				const std::shared_ptr<samplers::sampler1d>& sampler1d,
 				const std::shared_ptr<samplers::sampler2d>& sampler2d);
+
+			void reset() const noexcept;
 		};
 		
 		class integrator : public interfaces::noncopyable {

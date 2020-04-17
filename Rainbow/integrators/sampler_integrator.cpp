@@ -17,86 +17,88 @@ void rainbow::integrators::sampler_integrator::render(
 	const auto film = camera->film();
 	const auto bound = film->pixels_bound();
 
-#ifdef __PARALLEL_RENDER__
-
-	struct parallel_input {
-		vector2 position;
-
-		size_t index;
-	};
-
-	struct parallel_output {
-		spectrum value;
-	};
-
 	const auto bound_size = vector2i(
 		bound.max.x - bound.min.x,
 		bound.max.y - bound.min.y);
+
+	const auto tile_size = static_cast<size_t>(16);
+	const auto tile_count = vector2i(
+		(bound_size.x + tile_size - 1) / tile_size,
+		(bound_size.y + tile_size - 1) / tile_size);
 
 	const auto sample_count =
 		static_cast<size_t>(bound_size.x) *
 		static_cast<size_t>(bound_size.y) *
 		mCameraSampler->count();
 
+	struct parallel_input {
+		vector2i position;
+
+		bound2i tile;
+	};
+
+	struct parallel_output {
+		vector2 position;
+
+		spectrum value;
+	};
+
 	auto outputs = std::vector<parallel_output>(sample_count);
-	auto inputs = std::vector<parallel_input>(sample_count);
+	auto inputs = std::vector<parallel_input>();
 
-	// loop all pixels that we will render to build samples
-	// the samples we will use std::for_each to get the value of sample parallel
-	for (size_t y = bound.min.y; y < bound.max.y; y++) {
-		for (size_t x = bound.min.x; x < bound.max.x; x++) {
-			mCameraSampler->reset();
+	for (size_t y = bound.min.y; y < bound.max.y; y += tile_size) {
+		for (size_t x = bound.min.x; x < bound.max.x; x += tile_size) {
+			const auto min_range = vector2i(x, y);
+			const auto max_range = vector2i(
+				min(static_cast<int>(x + tile_size), bound.max.x),
+				min(static_cast<int>(y + tile_size), bound.max.y)
+			);
 
-			// loop all samples in one pixel
-			for (size_t index = 0; index < mCameraSampler->count(); index++) {
-				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
-				const auto sample_index = ((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * mCameraSampler->count() + index;
+			const auto position = vector2i(
+				(x - bound.min.x) / bound_size.x,
+				(y - bound.min.y) / bound_size.y);
 
-				inputs[sample_index] = {
-					sample,
-					sample_index
-				};
-			}
+			inputs.push_back({ position, bound2i(min_range, max_range) });
 		}
 	}
 
-	// trace the ray with samples, the prepare_samplers() should be independent per sample
-	// all samples in samplers should build before rendering
-	std::for_each(std::execution::par, inputs.begin(), inputs.end(), [&](const parallel_input& input)
-		{
-			const auto position = vector2i(input.position.x, input.position.y);
-			const auto debug = integrator_debug_info(position);
+#ifdef __PARALLEL_RENDER__
+	const auto execution_policy = std::execution::par;
+#else
+	const auto execution_policy = std::execution::seq;
+#endif
 
-			outputs[input.index] = {
-				trace(scene, debug, prepare_samplers(input.index), camera->generate_ray(input.position), 0)
-			};
+	std::for_each(execution_policy, inputs.begin(), inputs.end(), [&](const parallel_input& input)
+		{
+			const auto seed = input.position.y * tile_count.x + input.position.x;
+
+			const auto camera_sampler = mCameraSampler->clone(seed);
+			const auto trace_samplers = prepare_samplers(seed);
+
+			for (size_t y = input.tile.min.y; y < input.tile.max.y; y++) {
+				for (size_t x = input.tile.min.x; x < input.tile.max.x; x++) {
+					camera_sampler->reset();
+					trace_samplers.reset();
+
+					for (size_t index = 0; index < camera_sampler->count(); index++) {
+						const auto position = vector2i(x, y);
+						const auto sample = vector2(x, y) + camera_sampler->sample(index);
+						const auto sample_index =
+							((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * camera_sampler->count() + index;
+
+						const auto debug = integrator_debug_info(position);
+
+						outputs[sample_index] = {
+							sample,
+							trace(scene, debug, trace_samplers, camera->generate_ray(sample), 0)
+						};
+					}
+				}
+			}
 		});
 
-	// merge the samples into film
 	for (size_t index = 0; index < sample_count; index++)
-		film->add_sample(inputs[index].position, outputs[index].value);
-
-#else
-
-	for (size_t y = bound.min.y; y < bound.max.y; y++) {
-		for (size_t x = bound.min.x; x < bound.max.x; x++) {
-			mCameraSampler->reset();
-
-			// loop all samples in one pixel
-			for (size_t index = 0; index < mCameraSampler->count(); index++) {
-				const auto debug = integrator_debug_info(
-					vector2i(x, y)
-				);
-
-				const auto sample = vector2(x, y) + mCameraSampler->sample(index);
-				const auto spectrum = trace(scene, debug, prepare_samplers(), camera->generate_ray(sample), 0);
-
-				film->add_sample(sample, spectrum);
-			}
-		}
-	}
-
-#endif
+		film->add_sample(outputs[index].position, outputs[index].value);
 }
 
 rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers(uint64 seed)

@@ -12,6 +12,11 @@ rainbow::integrators::sampler_group::sampler_group(
 {
 }
 
+void rainbow::integrators::sampler_group::reset() const noexcept
+{
+	if (sampler1d != nullptr) sampler1d->reset();
+	if (sampler2d != nullptr) sampler2d->reset();
+}
 
 
 rainbow::spectrum rainbow::integrators::uniform_sample_one_light(
