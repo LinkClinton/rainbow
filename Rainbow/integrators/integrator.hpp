@@ -18,10 +18,11 @@ namespace rainbow {
 
 		struct integrator_debug_info {
 			vector2i pixel = vector2i(0);
+			size_t sample = 0;
 
 			integrator_debug_info() = default;
 
-			integrator_debug_info(const vector2i& pixel);
+			integrator_debug_info(const vector2i& pixel, size_t sample);
 		};
 
 		struct sampler_group {

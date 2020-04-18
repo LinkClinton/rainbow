@@ -58,7 +58,7 @@ namespace rainbow {
 			for (size_t index = 0; index < mSamples.size(); index++) {
 				stratified_sample(mSamples[index]);
 
-				//shuffle(mSamples[index]);
+				shuffle(mSamples[index]);
 			}
 			
 			sampler_t<Dimension>::reset();

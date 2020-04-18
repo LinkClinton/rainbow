@@ -30,6 +30,15 @@ namespace rainbow {
 		}
 
 		template <size_t NumSpectrumSamples>
+		bool coefficient_spectrum<NumSpectrumSamples>::has_nan() const noexcept
+		{
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				if (isnan(coefficient[index])) return true;
+
+			return false;
+		}
+
+		template <size_t NumSpectrumSamples>
 		real coefficient_spectrum<NumSpectrumSamples>::max_component() const noexcept
 		{
 			if (NumSpectrumSamples == 0) return 0;

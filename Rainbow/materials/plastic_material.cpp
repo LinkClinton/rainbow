@@ -26,9 +26,9 @@ rainbow::scattering_function_collection rainbow::materials::plastic_material::bu
 
 	if (!specular.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
+			trowbridge_reitz_distribution::roughness_to_alpha(roughness), 
 			trowbridge_reitz_distribution::roughness_to_alpha(roughness),
-			trowbridge_reitz_distribution::roughness_to_alpha(roughness),
-			false);
+			true);
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1.5), static_cast<real>(1));
 
 		functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular));

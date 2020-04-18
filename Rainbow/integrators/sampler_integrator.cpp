@@ -86,7 +86,7 @@ void rainbow::integrators::sampler_integrator::render(
 						const auto sample_index =
 							((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * samples_per_pixel + index;
 
-						const auto debug = integrator_debug_info(position);
+						const auto debug = integrator_debug_info(position, index);
 
 						outputs[sample_index] = {
 							sample,

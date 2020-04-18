@@ -22,7 +22,7 @@ vector2 resolution(1280 / 2, 720 / 2);
 int main() {
 	//const auto crop_window_min = vector2(0.3f, 0.3f);
 	//const auto crop_window_max = vector2(0.45f, 0.45f);
-	
+
 	const auto crop_window_min = vector2(0.0f, 0.0f);
 	const auto crop_window_max = vector2(1.0f, 1.0f);
 	
@@ -44,18 +44,18 @@ int main() {
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	/*scene->add_shape(
+	scene->add_shape(
 		std::make_shared<sphere>(
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.0001f)),
-				std::make_shared<constant_texture2d<real>>(1.f / 1.4f)
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
+				std::make_shared<constant_texture2d<real>>(1.5f)
 				),
 			translate(vector3(-11, 0, 10)),
 			10.f
 			)
-	);*/
+	);
 
 	scene->add_shape(
 		std::make_shared<sphere>(
@@ -81,18 +81,18 @@ int main() {
 			)
 	);
 
-	scene->add_shape(
+	/*scene->add_shape(
 		std::make_shared<disk>(
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.000f)),
-				std::make_shared<constant_texture2d<real>>(1.f)
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
+				std::make_shared<constant_texture2d<real>>(1.3f)
 				),
 			translate(vector3(0, 0, 15.f)),
-			40.f
+			100.f
 			)
-	);
+	);*/
 	
 	scene->add_light(std::make_shared<point_light>(
 		translate(vector3(0, 0, 35)),
@@ -105,8 +105,8 @@ int main() {
 		));
 
 
-	const auto samples_per_pixel_x = static_cast<size_t>(4);
-	const auto samples_per_pixel_y = static_cast<size_t>(4);
+	const auto samples_per_pixel_x = static_cast<size_t>(8);
+	const auto samples_per_pixel_y = static_cast<size_t>(8);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
 	const auto dimension = 16;
 	

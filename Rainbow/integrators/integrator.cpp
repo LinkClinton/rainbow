@@ -1,7 +1,7 @@
 #include "integrator.hpp"
 
-rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel) :
-	pixel(pixel)
+rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel, size_t sample) :
+	pixel(pixel), sample(sample)
 {
 }
 

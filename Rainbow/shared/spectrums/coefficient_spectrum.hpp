@@ -23,6 +23,8 @@ namespace rainbow {
 
 			bool is_black() const noexcept;
 
+			bool has_nan() const noexcept;
+			
 			real max_component() const noexcept;
 			
 			type& operator+=(const coefficient_spectrum<NumSpectrumSamples>& right) noexcept;

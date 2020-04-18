@@ -35,7 +35,7 @@ rainbow::scattering_function_collection rainbow::materials::glass_material::buil
 		is_specular ? nullptr : std::make_shared<trowbridge_reitz_distribution>(
 			trowbridge_reitz_distribution::roughness_to_alpha(roughness.x),
 			trowbridge_reitz_distribution::roughness_to_alpha(roughness.y),
-			false
+			true
 			);
 	
 	if (!reflectance.is_black()) {
