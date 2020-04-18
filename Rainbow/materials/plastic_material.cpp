@@ -7,10 +7,12 @@
 rainbow::materials::plastic_material::plastic_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& specular,
 	const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
-	const std::shared_ptr<textures::texture2d<real>>& roughness) :
-	mSpecular(specular), mDiffuse(diffuse), mRoughness(roughness)
+	const std::shared_ptr<textures::texture2d<real>>& roughness,
+	bool map_roughness_to_alpha) :
+	mSpecular(specular), mDiffuse(diffuse), mRoughness(roughness), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
+
 
 rainbow::scattering_function_collection rainbow::materials::plastic_material::build_scattering_functions(
 	const surface_interaction& interaction) const noexcept
@@ -26,8 +28,8 @@ rainbow::scattering_function_collection rainbow::materials::plastic_material::bu
 
 	if (!specular.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
-			trowbridge_reitz_distribution::roughness_to_alpha(roughness), 
-			trowbridge_reitz_distribution::roughness_to_alpha(roughness),
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness, 
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness,
 			true);
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1.5), static_cast<real>(1));
 

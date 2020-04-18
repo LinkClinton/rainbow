@@ -32,18 +32,16 @@ void rainbow::integrators::sampler_integrator::render(
 		mSampler2D->samples_per_pixel();
 
 	struct parallel_input {
-		vector2i position = vector2i(0);
+		size_t tile_index;
 
 		bound2i tile;
 	};
 
 	struct parallel_output {
-		vector2 position = vector2(0);
-
-		spectrum value;
+		film_tile tile;
 	};
 
-	auto outputs = std::vector<parallel_output>(sample_count);
+	auto outputs = std::vector<parallel_output>();
 	auto inputs = std::vector<parallel_input>();
 
 	for (size_t y = bound.min.y; y < bound.max.y; y += tile_size) {
@@ -54,11 +52,10 @@ void rainbow::integrators::sampler_integrator::render(
 				min(static_cast<int>(y + tile_size), bound.max.y)
 			);
 
-			const auto position = vector2i(
-				(x - bound.min.x) / bound_size.x,
-				(y - bound.min.y) / bound_size.y);
-
-			inputs.push_back({ position, bound2i(min_range, max_range) });
+			const auto sample_bound = bound2i(min_range, max_range);
+			
+			inputs.push_back({ inputs.size(), sample_bound });
+			outputs.push_back({ film_tile(sample_bound, film) });
 		}
 	}
 
@@ -72,7 +69,7 @@ void rainbow::integrators::sampler_integrator::render(
 	
 	std::for_each(execution_policy, inputs.begin(), inputs.end(), [&](const parallel_input& input)
 		{
-			const auto seed = input.position.y * tile_count.x + input.position.x;
+			const auto seed = input.tile_index;
 
 			const auto trace_samplers = prepare_samplers(seed);
 
@@ -88,10 +85,10 @@ void rainbow::integrators::sampler_integrator::render(
 
 						const auto debug = integrator_debug_info(position, index);
 
-						outputs[sample_index] = {
+						outputs[input.tile_index].tile.add_sample(
 							sample,
 							trace(scene, debug, trace_samplers, camera->generate_ray(sample), 0)
-						};
+						);
 
 						trace_samplers.next_sample();
 					}
@@ -99,8 +96,8 @@ void rainbow::integrators::sampler_integrator::render(
 			}
 		});
 
-	for (size_t index = 0; index < sample_count; index++)
-		film->add_sample(outputs[index].position, outputs[index].value);
+	for (size_t index = 0; index < outputs.size(); index++)
+		film->add_tile(outputs[index].tile);
 }
 
 rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers(uint64 seed)

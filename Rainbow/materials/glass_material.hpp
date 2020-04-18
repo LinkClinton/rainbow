@@ -14,7 +14,8 @@ namespace rainbow {
 				const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 				const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
 				const std::shared_ptr<textures::texture2d<vector2>>& roughness,
-				const std::shared_ptr<textures::texture2d<real>>& eta);
+				const std::shared_ptr<textures::texture2d<real>>& eta,
+				bool map_roughness_to_alpha = false);
 
 			~glass_material() = default;
 
@@ -25,6 +26,8 @@ namespace rainbow {
 			std::shared_ptr<textures::texture2d<spectrum>> mTransmission;
 			std::shared_ptr<textures::texture2d<vector2>> mRoughness;
 			std::shared_ptr<textures::texture2d<real>> mEta;
+
+			bool mMapRoughnessToAlpha;
 		};
 		
 	}

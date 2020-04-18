@@ -49,7 +49,7 @@ int main() {
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
 				std::make_shared<constant_texture2d<real>>(1.5f)
 				),
 			translate(vector3(-11, 0, 10)),

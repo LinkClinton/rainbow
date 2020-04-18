@@ -12,8 +12,9 @@ rainbow::materials::glass_material::glass_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 	const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
 	const std::shared_ptr<textures::texture2d<vector2>>& roughness,
-	const std::shared_ptr<textures::texture2d<real>>& eta) :
-	mReflectance(reflectance), mTransmission(transmission), mRoughness(roughness), mEta(eta)
+	const std::shared_ptr<textures::texture2d<real>>& eta,
+	bool map_roughness_to_alpha) :
+	mReflectance(reflectance), mTransmission(transmission), mRoughness(roughness), mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
 
@@ -33,8 +34,8 @@ rainbow::scattering_function_collection rainbow::materials::glass_material::buil
 
 	std::shared_ptr<microfacet_distribution> distribution =
 		is_specular ? nullptr : std::make_shared<trowbridge_reitz_distribution>(
-			trowbridge_reitz_distribution::roughness_to_alpha(roughness.x),
-			trowbridge_reitz_distribution::roughness_to_alpha(roughness.y),
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.x) : roughness.x,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.y) : roughness.y,
 			true
 			);
 	

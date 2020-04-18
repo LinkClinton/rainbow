@@ -32,6 +32,67 @@ rainbow::cameras::pixel::pixel(const spectrums::spectrum& spectrum, const real w
 	
 }
 
+rainbow::cameras::film_tile::film_tile(const bound2i& sample_region, const std::shared_ptr<film>& film) :
+	sample_region(sample_region), filter(film->filter())
+{
+	const auto pixel_bound = film->pixels_bound();
+	const auto filter_radius = filter->radius();
+	
+	filter_region.min = vector2i(
+		std::ceil(sample_region.min.x - 0.5 - filter_radius.x),
+		std::ceil(sample_region.min.y - 0.5 - filter_radius.y)
+	);
+
+	filter_region.max = vector2i(
+		std::floor(sample_region.max.x - 0.5 + filter_radius.x) + 1,
+		std::floor(sample_region.max.y - 0.5 + filter_radius.y) + 1
+	);
+
+	filter_region.min = max(filter_region.min, pixel_bound.min);
+	filter_region.max = min(filter_region.max, pixel_bound.max);
+	
+	pixels = std::vector<pixel>(
+		(static_cast<size_t>(filter_region.max.x) - filter_region.min.x) * 
+		(static_cast<size_t>(filter_region.max.y) - filter_region.min.y));
+}
+
+void rainbow::cameras::film_tile::add_sample(const vector2& position, const spectrum& sample) noexcept
+{
+	// a sample can contribute some pixels that in a rectangle region with filter's radius.
+	// so we need find the rectangle to get the pixels
+	// and we will use the filter to compute the spectrum and weight of pixels.
+	const auto discrete_position = position - vector2(0.5, 0.5);
+	const auto filter_radius = filter->radius();
+	
+	auto sample_bound = bound2i(
+		static_cast<vector2i>(ceil(discrete_position - filter_radius.x)),
+		static_cast<vector2i>(floor(discrete_position + filter_radius.y)) + vector2i(1, 1)
+	);
+
+	// the sample bound should in the bound of pixels
+	sample_bound.min = max(sample_bound.min, filter_region.min);
+	sample_bound.max = min(sample_bound.max, filter_region.max);
+
+	const auto filter_region_size = vector2i(
+		filter_region.max.x - filter_region.min.x,
+		filter_region.max.y - filter_region.min.y
+	);
+	
+	// compute the sum of spectrum and the filter weight
+	// formula : sum of (f(x - xi, y - yi) * w(xi, yi) * L(xi, yi)) / sum of (f(x - xi, y - yi))
+	// f is the value of filter function, w is the weight of sample(in this version, it is 1)
+	for (auto y = sample_bound.min.y; y < sample_bound.max.y; y++) {
+		for (auto x = sample_bound.min.x; x < sample_bound.max.x; x++) {
+			const auto filter_value = filter->evaluate(
+				vector2(x - discrete_position.x, y - discrete_position.y));
+
+			const auto pixel_index = (y - filter_region.min.y) * filter_region_size.x + (x - filter_region.min.x);
+			
+			pixels[pixel_index].add_sample(sample * filter_value, filter_value);
+		}
+	}
+}
+
 rainbow::cameras::film::film(
 	const std::shared_ptr<filters::filter>& filter, 
 	const vector2i& resolution,
@@ -124,6 +185,24 @@ void rainbow::cameras::film::add_sample(const vector2& position, const spectrum&
 	}
 }
 
+void rainbow::cameras::film::add_tile(const film_tile& tile)
+{
+	const auto filter_region_size = vector2i(
+		tile.filter_region.max.x - tile.filter_region.min.x,
+		tile.filter_region.max.y - tile.filter_region.min.y
+	);
+	
+	for (auto y = tile.filter_region.min.y; y < tile.filter_region.max.y; y++) {
+		for (auto x = tile.filter_region.min.x; x < tile.filter_region.max.x; x++) {
+			const auto tile_pixel_index = 
+				(y - tile.filter_region.min.y) * filter_region_size.x + (x - tile.filter_region.min.x);
+			const auto& tile_pixel = tile.pixels[tile_pixel_index];
+			
+			mPixels[pixel_index(vector2i(x, y))].add_sample(tile_pixel.spectrum_sum, tile_pixel.filter_weight);
+		}
+	}
+}
+
 rainbow::vector2i rainbow::cameras::film::resolution() const noexcept
 {
 	return mResolution;
@@ -132,6 +211,11 @@ rainbow::vector2i rainbow::cameras::film::resolution() const noexcept
 rainbow::bound2i rainbow::cameras::film::pixels_bound() const noexcept
 {
 	return mPixelsBound;
+}
+
+std::shared_ptr<rainbow::filter> rainbow::cameras::film::filter() const noexcept
+{
+	return mFilter;
 }
 
 rainbow::int32 rainbow::cameras::film::pixel_index(const vector2i& position) const noexcept

@@ -81,7 +81,7 @@ namespace rainbow {
 		void stratified_sampler_t<Dimension>::shuffle(samples& samples)
 		{
 			for (size_t index = 0; index < samples.size(); index++) {
-				const auto other = index + this->mRandomGenerator.uint32(0, static_cast<uint32>(samples.size() - index));
+				const auto other = index + this->mRandomGenerator.uint32(0, static_cast<uint32>(samples.size() - index - 1));
 
 				std::swap(samples[index], samples[other]);
 			}
