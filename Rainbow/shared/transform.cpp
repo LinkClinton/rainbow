@@ -21,7 +21,7 @@ rainbow::transform rainbow::transform::operator*(const transform& right) const
 {
 	return transform(
 		mTransform * right.mTransform,
-		right.mInverseTransform * mTransform
+		right.mInverseTransform * mInverseTransform
 	);
 }
 
@@ -69,7 +69,7 @@ rainbow::transform rainbow::rotate(const float angle, const vector3& axis)
 {
 	const auto matrix = math::rotate(angle, axis);
 
-	return transform(matrix, math::transpose(matrix));
+	return transform(matrix, math::inverse(matrix));
 }
 
 rainbow::transform rainbow::scale(const vector3& vec)

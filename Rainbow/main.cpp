@@ -20,8 +20,8 @@ using namespace rainbow;
 vector2 resolution(1280 / 2, 720 / 2);
 
 int main() {
-	//const auto crop_window_min = vector2(0.3f, 0.3f);
-	//const auto crop_window_max = vector2(0.45f, 0.45f);
+	//const auto crop_window_min = vector2(0.3f);
+	//const auto crop_window_max = vector2(0.7f);
 
 	const auto crop_window_min = vector2(0.0f, 0.0f);
 	const auto crop_window_max = vector2(1.0f, 1.0f);
@@ -34,7 +34,7 @@ int main() {
 	
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -30, 30)) * rotate(45.f, vector3(1, 0, 0)),
+		translate(vector3(0, -4.0f, 1.5f)) * rotate(90.f, vector3(1, 0, 0)),
 		bound2(
 			vector2(-resolution.x * 0.5f, -resolution.y * 0.5f),
 			vector2(+resolution.x * 0.5f, +resolution.y * 0.5f)
@@ -49,11 +49,11 @@ int main() {
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.1f)),
 				std::make_shared<constant_texture2d<real>>(1.5f)
 				),
-			translate(vector3(-11, 0, 10)),
-			10.f
+			translate(vector3(-1.1f, 0, 1.0f)),
+			1.f
 			)
 	);
 
@@ -64,8 +64,8 @@ int main() {
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
 				std::make_shared<constant_texture2d<real>>(0.04f)
 				),
-			translate(vector3(11, 0, 10)),
-			10.f
+			translate(vector3(1.1f, 0, 1.0f)),
+			1.f
 			)
 	);
 	
@@ -77,38 +77,36 @@ int main() {
 				std::make_shared<constant_texture2d<real>>(0.3f)
 				),
 			translate(vector3(0, 0, 0.f)),
-			40.f
+			500.f
 			)
 	);
 
-	/*scene->add_shape(
+	scene->add_shape(
 		std::make_shared<disk>(
-			std::make_shared<glass_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.f)),
+			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
-				std::make_shared<constant_texture2d<real>>(1.3f)
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<real>>(0.4f)
 				),
-			translate(vector3(0, 0, 15.f)),
+			translate(vector3(0, 1, 0)) * rotate(-90.f, vector3(1, 0, 0)),
 			100.f
 			)
-	);*/
-	
+	);
+
 	scene->add_light(std::make_shared<point_light>(
-		translate(vector3(0, 0, 35)),
-		spectrum(400)
+		translate(vector3(0, 0, 5.0)),
+		spectrum(4)
 		));
 
 	scene->add_light(std::make_shared<point_light>(
-		translate(vector3(0, -30, 60)),
-		spectrum(400)
+		translate(vector3(0, -3.0, 5.0)),
+		spectrum(4)
 		));
 
-
-	const auto samples_per_pixel_x = static_cast<size_t>(8);
-	const auto samples_per_pixel_y = static_cast<size_t>(8);
+	const auto samples_per_pixel_x = static_cast<size_t>(4);
+	const auto samples_per_pixel_y = static_cast<size_t>(4);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
-	const auto dimension = 16;
+	const auto dimension = 8;
 	
 	/*const auto integrator = std::make_shared<integrators::whitted_integrator>(
 		std::make_shared<random_sampler2d>(samples_per_pixel),
