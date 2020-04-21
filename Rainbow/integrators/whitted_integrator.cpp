@@ -31,22 +31,22 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
-	for (const auto& light : scene->lights()) {
-		const auto light_sample = light->sample(interaction->point, samplers.sampler2d->next());
+	for (const auto& emitter : scene->emitters()) {
+		const auto emitter_sample = emitter->sample(interaction->point, samplers.sampler2d->next());
 		
-		if (light_sample.irradiance.is_black() || light_sample.pdf == 0) continue;
+		if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) continue;
 		
 		// notice : the value of specular functions is zero
-		const auto wi = world_to_local(interaction->shading_space, light_sample.wi);
+		const auto wi = world_to_local(interaction->shading_space, emitter_sample.wi);
 		const auto function_value = scattering_functions.evaluate(wo, wi);
-		const auto shadow_ray = interaction->spawn_ray_to(light_sample.position);
+		const auto shadow_ray = interaction->spawn_ray_to(emitter_sample.position);
 	
-		// spawn a shadow ray to test the light is visible
+		// spawn a shadow ray to test the emitter is visible
 		if (scene->intersect_with_shadow_ray(shadow_ray).has_value())
 			continue;
 
 		if (!function_value.is_black()) 
-			L += function_value * light_sample.irradiance * abs(dot(light_sample.wi, interaction->normal)) / light_sample.pdf;
+			L += function_value * emitter_sample.irradiance * abs(dot(emitter_sample.wi, interaction->normal)) / emitter_sample.pdf;
 	}
 
 	// trace the rays with specular

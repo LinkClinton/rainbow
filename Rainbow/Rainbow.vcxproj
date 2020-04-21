@@ -157,6 +157,8 @@
     <ClCompile Include="cameras\camera.cpp" />
     <ClCompile Include="cameras\film.cpp" />
     <ClCompile Include="cameras\perspective_camera.cpp" />
+    <ClCompile Include="emitters\emitter.cpp" />
+    <ClCompile Include="emitters\point_light.cpp" />
     <ClCompile Include="filters\box_filter.cpp" />
     <ClCompile Include="filters\filters.cpp" />
     <ClCompile Include="filters\gaussian_filter.cpp" />
@@ -164,8 +166,6 @@
     <ClCompile Include="integrators\path_integrator.cpp" />
     <ClCompile Include="integrators\sampler_integrator.cpp" />
     <ClCompile Include="integrators\whitted_integrator.cpp" />
-    <ClCompile Include="lights\light.cpp" />
-    <ClCompile Include="lights\point_light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
@@ -204,6 +204,8 @@
     <ClInclude Include="cameras\camera.hpp" />
     <ClInclude Include="cameras\film.hpp" />
     <ClInclude Include="cameras\perspective_camera.hpp" />
+    <ClInclude Include="emitters\emitter.hpp" />
+    <ClInclude Include="emitters\point_light.hpp" />
     <ClInclude Include="filters\box_filter.hpp" />
     <ClInclude Include="filters\filters.hpp" />
     <ClInclude Include="filters\gaussian_filter.hpp" />
@@ -212,8 +214,6 @@
     <ClInclude Include="integrators\sampler_integrator.hpp" />
     <ClInclude Include="integrators\whitted_integrator.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
-    <ClInclude Include="lights\light.hpp" />
-    <ClInclude Include="lights\point_light.hpp" />
     <ClInclude Include="materials\glass_material.hpp" />
     <ClInclude Include="materials\material.hpp" />
     <ClInclude Include="materials\matte_material.hpp" />

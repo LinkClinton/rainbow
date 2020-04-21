@@ -5,9 +5,9 @@ void rainbow::scenes::scene::add_shape(const std::shared_ptr<shape>& shape)
 	mShapes.push_back(shape);
 }
 
-void rainbow::scenes::scene::add_light(const std::shared_ptr<light>& light)
+void rainbow::scenes::scene::add_emitter(const std::shared_ptr<emitter>& emitter)
 {
-	mLights.push_back(light);
+	mEmitters.push_back(emitter);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(const ray& ray) const
@@ -28,13 +28,12 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect_wi
 	return intersect(ray);
 }
 
+const std::vector<std::shared_ptr<rainbow::emitter>>& rainbow::scenes::scene::emitters() const noexcept
+{
+	return mEmitters;
+}
+
 const std::vector<std::shared_ptr<rainbow::shape>>& rainbow::scenes::scene::shapes() const noexcept
 {
 	return mShapes;
 }
-
-const std::vector<std::shared_ptr<rainbow::light>>& rainbow::scenes::scene::lights() const noexcept
-{
-	return mLights;
-}
-

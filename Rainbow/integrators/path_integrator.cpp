@@ -41,11 +41,11 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 			continue;
 		}
 		
-		// we will sample the lights to compute the path contribution
+		// we will sample the emitters to compute the path contribution
 		// when the functions do not have any functions without specular we do not sample it
 		// because the f(wo, wi) of specular functions is 0, the result must be 0.
 		if (scattering_functions.count(scattering_type::all ^ scattering_type::specular) != 0)
-			L += beta * uniform_sample_one_light(scene, samplers, interaction.value(), scattering_functions);
+			L += beta * uniform_sample_one_emitter(scene, samplers, interaction.value(), scattering_functions);
 
 		const auto scattering_sample = scattering_functions.sample(interaction.value(), samplers.sampler2d->next());
 

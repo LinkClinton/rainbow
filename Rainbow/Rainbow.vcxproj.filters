@@ -50,17 +50,11 @@
     <ClCompile Include="shared\coordinate_system.cpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="lights\light.cpp">
-      <Filter>lights</Filter>
-    </ClCompile>
     <ClCompile Include="scenes\scene.cpp">
       <Filter>scenes</Filter>
     </ClCompile>
     <ClCompile Include="integrators\integrator.cpp">
       <Filter>integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="lights\point_light.cpp">
-      <Filter>lights</Filter>
     </ClCompile>
     <ClCompile Include="shared\sample_function.cpp">
       <Filter>shared</Filter>
@@ -134,6 +128,12 @@
     <ClCompile Include="filters\gaussian_filter.cpp">
       <Filter>filters</Filter>
     </ClCompile>
+    <ClCompile Include="emitters\emitter.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\point_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -184,9 +184,6 @@
     <Filter Include="materials">
       <UniqueIdentifier>{44899b26-6080-4285-84fb-9d9b6b3bf68a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lights">
-      <UniqueIdentifier>{94850188-323c-4859-a899-b01d1fc04ccd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="scenes">
       <UniqueIdentifier>{5202a928-f33d-4d56-88cf-6eb7347b9c27}</UniqueIdentifier>
     </Filter>
@@ -201,6 +198,9 @@
     </Filter>
     <Filter Include="scatterings\distribution">
       <UniqueIdentifier>{13981f17-0247-4870-849d-718d028469a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="emitters">
+      <UniqueIdentifier>{94850188-323c-4859-a899-b01d1fc04ccd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -336,17 +336,11 @@
     <ClInclude Include="shared\coordinate_system.hpp">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="lights\light.hpp">
-      <Filter>lights</Filter>
-    </ClInclude>
     <ClInclude Include="scenes\scene.hpp">
       <Filter>scenes</Filter>
     </ClInclude>
     <ClInclude Include="integrators\integrator.hpp">
       <Filter>integrators</Filter>
-    </ClInclude>
-    <ClInclude Include="lights\point_light.hpp">
-      <Filter>lights</Filter>
     </ClInclude>
     <ClInclude Include="shared\sample_function.hpp">
       <Filter>shared</Filter>
@@ -428,6 +422,12 @@
     </ClInclude>
     <ClInclude Include="filters\gaussian_filter.hpp">
       <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\emitter.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\point_light.hpp">
+      <Filter>emitters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

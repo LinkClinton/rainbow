@@ -11,38 +11,38 @@ namespace rainbow {
 	using namespace spectrums;
 	using namespace math;
 	
-	namespace lights {
+	namespace emitters {
 
-		enum class light_type : uint32 {
+		enum class emitter_type : uint32 {
 			delta_position = 1 << 0
 		};
 
-		struct light_sample {
+		struct emitter_sample {
 			spectrum irradiance = 0;
 			vector3 position = vector3(0);
 			vector3 wi = vector3(0);
 			real pdf = 0;
 
-			light_sample() = default;
+			emitter_sample() = default;
 
-			light_sample(const spectrum& irradiance, const vector3& position, const vector3& wi, real pdf);
+			emitter_sample(const spectrum& irradiance, const vector3& position, const vector3& wi, real pdf);
 		};
 
-		class light : public interfaces::noncopyable {
+		class emitter : public interfaces::noncopyable {
 		public:
-			explicit light(const transform& transform, const light_type& type);
+			explicit emitter(const transform& transform, const emitter_type& type);
 
-			virtual light_sample sample(const vector3& point, const vector2& sample) = 0;
+			virtual emitter_sample sample(const vector3& point, const vector2& sample) = 0;
 
 			virtual real pdf(const vector3& point, const vector3& wi) = 0;
 
 			virtual spectrum power() = 0;
 			
-			light_type type() const noexcept;
+			emitter_type type() const noexcept;
 		protected:
-			transform mLightToWorld, mWorldToLight;
+			transform mEmitterToWorld, mWorldToEmitter;
 
-			light_type mType;
+			emitter_type mType;
 		};
 		
 	}

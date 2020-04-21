@@ -51,14 +51,14 @@ namespace rainbow {
 				const std::shared_ptr<scene>& scene) = 0;
 		};
 
-		spectrum uniform_sample_one_light(
+		spectrum uniform_sample_one_emitter(
 			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 			const surface_interaction& interaction,
 			const scattering_function_collection& functions);
 
 		spectrum estimate_lighting(
+			const std::shared_ptr<emitter>& emitter,
 			const std::shared_ptr<scene>& scene,
-			const std::shared_ptr<light>& light,
 			const sampler_group& samplers,
 			const surface_interaction& interaction,
 			const scattering_function_collection& functions);

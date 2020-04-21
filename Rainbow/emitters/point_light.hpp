@@ -1,16 +1,16 @@
 #pragma once
 
-#include "light.hpp"
+#include "emitter.hpp"
 
 namespace rainbow {
 
-	namespace lights {
+	namespace emitters {
 
-		class point_light : public light {
+		class point_light : public emitter {
 		public:
 			explicit point_light(const transform& transform, const spectrum& irradiance);
 
-			light_sample sample(const vector3& point, const vector2& sample) override;
+			emitter_sample sample(const vector3& point, const vector2& sample) override;
 
 			real pdf(const vector3& point, const vector3& wi) override;
 			

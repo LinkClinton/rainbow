@@ -10,7 +10,7 @@
 #include "samplers/random_sampler.hpp"
 #include "filters/gaussian_filter.hpp"
 #include "filters/box_filter.hpp"
-#include "lights/point_light.hpp"
+#include "emitters/point_light.hpp"
 #include "shapes/sphere.hpp"
 #include "shapes/disk.hpp"
 #include "scenes/scene.hpp"
@@ -44,13 +44,25 @@ int main() {
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	scene->add_shape(
+	/*scene->add_shape(
 		std::make_shared<sphere>(
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.1f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.f)),
 				std::make_shared<constant_texture2d<real>>(1.5f)
+				),
+			translate(vector3(-1.1f, 0, 1.0f)),
+			1.f
+			)
+	);*/
+	
+	scene->add_shape(
+		std::make_shared<sphere>(
+			std::make_shared<plastic_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
+				std::make_shared<constant_texture2d<real>>(0.04f)
 				),
 			translate(vector3(-1.1f, 0, 1.0f)),
 			1.f
@@ -93,12 +105,12 @@ int main() {
 			)
 	);
 
-	scene->add_light(std::make_shared<point_light>(
+	scene->add_emitter(std::make_shared<point_light>(
 		translate(vector3(0, 0, 5.0)),
 		spectrum(4)
 		));
 
-	scene->add_light(std::make_shared<point_light>(
+	scene->add_emitter(std::make_shared<point_light>(
 		translate(vector3(0, -3.0, 5.0)),
 		spectrum(4)
 		));
