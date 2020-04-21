@@ -5,6 +5,23 @@ rainbow::coordinate_system::coordinate_system() :
 {
 }
 
+rainbow::coordinate_system::coordinate_system(const vector3& normal)
+{
+	auto& x = axes[0];
+	auto& y = axes[1];
+	auto& z = axes[2];
+
+	z = normalize(normal);
+
+	// select the greater component as x-axis
+	if (abs(z.x) > abs(z.y))
+		x = vector3(-z.z, 0, z.x) / sqrt(z.x * z.x + z.z * z.z);
+	else
+		x = vector3(0, z.z, -z.y) / sqrt(z.y * z.y + z.z * z.z);
+
+	y = math::cross(z, x);
+}
+
 rainbow::coordinate_system::coordinate_system(const std::array<vector3, 3>& axes) : axes(axes)
 {
 	for (auto& axis : this->axes) axis = normalize(axis);

@@ -2,19 +2,22 @@
 
 #include "../interfaces/noncopyable.hpp"
 
+#include "../shared/interactions/interaction.hpp"
 #include "../shared/spectrums/spectrum.hpp"
 #include "../shared/math/math.hpp"
 #include "../shared/transform.hpp"
 
 namespace rainbow {
 
+	using namespace interactions;
 	using namespace spectrums;
 	using namespace math;
 	
 	namespace emitters {
 
 		enum class emitter_type : uint32 {
-			delta_position = 1 << 0
+			delta_position = 1 << 0,
+			surface = 1 << 2,
 		};
 
 		struct emitter_sample {
@@ -32,9 +35,9 @@ namespace rainbow {
 		public:
 			explicit emitter(const transform& transform, const emitter_type& type);
 
-			virtual emitter_sample sample(const vector3& point, const vector2& sample) = 0;
+			virtual emitter_sample sample(const interaction& reference, const vector2& sample) = 0;
 
-			virtual real pdf(const vector3& point, const vector3& wi) = 0;
+			virtual real pdf(const interaction& reference, const vector3& wi) = 0;
 
 			virtual spectrum power() = 0;
 			

@@ -33,9 +33,21 @@ namespace rainbow {
 		}
 
 		template <size_t L, typename T>
+		T distance(const vector_t<L, T>& v0, const vector_t<L, T>& v1)
+		{
+			return glm::distance(v0, v1);
+		}
+
+		template <size_t L, typename T>
 		T distance_squared(const vector_t<L, T>& v0, const vector_t<L, T>& v1)
 		{
 			return dot(v0 - v1, v0 - v1);
+		}
+
+		template <size_t L, typename T>
+		T length_squared(const vector_t<L, T>& v)
+		{
+			return distance_squared(v, vector_t<L, T>(0));
 		}
 
 		template <size_t L, typename T>

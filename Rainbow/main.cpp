@@ -114,7 +114,7 @@ int main() {
 		translate(vector3(0, -3.0, 5.0)),
 		spectrum(4)
 		));
-
+	
 	const auto samples_per_pixel_x = static_cast<size_t>(4);
 	const auto samples_per_pixel_y = static_cast<size_t>(4);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;

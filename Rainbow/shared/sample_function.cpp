@@ -43,6 +43,17 @@ rainbow::vector2 rainbow::concentric_sample_disk(const vector2& sample)
 	return r * vector2(cos(theta), sin(theta));
 }
 
+rainbow::vector3 rainbow::uniform_sample_sphere(const vector2& sample)
+{
+	// remapped the sample.x in to [-1, 1] as the z of point
+	const auto z = 1 - 2 * sample.x;
+
+	// compute the length of radius projected into x-y plane
+	const auto r = sqrt(max(static_cast<real>(0), 1 - z * z));
+	const auto phi = 2 * two_pi<real>() * sample.y;
+	return vector3(r * cos(phi), r * sin(phi), z);
+}
+
 rainbow::real rainbow::uniform_sample_hemisphere_pdf()
 {
 	return one_over_two_pi<real>();

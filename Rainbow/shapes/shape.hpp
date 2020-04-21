@@ -17,6 +17,17 @@ namespace rainbow {
 	
 	namespace shapes {
 
+		struct shape_sample {
+			interaction interaction;
+			real pdf = 0;
+
+			shape_sample() = default;
+
+			shape_sample(
+				const interactions::interaction& interaction,
+				real pdf);
+		};
+		
 		class shape : public interfaces::noncopyable, public std::enable_shared_from_this<shape> {
 		public:
 			explicit shape(
@@ -28,8 +39,18 @@ namespace rainbow {
 			transform transform() const;
 
 			std::shared_ptr<material> material() const noexcept;
-			
+
 			virtual std::optional<surface_interaction> intersect(const ray& ray) = 0;
+
+			virtual shape_sample sample(const interaction& reference, const vector2& sample) const = 0;
+
+			virtual shape_sample sample(const vector2& sample) const = 0;
+			
+			virtual real pdf(const interaction& reference, const vector3& wi) const = 0;
+
+			virtual real pdf() const = 0;
+
+			virtual real area() const noexcept = 0;
 		protected:
 			std::shared_ptr<materials::material> mMaterial;
 			

@@ -134,6 +134,9 @@
     <ClCompile Include="emitters\point_light.cpp">
       <Filter>emitters</Filter>
     </ClCompile>
+    <ClCompile Include="emitters\surface_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -427,6 +430,9 @@
       <Filter>emitters</Filter>
     </ClInclude>
     <ClInclude Include="emitters\point_light.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\surface_light.hpp">
       <Filter>emitters</Filter>
     </ClInclude>
   </ItemGroup>

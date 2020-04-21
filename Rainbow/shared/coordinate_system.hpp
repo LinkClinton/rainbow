@@ -13,6 +13,8 @@ namespace rainbow {
 
 		coordinate_system();
 
+		coordinate_system(const vector3& normal);
+		
 		coordinate_system(const std::array<vector3, 3>& axes);
 		
 		coordinate_system(const vector3& x, const vector3& y, const vector3& z);

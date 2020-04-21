@@ -1,5 +1,7 @@
 #include "sphere.hpp"
 
+#include "../shared/sample_function.hpp"
+
 rainbow::shapes::sphere::sphere(
 	const std::shared_ptr<materials::material>& material,
 	const rainbow::transform& transform, real radius) :
@@ -7,7 +9,7 @@ rainbow::shapes::sphere::sphere(
 {
 }
 
-std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray)
+std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray) 
 {
 	const auto ray_local = mWorldToLocal(ray);
 	
@@ -68,10 +70,88 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 
 	// in this version, we need set the ray.length to t_hit to avoid the ray intersect the objects far from this
 	ray.length = t_hit;
-	
+
+	// the normal of surface is indicate the internal side of shape
 	return mLocalToWorld(surface_interaction(
 		shared_from_this(),
 		dp_du, dp_dv, point_hit, -ray_local.direction,
 		vector2(u, v)
 	));
+}
+
+rainbow::shape_sample rainbow::sphere::sample(const interaction& reference, const vector2& sample) const
+{
+	const auto center = transform_point(mLocalToWorld, vector3(0));
+
+	// the reference point is in the inside of sphere
+	// we will sample it using the sample function without reference point
+	if (distance_squared(center, reference.point) <= mRadius * mRadius) {
+		auto shape_sample = sphere::sample(sample);
+		auto wi = shape_sample.interaction.point - reference.point;
+
+		if (length_squared(wi) == 0) return {};
+
+		wi = normalize(wi);
+
+		// notice : convert the pdf from area measure to solid angle measure
+		shape_sample.pdf = shape_sample.pdf * 
+			distance_squared(reference.point, shape_sample.interaction.point) /
+			abs(dot(shape_sample.interaction.normal, -wi));
+
+		if (isinf(shape_sample.pdf)) return {};
+
+		return shape_sample;
+	}
+	
+	// the reference point is in the outside of sphere
+	// we will sample a subtended cone to get the point
+
+	const auto distance = math::distance(reference.point, center);
+	const auto inv_distance = 1 / distance;
+
+	// theta_max is the angle between vector (reference.point - center) and vector that tangent with sphere and pass reference.point
+	// we will use the sample.x to sample the theta value in the cone 
+	const auto sin_theta_max = mRadius * inv_distance;
+	const auto sin_theta_max_2 = sin_theta_max * sin_theta_max;
+	const auto inv_sin_theta_max = 1 / sin_theta_max;
+	const auto cos_theta_max = sqrt(max(static_cast<real>(0), 1 - sin_theta_max_2));
+
+	auto cos_theta = (cos_theta_max - 1) * sample.x + 1;
+	auto sin_theta_2 = 1 - cos_theta * cos_theta;
+
+	// sin^2 degree(1.5) = 0.00068523
+	if (sin_theta_max_2 < 0.00068523) {
+		sin_theta_2 = sin_theta_max_2 * sample.x;
+		cos_theta = sqrt(1 - sin_theta_2);
+	}
+
+	
+	
+	
+	// build a coordinate system with z = normalize(reference.point - center)
+	const auto local_system = coordinate_system(reference.point - center);
+	
+}
+
+rainbow::shape_sample rainbow::sphere::sample(const vector2& sample) const
+{
+	const auto point = vector3(0) + mRadius * uniform_sample_sphere(sample);
+
+	return shape_sample(
+		interaction(
+			transform_normal(mLocalToWorld, normalize(point)),
+			transform_point(mLocalToWorld, point),
+			vector3(0)),
+		pdf()
+	);
+}
+
+rainbow::real rainbow::sphere::pdf() const
+{
+	return 1 / area();
+}
+
+rainbow::real rainbow::sphere::area() const noexcept
+{
+	return 4 * mRadius * two_pi<real>();
 }

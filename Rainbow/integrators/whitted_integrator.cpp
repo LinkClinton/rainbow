@@ -32,7 +32,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
 	for (const auto& emitter : scene->emitters()) {
-		const auto emitter_sample = emitter->sample(interaction->point, samplers.sampler2d->next());
+		const auto emitter_sample = emitter->sample(interaction.value(), samplers.sampler2d->next());
 		
 		if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) continue;
 		

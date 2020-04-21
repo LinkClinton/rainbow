@@ -52,7 +52,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 {
 	spectrum L = 0;
 
-	const auto emitter_sample = emitter->sample(interaction.point, samplers.sampler2d->next());
+	const auto emitter_sample = emitter->sample(interaction, samplers.sampler2d->next());
 
 	if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) return L;
 
