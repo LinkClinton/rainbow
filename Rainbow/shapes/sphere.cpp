@@ -116,21 +116,47 @@ rainbow::shape_sample rainbow::sphere::sample(const interaction& reference, cons
 	const auto inv_sin_theta_max = 1 / sin_theta_max;
 	const auto cos_theta_max = sqrt(max(static_cast<real>(0), 1 - sin_theta_max_2));
 
+	// sample cos theta, lerp(cos_theta_max, 1, sample.x) = cos_theta_max * sample.x + (1 - sample.x) * 1
+	// cos_theta_max * sample.x + (1 - sample.x) * 1 = (cos_theta_max - 1) * sample.x + 1
 	auto cos_theta = (cos_theta_max - 1) * sample.x + 1;
 	auto sin_theta_2 = 1 - cos_theta * cos_theta;
 
-	// sin^2 degree(1.5) = 0.00068523
+	// sin^2 degree(1.5) = 0.00068523, so we just test theta < degree(1.5)
 	if (sin_theta_max_2 < 0.00068523) {
 		sin_theta_2 = sin_theta_max_2 * sample.x;
 		cos_theta = sqrt(1 - sin_theta_2);
 	}
 
-	
-	
+	// dc = distance(reference.point, center)
+	// ds = dc * cos_theta - sqrt(r^2 - dc^2 * sin_theta_2)
+	// ds^2 = dc^2 * cos_theta_2 + r^2 - dc^2 * sin_theta_2 - 2 * dc * cos_theta * sqrt(r^2 - dc^2 * sin_theta_2)
+	// sin_theta_max = r / dc, inv_sin_theta_max = dc / r
+	// cos_alpha = (dc^2 + r^2 - ds^2) / (2 * dc * r)
+	// cos_alpha = (dc^2 + r^2 - dc^2 * cos_theta_2 - r^2 + dc^2 * sin_theta_2 + 2 * dc * cos_theta * sqrt(r^2 - dc^2 * sin_theta_2)) / (2 * dc * r)
+	// cos_alpha = (dc^2 * (1 - cos_theta_2 + sin_theta_2) + 2 * dc * cos_theta * sqrt(r^2 - dc^2 * sin_theta_2)) / (2 * dc * r)
+	// cos_alpha = (dc * (1 - cos_theta_2 + sin_theta_2) + 2 * cos_theta * sqrt(r^2 - dc^2 * sin_theta_2)) / (2 * r)
+	// cos_alpha = (dc / r * (1 - cos_theta_2 + sin_theta_2) + 2 * cos_theta * sqrt(1 - (dc / r)^2 * sin_theta_2)) / 2
+	// cos_alpha = (inv_sin_theta_max * (1 - cos_theta_2 + sin_theta_2) / 2 + cos_theta * sqrt(1 - inv_sin_theta_max * inv_sin_theta_max * sin_theta_2))
+	// cos_alpha = (inv_sin_theta_max * (sin_theta_2 + cos_theta_2 - cos_theta_2 + sin_theta_2) / 2 + ...keep unchanged.
+	// cos_alpha = (inv_sin_theta_max * sin_theta_2 + cos_theta * sqrt(1 - inv_sin_theta_max * inv_sin_theta_max * sin_theta_2))
+	// ... wtf 
+	const auto cos_alpha = inv_sin_theta_max * sin_theta_2 + cos_theta * 
+		sqrt(max(static_cast<real>(0), 1 - inv_sin_theta_max * inv_sin_theta_max * sin_theta_2));
+	const auto sin_alpha = sqrt(max(static_cast<real>(0), 1 - cos_alpha * cos_alpha));
+	const auto phi = sample.y * two_pi<real>();
 	
 	// build a coordinate system with z = normalize(reference.point - center)
 	const auto local_system = coordinate_system(reference.point - center);
-	
+
+	// transform the normal from local system to world system
+	// using the spherical direction to find the normal
+	const auto normal = normalize(local_to_world(local_system, spherical_direction(sin_alpha, cos_alpha, phi)));
+	const auto point = center + mRadius * normal;
+
+	return shape_sample(
+		interaction(normal, point, vector3(0)),
+		uniform_sample_cone_pdf(cos_theta_max)
+	);
 }
 
 rainbow::shape_sample rainbow::sphere::sample(const vector2& sample) const
@@ -144,6 +170,19 @@ rainbow::shape_sample rainbow::sphere::sample(const vector2& sample) const
 			vector3(0)),
 		pdf()
 	);
+}
+
+rainbow::real rainbow::sphere::pdf(const interaction& reference, const vector3& wi) const
+{
+	const auto center = transform_point(mLocalToWorld, vector3(0));
+
+	if (distance_squared(center, reference.point) <= mRadius * mRadius)
+		return pdf();
+
+	const auto sin_theta_max_2 = mRadius * mRadius / distance_squared(reference.point, center);
+	const auto cos_theta_max = sqrt(max(static_cast<real>(0), 1 - sin_theta_max_2));
+
+	return uniform_sample_cone_pdf(cos_theta_max);
 }
 
 rainbow::real rainbow::sphere::pdf() const

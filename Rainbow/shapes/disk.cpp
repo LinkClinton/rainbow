@@ -61,3 +61,29 @@ std::optional<rainbow::surface_interaction> rainbow::disk::intersect(const ray& 
 		vector2(u, v)
 	));
 }
+
+rainbow::shape_sample rainbow::disk::sample(const interaction& reference, const vector2& sample) const
+{
+	throw std::exception("not implementation.");
+}
+
+rainbow::shape_sample rainbow::disk::sample(const vector2& sample) const
+{
+	throw std::exception("not implementation.");
+}
+
+rainbow::real rainbow::disk::pdf(const interaction& reference, const vector3& wi) const
+{
+	throw std::exception("not implementation.");
+}
+
+rainbow::real rainbow::disk::pdf() const
+{
+	throw std::exception("not implementation.");
+}
+
+rainbow::real rainbow::disk::area() const noexcept
+{
+	//todo: not implementation
+	return 0;
+}

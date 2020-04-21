@@ -59,6 +59,11 @@ rainbow::real rainbow::uniform_sample_hemisphere_pdf()
 	return one_over_two_pi<real>();
 }
 
+rainbow::real rainbow::uniform_sample_cone_pdf(real cos_theta_max)
+{
+	return 1 / (two_pi<real>() * (1 - cos_theta_max));
+}
+
 rainbow::real rainbow::cosine_sample_hemisphere_pdf(real cos_theta)
 {
 	return cos_theta * one_over_pi<real>();

@@ -16,6 +16,8 @@ namespace rainbow {
 	
 	real uniform_sample_hemisphere_pdf();
 
+	real uniform_sample_cone_pdf(real cos_theta_max);
+	
 	real cosine_sample_hemisphere_pdf(real cos_theta);
 
 }
