@@ -9,7 +9,7 @@ rainbow::shapes::sphere::sphere(
 {
 }
 
-std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray) 
+std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray) const
 {
 	const auto ray_local = mWorldToLocal(ray);
 	

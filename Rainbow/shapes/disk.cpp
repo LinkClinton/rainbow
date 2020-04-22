@@ -1,5 +1,7 @@
 #include "disk.hpp"
 
+#include "../shared/sample_function.hpp"
+
 rainbow::disk::disk(
 	const std::shared_ptr<materials::material>& material, 
 	const rainbow::transform& transform, real radius, real height) :
@@ -7,7 +9,7 @@ rainbow::disk::disk(
 {
 }
 
-std::optional<rainbow::surface_interaction> rainbow::disk::intersect(const ray& ray)
+std::optional<rainbow::surface_interaction> rainbow::disk::intersect(const ray& ray) const
 {
 	const auto ray_local = mWorldToLocal(ray);
 
@@ -62,28 +64,26 @@ std::optional<rainbow::surface_interaction> rainbow::disk::intersect(const ray& 
 	));
 }
 
-rainbow::shape_sample rainbow::disk::sample(const interaction& reference, const vector2& sample) const
-{
-	throw std::exception("not implementation.");
-}
-
 rainbow::shape_sample rainbow::disk::sample(const vector2& sample) const
 {
-	throw std::exception("not implementation.");
-}
+	const auto point_disk = concentric_sample_disk(sample);
+	const auto point = vector3(point_disk.x * mRadius, point_disk.y * mRadius, mHeight);
 
-rainbow::real rainbow::disk::pdf(const interaction& reference, const vector3& wi) const
-{
-	throw std::exception("not implementation.");
+	return shape_sample(
+		interaction(
+			transform_normal(mLocalToWorld, vector3(0, 0, 1)),
+			transform_point(mLocalToWorld, point),
+			vector3(0)),
+		pdf()
+	);
 }
 
 rainbow::real rainbow::disk::pdf() const
 {
-	throw std::exception("not implementation.");
+	return 1 / area();
 }
 
 rainbow::real rainbow::disk::area() const noexcept
 {
-	//todo: not implementation
-	return 0;
+	return two_pi<real>() * mRadius;
 }

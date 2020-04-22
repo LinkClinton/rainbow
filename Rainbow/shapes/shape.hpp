@@ -40,13 +40,13 @@ namespace rainbow {
 
 			std::shared_ptr<material> material() const noexcept;
 
-			virtual std::optional<surface_interaction> intersect(const ray& ray) = 0;
+			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
 
-			virtual shape_sample sample(const interaction& reference, const vector2& sample) const = 0;
+			virtual shape_sample sample(const interaction& reference, const vector2& sample) const;
 
 			virtual shape_sample sample(const vector2& sample) const = 0;
 			
-			virtual real pdf(const interaction& reference, const vector3& wi) const = 0;
+			virtual real pdf(const interaction& reference, const vector3& wi) const;
 
 			virtual real pdf() const = 0;
 

@@ -16,7 +16,7 @@ namespace rainbow {
 
 			~sphere() = default;
 
-			std::optional<surface_interaction> intersect(const ray& ray) override;
+			std::optional<surface_interaction> intersect(const ray& ray) const override;
 
 			shape_sample sample(const interaction& reference, const vector2& sample) const override;
 
