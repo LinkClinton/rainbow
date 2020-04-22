@@ -137,6 +137,9 @@
     <ClCompile Include="emitters\surface_light.cpp">
       <Filter>emitters</Filter>
     </ClCompile>
+    <ClCompile Include="scenes\entity.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -204,6 +207,9 @@
     </Filter>
     <Filter Include="emitters">
       <UniqueIdentifier>{94850188-323c-4859-a899-b01d1fc04ccd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scenes\detail">
+      <UniqueIdentifier>{75a11d51-6995-4669-9361-5c53370eafa9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -434,6 +440,12 @@
     </ClInclude>
     <ClInclude Include="emitters\surface_light.hpp">
       <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\entity.hpp">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\detail\entity.hpp">
+      <Filter>scenes\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

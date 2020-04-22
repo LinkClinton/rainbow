@@ -93,12 +93,21 @@ rainbow::vector3 rainbow::transform_point(const transform& transform, const vect
 	return v / v.w;
 }
 
-rainbow::vector3 rainbow::transform_vector(const transform& transform, const vector3& point)
+rainbow::vector3 rainbow::transform_vector(const transform& transform, const vector3& vector)
 {
-	return transform.matrix() * vector4(point, 0);
+	return transform.matrix() * vector4(vector, 0);
 }
 
 rainbow::vector3 rainbow::transform_normal(const transform& transform, const vector3& normal)
 {
 	return normalize(transpose(transform.inverse_matrix()) * vector4(normal, 0));
+}
+
+rainbow::interaction rainbow::transform_interaction(const transform& transform, const interaction& interaction)
+{
+	return rainbow::interaction(
+		transform_normal(transform, interaction.normal),
+		transform_point(transform, interaction.point),
+		transform_vector(transform, interaction.wo)
+	);
 }

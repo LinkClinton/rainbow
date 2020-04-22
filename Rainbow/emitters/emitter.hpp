@@ -29,6 +29,8 @@ namespace rainbow {
 			emitter_sample() = default;
 
 			emitter_sample(const spectrum& irradiance, const vector3& position, const vector3& wi, real pdf);
+
+			static emitter_sample transform(const transform& transform, const emitter_sample& sample);
 		};
 
 		class emitter : public interfaces::noncopyable {

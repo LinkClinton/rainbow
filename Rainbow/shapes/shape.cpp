@@ -6,6 +6,14 @@ rainbow::shape_sample::shape_sample(const interactions::interaction& interaction
 	
 }
 
+rainbow::shape_sample rainbow::shape_sample::transform(const rainbow::transform& transform, const shape_sample& sample)
+{
+	return shape_sample(
+		transform_interaction(transform, sample.interaction),
+		sample.pdf
+	);
+}
+
 rainbow::shapes::shape::shape(const std::shared_ptr<rainbow::material>& material, const rainbow::transform& transform) :
 	mMaterial(material), mLocalToWorld(transform), mWorldToLocal(transform.inverse())
 {

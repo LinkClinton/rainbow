@@ -10,9 +10,9 @@ namespace rainbow {
 	namespace interactions {
 
 		struct interaction {
-			vector3 normal;
-			vector3 point;
-			vector3 wo;
+			vector3 normal = vector3(0);
+			vector3 point = vector3(0);
+			vector3 wo = vector3(0);
 			
 			interaction() = default;
 

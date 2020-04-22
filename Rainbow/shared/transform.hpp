@@ -43,7 +43,9 @@ namespace rainbow {
 
 	vector3 transform_point(const transform& transform, const vector3& point);
 
-	vector3 transform_vector(const transform& transform, const vector3& point);
+	vector3 transform_vector(const transform& transform, const vector3& vector);
 
 	vector3 transform_normal(const transform& transform, const vector3& normal);
+
+	interaction transform_interaction(const transform& transform, const interaction& interaction);
 }

@@ -26,8 +26,10 @@ namespace rainbow {
 			shape_sample(
 				const interactions::interaction& interaction,
 				real pdf);
+
+			static shape_sample transform(const transform& transform, const shape_sample& sample);
 		};
-		
+
 		class shape : public interfaces::noncopyable, public std::enable_shared_from_this<shape> {
 		public:
 			explicit shape(
