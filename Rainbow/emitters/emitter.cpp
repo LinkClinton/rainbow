@@ -15,10 +15,8 @@ rainbow::emitters::emitter_sample rainbow::emitters::emitter_sample::transform(c
 	);
 }
 
-rainbow::emitters::emitter::emitter(const transform& transform, const emitter_type& type) :
-	mEmitterToWorld(transform), mWorldToEmitter(transform.inverse()), mType(type)
+rainbow::emitters::emitter::emitter(const emitter_type& type) : mType(type)
 {
-	
 }
 
 rainbow::emitters::emitter_type rainbow::emitters::emitter::type() const noexcept

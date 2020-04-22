@@ -1,12 +1,12 @@
 #include "shape.hpp"
 
-rainbow::shape_sample::shape_sample(const interactions::interaction& interaction, real pdf) :
+rainbow::shapes::shape_sample::shape_sample(const interactions::interaction& interaction, real pdf) :
 	interaction(interaction), pdf(pdf)
 {
 	
 }
 
-rainbow::shape_sample rainbow::shape_sample::transform(const rainbow::transform& transform, const shape_sample& sample)
+rainbow::shapes::shape_sample rainbow::shapes::shape_sample::transform(const rainbow::transform& transform, const shape_sample& sample)
 {
 	return shape_sample(
 		transform_interaction(transform, sample.interaction),
@@ -14,23 +14,7 @@ rainbow::shape_sample rainbow::shape_sample::transform(const rainbow::transform&
 	);
 }
 
-rainbow::shapes::shape::shape(const std::shared_ptr<rainbow::material>& material, const rainbow::transform& transform) :
-	mMaterial(material), mLocalToWorld(transform), mWorldToLocal(transform.inverse())
-{
-	
-}
-
-rainbow::transform rainbow::shapes::shape::transform() const
-{
-	return mLocalToWorld;
-}
-
-std::shared_ptr<rainbow::material> rainbow::shapes::shape::material() const noexcept
-{
-	return mMaterial;
-}
-
-rainbow::shape_sample rainbow::shape::sample(const interaction& reference, const vector2& sample) const
+rainbow::shapes::shape_sample rainbow::shapes::shape::sample(const interaction& reference, const vector2& sample) const
 {
 	auto shape_sample = this->sample(sample);
 	auto wi = shape_sample.interaction.point - reference.point;
@@ -49,7 +33,7 @@ rainbow::shape_sample rainbow::shape::sample(const interaction& reference, const
 	return shape_sample;
 }
 
-rainbow::real rainbow::shape::pdf(const interaction& reference, const vector3& wi) const
+rainbow::real rainbow::shapes::shape::pdf(const interaction& reference, const vector3& wi) const
 {
 	const auto ray = reference.spawn_ray(wi);
 	const auto interaction = intersect(ray);

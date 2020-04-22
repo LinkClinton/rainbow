@@ -3,6 +3,7 @@
 #include "../interfaces/noncopyable.hpp"
 #include "../emitters/emitter.hpp"
 #include "../shapes/shape.hpp"
+#include "entity.hpp"
 
 #include <memory>
 #include <vector>
@@ -20,20 +21,16 @@ namespace rainbow {
 
 			~scene() = default;
 
-			void add_shape(const std::shared_ptr<shape>& shape);
-
-			void add_emitter(const std::shared_ptr<emitter>& emitter);
+			void add_entity(const std::shared_ptr<entity>& entity);
 			
 			std::optional<surface_interaction> intersect(const ray& ray) const;
 
 			std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const;
 
-			const std::vector<std::shared_ptr<emitter>>& emitters() const noexcept;
-			
-			const std::vector<std::shared_ptr<shape>>& shapes() const noexcept;
+			const std::vector<std::shared_ptr<entity>>& emitters() const noexcept;
 		private:
-			std::vector<std::shared_ptr<emitter>> mEmitters;
-			std::vector<std::shared_ptr<shape>> mShapes;
+			std::vector<std::shared_ptr<entity>> mEntities;
+			std::vector<std::shared_ptr<entity>> mEmitters;
 		};
 		
 	}

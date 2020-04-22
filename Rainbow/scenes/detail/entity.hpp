@@ -28,6 +28,7 @@ namespace rainbow {
 		{
 			return emitter_sample::transform(mLocalToWorld,
 				mEmitter->sample(
+					mShape,
 					transform_interaction(mWorldToLocal, reference),
 					sample
 				));
@@ -51,6 +52,7 @@ namespace rainbow {
 		inline real entity::pdf<emitter_sample>(const interaction& reference, const vector3& wi) const
 		{
 			return mEmitter->pdf(
+				mShape,
 				transform_interaction(mWorldToLocal, reference),
 				transform_point(mWorldToLocal, wi));
 		}

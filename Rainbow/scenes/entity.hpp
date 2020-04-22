@@ -8,11 +8,13 @@
 
 namespace rainbow {
 
+	using namespace materials;
 	using namespace emitters;
+	using namespace shapes;
 	
 	namespace scenes {
 	
-		class entity final : public interfaces::noncopyable {
+		class entity final : public interfaces::noncopyable, public std::enable_shared_from_this<entity> {
 		public:
 			explicit entity(
 				const std::shared_ptr<material>& material,

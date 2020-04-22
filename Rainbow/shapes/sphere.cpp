@@ -1,24 +1,20 @@
 #include "sphere.hpp"
 
+#include "../scatterings/scattering_function.hpp"
 #include "../shared/sample_function.hpp"
 
-rainbow::shapes::sphere::sphere(
-	const std::shared_ptr<materials::material>& material,
-	const rainbow::transform& transform, real radius) :
-	shape(material, transform), mRadius(radius)
+rainbow::shapes::sphere::sphere(real radius) : mRadius(radius)
 {
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray) const
 {
-	const auto ray_local = mWorldToLocal(ray);
-	
 	// a = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z
 	// b = 2 * (direction.x * origin.x + direction.y * origin.y + direction.z * origin.z)
 	// c = origin.x * origin.x + origin.y * origin.y + origin.z * origin.z - radius * radius
-	const auto a = dot(ray_local.direction, ray_local.direction);
-	const auto b = dot(ray_local.direction, ray_local.origin) * 2;
-	const auto c = dot(ray_local.origin, ray_local.origin) - mRadius * mRadius;
+	const auto a = dot(ray.direction, ray.direction);
+	const auto b = dot(ray.direction, ray.origin) * 2;
+	const auto c = dot(ray.origin, ray.origin) - mRadius * mRadius;
 
 	real t0, t1, t_hit;
 
@@ -26,15 +22,15 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	if (!solve_quadratic_equation(a, b, c, &t0, &t1)) return std::nullopt;
 
 	// the point should on the ray
-	if (t0 > ray_local.length || t1 <= 0) return std::nullopt;
+	if (t0 > ray.length || t1 <= 0) return std::nullopt;
 
 	if (t0 <= 0) {
-		if (t1 > ray_local.length) return std::nullopt;
+		if (t1 > ray.length) return std::nullopt;
 		else t_hit = t1;
 	}
 	else t_hit = t0;
 
-	auto point_hit = ray_local.origin + ray_local.direction * t_hit;
+	auto point_hit = ray.origin + ray.direction * t_hit;
 
 	// if the point on the sphere, the distance of point should be radius
 	// so mRadius / length(point_hit) should be 1
@@ -72,16 +68,17 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	ray.length = t_hit;
 
 	// the normal of surface is indicate the internal side of shape
-	return mLocalToWorld(surface_interaction(
-		shared_from_this(),
-		dp_du, dp_dv, point_hit, -ray_local.direction,
+	// the entity will be set when entity::intersect called
+	return surface_interaction(
+		nullptr,
+		dp_du, dp_dv, point_hit, -ray.direction,
 		vector2(u, v)
-	));
+	);
 }
 
-rainbow::shape_sample rainbow::sphere::sample(const interaction& reference, const vector2& sample) const
+rainbow::shapes::shape_sample rainbow::shapes::sphere::sample(const interaction& reference, const vector2& sample) const
 {
-	const auto center = transform_point(mLocalToWorld, vector3(0));
+	const auto center = vector3(0);
 
 	// the reference point is in the inside of sphere
 	// we will sample it using the sample function without reference point
@@ -150,7 +147,7 @@ rainbow::shape_sample rainbow::sphere::sample(const interaction& reference, cons
 
 	// transform the normal from local system to world system
 	// using the spherical direction to find the normal
-	const auto normal = normalize(local_to_world(local_system, spherical_direction(sin_alpha, cos_alpha, phi)));
+	const auto normal = normalize(local_to_world(local_system, scatterings::spherical_direction(sin_alpha, cos_alpha, phi)));
 	const auto point = center + mRadius * normal;
 
 	return shape_sample(
@@ -159,22 +156,19 @@ rainbow::shape_sample rainbow::sphere::sample(const interaction& reference, cons
 	);
 }
 
-rainbow::shape_sample rainbow::sphere::sample(const vector2& sample) const
+rainbow::shapes::shape_sample rainbow::shapes::sphere::sample(const vector2& sample) const
 {
 	const auto point = vector3(0) + mRadius * uniform_sample_sphere(sample);
 
 	return shape_sample(
-		interaction(
-			transform_normal(mLocalToWorld, normalize(point)),
-			transform_point(mLocalToWorld, point),
-			vector3(0)),
+		interaction(normalize(point), point, vector3(0)),
 		pdf()
 	);
 }
 
-rainbow::real rainbow::sphere::pdf(const interaction& reference, const vector3& wi) const
+rainbow::real rainbow::shapes::sphere::pdf(const interaction& reference, const vector3& wi) const
 {
-	const auto center = transform_point(mLocalToWorld, vector3(0));
+	const auto center = vector3(0);
 
 	if (distance_squared(center, reference.point) <= mRadius * mRadius)
 		return pdf();
@@ -185,12 +179,12 @@ rainbow::real rainbow::sphere::pdf(const interaction& reference, const vector3& 
 	return uniform_sample_cone_pdf(cos_theta_max);
 }
 
-rainbow::real rainbow::sphere::pdf() const
+rainbow::real rainbow::shapes::sphere::pdf() const
 {
 	return 1 / area();
 }
 
-rainbow::real rainbow::sphere::area() const noexcept
+rainbow::real rainbow::shapes::sphere::area() const noexcept
 {
 	return 4 * mRadius * two_pi<real>();
 }

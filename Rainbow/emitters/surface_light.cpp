@@ -1,25 +1,20 @@
 #include "surface_light.hpp"
 
-rainbow::emitters::surface_light::surface_light(const std::shared_ptr<shape>& surface, const spectrum& radiance) :
-	emitter(surface->transform(), emitter_type::surface),
-	mSurface(surface), mRadiance(radiance), mSurfaceArea(surface->area())
+rainbow::emitters::surface_light::surface_light(const spectrum& radiance) :
+	emitter(emitter_type::surface), mRadiance(radiance)
 {
 }
 
-rainbow::spectrum rainbow::emitters::surface_light::evaluate(const interaction& interaction, const vector3& wi) const noexcept
+rainbow::spectrum rainbow::emitters::surface_light::evaluate(const interaction& interaction, const vector3& wi) const 
 {
 	// if the wi and surface normal of emitter are not in the same side, the emitter can not lighting it
 	return (dot(interaction.normal, wi) > 0) ? mRadiance : 0;
 }
 
-std::shared_ptr<rainbow::shape> rainbow::emitters::surface_light::surface() const noexcept
+rainbow::emitters::emitter_sample rainbow::emitters::surface_light::sample(
+	const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const
 {
-	return mSurface;
-}
-
-rainbow::emitters::emitter_sample rainbow::emitters::surface_light::sample(const interaction& reference, const vector2& sample)
-{
-	const auto shape_sample = mSurface->sample(reference, sample);
+	const auto shape_sample = shape->sample(reference, sample);
 
 	if (shape_sample.pdf == 0) return {};
 
@@ -33,12 +28,14 @@ rainbow::emitters::emitter_sample rainbow::emitters::surface_light::sample(const
 	);
 }
 
-rainbow::real rainbow::emitters::surface_light::pdf(const interaction& reference, const vector3& wi)
+rainbow::real rainbow::emitters::surface_light::pdf(
+	const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const
 {
-	return mSurface->pdf(reference, wi);
+	return shape->pdf(reference, wi);
 }
 
-rainbow::spectrum rainbow::emitters::surface_light::power()
+
+rainbow::spectrum rainbow::emitters::surface_light::power(const std::shared_ptr<shape>& shape) const
 {
-	return mRadiance * mSurfaceArea * pi<real>();
+	return mRadiance * shape->area() * pi<real>();
 }

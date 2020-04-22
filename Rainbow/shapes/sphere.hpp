@@ -10,9 +10,7 @@ namespace rainbow {
 
 		class sphere : public shape {
 		public:
-			explicit sphere(
-				const std::shared_ptr<materials::material>& material,
-				const rainbow::transform& transform, real radius);
+			explicit sphere(real radius);
 
 			~sphere() = default;
 

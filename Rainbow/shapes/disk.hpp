@@ -8,9 +8,7 @@ namespace rainbow {
 
 		class disk : public shape {
 		public:
-			explicit disk(
-				const std::shared_ptr<materials::material>& material,
-				const rainbow::transform& transform, real radius, real height = 0);
+			explicit disk(real radius, real height = 0);
 
 			~disk() = default;
 

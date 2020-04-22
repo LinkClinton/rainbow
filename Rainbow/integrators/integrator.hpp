@@ -57,7 +57,7 @@ namespace rainbow {
 			const scattering_function_collection& functions);
 
 		spectrum estimate_lighting(
-			const std::shared_ptr<emitter>& emitter,
+			const std::shared_ptr<entity>& emitter,
 			const std::shared_ptr<scene>& scene,
 			const sampler_group& samplers,
 			const surface_interaction& interaction,

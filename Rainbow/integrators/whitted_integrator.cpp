@@ -22,7 +22,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 
 	// get the scattering functions from material which the ray intersect
 	const auto scattering_functions = 
-		interaction->shape->material()->build_scattering_functions(interaction.value());
+		interaction->entity->component<material>()->build_scattering_functions(interaction.value());
 
 	// when the scattering functions is empty, we can think it is a invisible shape
 	// we will continue spawn a ray without changing the direction
@@ -32,7 +32,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
 	for (const auto& emitter : scene->emitters()) {
-		const auto emitter_sample = emitter->sample(interaction.value(), samplers.sampler2d->next());
+		const auto emitter_sample = emitter->sample<emitters::emitter_sample>(interaction.value(), samplers.sampler2d->next());
 		
 		if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) continue;
 		

@@ -2,8 +2,6 @@
 
 #include "../interfaces/noncopyable.hpp"
 
-#include "../materials/material.hpp"
-
 #include "../shared/interactions/surface_interaction.hpp"
 #include "../shared/transform.hpp"
 #include "../shared/ray.hpp"
@@ -13,7 +11,6 @@
 namespace rainbow {
 
 	using namespace interactions;
-	using namespace materials;
 	
 	namespace shapes {
 
@@ -32,16 +29,10 @@ namespace rainbow {
 
 		class shape : public interfaces::noncopyable, public std::enable_shared_from_this<shape> {
 		public:
-			explicit shape(
-				const std::shared_ptr<material>& material,
-				const transform& transform);
+			shape() = default;
 
 			~shape() = default;
 			
-			transform transform() const;
-
-			std::shared_ptr<material> material() const noexcept;
-
 			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
 
 			virtual shape_sample sample(const interaction& reference, const vector2& sample) const;
@@ -53,10 +44,6 @@ namespace rainbow {
 			virtual real pdf() const = 0;
 
 			virtual real area() const noexcept = 0;
-		protected:
-			std::shared_ptr<materials::material> mMaterial;
-			
-			rainbow::transform mLocalToWorld, mWorldToLocal;
 		}; 
 		
 	}

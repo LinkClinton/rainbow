@@ -57,63 +57,69 @@ int main() {
 			)
 	);*/
 	
-	scene->add_shape(
-		std::make_shared<sphere>(
+	scene->add_entity(
+		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
 				std::make_shared<constant_texture2d<real>>(0.04f)
 				),
-			translate(vector3(-1.1f, 0, 1.0f)),
-			1.f
-			)
+			nullptr,
+			std::make_shared<sphere>(1.f),
+			translate(vector3(-1.1f, 0, 1.0f)))
 	);
 
-	scene->add_shape(
-		std::make_shared<sphere>(
+	scene->add_entity(
+		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
 				std::make_shared<constant_texture2d<real>>(0.04f)
 				),
-			translate(vector3(1.1f, 0, 1.0f)),
-			1.f
-			)
+			nullptr,
+			std::make_shared<sphere>(1.f),
+			translate(vector3(1.1f, 0, 1.0f)))
 	);
 	
-	scene->add_shape(
-		std::make_shared<disk>(
+	scene->add_entity(
+		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(0.83f),
 				std::make_shared<constant_texture2d<real>>(0.3f)
 				),
-			translate(vector3(0, 0, 0.f)),
-			500.f
-			)
+			nullptr,
+			std::make_shared<disk>(500.f),
+			translate(vector3(0, 0, 0.f)))
 	);
 
-	scene->add_shape(
-		std::make_shared<disk>(
+	scene->add_entity(
+		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<real>>(0.4f)
 				),
-			translate(vector3(0, 1, 0)) * rotate(-90.f, vector3(1, 0, 0)),
-			100.f
+			nullptr,
+			std::make_shared<disk>(100.f),
+			translate(vector3(0, 1, 0)) * rotate(-90.f, vector3(1, 0, 0)))
+	);
+
+	scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<point_light>(spectrum(4)),
+			nullptr,
+			translate(vector3(0, 0, 5.0))
 			)
 	);
 
-	scene->add_emitter(std::make_shared<point_light>(
-		translate(vector3(0, 0, 5.0)),
-		spectrum(4)
-		));
-
-	scene->add_emitter(std::make_shared<point_light>(
-		translate(vector3(0, -3.0, 5.0)),
-		spectrum(4)
-		));
+	scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<point_light>(spectrum(4)),
+			nullptr,
+			translate(vector3(0, -3.0, 5.0))
+			)
+	);
 	
 	const auto samples_per_pixel_x = static_cast<size_t>(4);
 	const auto samples_per_pixel_y = static_cast<size_t>(4);

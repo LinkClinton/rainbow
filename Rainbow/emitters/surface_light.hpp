@@ -2,35 +2,28 @@
 
 #include "emitter.hpp"
 
-#include "../shapes/shape.hpp"
-
 namespace rainbow {
 
 	namespace emitters {
 
 		class surface_light final : public emitter {
 		public:
-			explicit surface_light(
-				const std::shared_ptr<shape>& surface,
-				const spectrum& radiance);
+			explicit surface_light(const spectrum& radiance);
 
 			~surface_light() = default;
 
-			spectrum evaluate(const interaction& interaction, const vector3& wi) const noexcept;
+			spectrum evaluate(const interaction& interaction, const vector3& wi) const override;
 
-			std::shared_ptr<shape> surface() const noexcept;
-			
-			emitter_sample sample(const interaction& reference, const vector2& sample) override;
+			emitter_sample sample(
+				const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const override;
 
-			real pdf(const interaction& reference, const vector3& wi) override;
-			
-			spectrum power() override;
+			real pdf(
+				const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const override;
+
+			spectrum power(
+				const std::shared_ptr<shape>& shape) const override;
 		private:
-			std::shared_ptr<shape> mSurface;
-			
 			spectrum mRadiance;
-
-			real mSurfaceArea;
 		};
 		
 	}
