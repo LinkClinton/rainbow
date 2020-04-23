@@ -25,11 +25,18 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		// if we do not find the shape that the ray intersect we can end this tracing
 		if (!interaction.has_value()) break;
 
+		// when the first ray intersect a light, we will evaluate the intensity of it
+		if (bounces == 0 && interaction->entity->has_component<emitter>()) 
+			L += beta * interaction->entity->evaluate<emitter>(interaction.value(), -ray.direction);
+		
 		// get the scattering functions from material which the ray intersect
+		// if the entity does not have material, we return default scattering functions(0 function)
 		const auto scattering_functions =
-			interaction->entity->component<material>()->build_scattering_functions(interaction.value());
+			interaction->entity->has_component<material>() ?
+			interaction->entity->component<material>()->build_scattering_functions(interaction.value()) :
+			scattering_function_collection();
 
-		// when the scattering functions is empty, we can think it is a invisible shape
+		// when the scattering functions is empty, we can think it is a invisible entity
 		// we will continue spawn a ray without changing the direction
 		if (scattering_functions.count() == 0) {
 			// compute the new ray 

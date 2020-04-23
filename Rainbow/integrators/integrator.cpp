@@ -52,22 +52,54 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 {
 	spectrum L = 0;
 
-	const auto emitter_sample = emitter->sample<emitters::emitter_sample>(interaction, samplers.sampler2d->next());
-
-	if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) return L;
+	const auto emitter_sample = emitter->sample<emitters::emitter>(interaction, samplers.sampler2d->next());
 
 	const auto wi = world_to_local(interaction.shading_space, emitter_sample.wi);
 	const auto wo = world_to_local(interaction.shading_space, interaction.wo);
 	const auto type = scattering_type::all ^ scattering_type::specular;
-	
-	const auto functions_value = functions.evaluate(wo, wi, type);
-	
-	if (!functions_value.is_black()) {
-		const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
 
-		if (scene->intersect_with_shadow_ray(shadow_ray).has_value()) return L;
-		
-		L += functions_value * emitter_sample.irradiance * abs(dot(emitter_sample.wi, interaction.normal)) / emitter_sample.pdf;
+	if (!emitter_sample.intensity.is_black() && emitter_sample.pdf > 0) {
+		auto functions_value = functions.evaluate(wo, wi, type);
+		auto functions_pdf = functions.pdf(wo, wi, type);
+
+		functions_value = functions_value * abs(dot(emitter_sample.wi, interaction.normal));
+
+		if (!functions_value.is_black()) {
+			const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
+
+			if (!scene->intersect_with_shadow_ray(shadow_ray).has_value()) {
+
+				if (emitter->component<emitters::emitter>()->is_delta())
+					L += functions_value * emitter_sample.intensity / emitter_sample.pdf;
+				else
+					L += functions_value * emitter_sample.intensity * power_heuristic(emitter_sample.pdf, functions_pdf) / emitter_sample.pdf;
+			}
+		}
+	}
+
+	// sample scattering functions with multiple important sampling
+	if (!emitter->component<emitters::emitter>()->is_delta()) {
+		auto function_sample = functions.sample(interaction, samplers.sampler2d->next(), type);
+
+		function_sample.value = function_sample.value * abs(dot(function_sample.wi, interaction.normal));
+
+		if (!function_sample.value.is_black() && function_sample.pdf > 0) {
+			const auto emitter_pdf = emitter->pdf<emitters::emitter>(interaction, function_sample.wi);
+
+			if (emitter_pdf == 0) return L;
+
+			const auto ray = interaction.spawn_ray(function_sample.wi);
+			const auto emitter_interaction = scene->intersect(ray);
+
+			if (!emitter_interaction.has_value() || emitter_interaction->entity != emitter)
+				return L;
+
+			const auto intensity = emitter->evaluate<emitters::emitter>(emitter_interaction.value(), -function_sample.wi);
+			const auto weight = power_heuristic(function_sample.pdf, emitter_pdf);
+			
+			if (!intensity.is_black())
+				L += function_sample.value * intensity * weight / function_sample.pdf;
+		}
 	}
 	
 	return L;

@@ -27,7 +27,9 @@ namespace rainbow {
 			static shape_sample transform(const transform& transform, const shape_sample& sample);
 		};
 
-		class shape : public interfaces::noncopyable, public std::enable_shared_from_this<shape> {
+		class shape : public interfaces::noncopyable {
+		public:
+			using sample_type = shape_sample;
 		public:
 			shape() = default;
 

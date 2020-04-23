@@ -10,6 +10,7 @@
 #include "samplers/random_sampler.hpp"
 #include "filters/gaussian_filter.hpp"
 #include "filters/box_filter.hpp"
+#include "emitters/surface_light.hpp"
 #include "emitters/point_light.hpp"
 #include "shapes/sphere.hpp"
 #include "shapes/disk.hpp"
@@ -44,17 +45,17 @@ int main() {
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	/*scene->add_shape(
-		std::make_shared<sphere>(
+	/*scene->add_entity(
+		std::make_shared<entity>(
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<vector2>>(vector2(0.f)),
 				std::make_shared<constant_texture2d<real>>(1.5f)
 				),
-			translate(vector3(-1.1f, 0, 1.0f)),
-			1.f
-			)
+			nullptr,
+			std::make_shared<sphere>(1.f),
+			translate(vector3(-1.1f, 0, 1.0f)))
 	);*/
 	
 	scene->add_entity(
@@ -62,8 +63,8 @@ int main() {
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.04f)
-				),
+				std::make_shared<constant_texture2d<real>>(0.f),
+				true),
 			nullptr,
 			std::make_shared<sphere>(1.f),
 			translate(vector3(-1.1f, 0, 1.0f)))
@@ -105,7 +106,7 @@ int main() {
 			translate(vector3(0, 1, 0)) * rotate(-90.f, vector3(1, 0, 0)))
 	);
 
-	scene->add_entity(
+	/*scene->add_entity(
 		std::make_shared<entity>(nullptr,
 			std::make_shared<point_light>(spectrum(4)),
 			nullptr,
@@ -115,16 +116,37 @@ int main() {
 
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
-			std::make_shared<point_light>(spectrum(4)),
+			std::make_shared<point_light>(spectrum(6)),
 			nullptr,
 			translate(vector3(0, -3.0, 5.0))
 			)
+	);*/
+
+	/*scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<surface_light>(spectrum(4)),
+			std::make_shared<sphere>(0.5f),
+			translate(vector3(0, 0, 5.0f)))
+	);*/
+
+	scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<surface_light>(spectrum(3)),
+			std::make_shared<disk>(0.5f),
+			translate(vector3(0, 0, 5.5f)) * rotate(180.f, vector3(1, 0, 0)))
+	);
+	
+	scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<surface_light>(spectrum(6)),
+			std::make_shared<sphere>(0.5f),
+			translate(vector3(0, -3.0, 5.0f)))
 	);
 	
 	const auto samples_per_pixel_x = static_cast<size_t>(4);
 	const auto samples_per_pixel_y = static_cast<size_t>(4);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
-	const auto dimension = 8;
+	const auto dimension = 16;
 	
 	/*const auto integrator = std::make_shared<integrators::whitted_integrator>(
 		std::make_shared<random_sampler2d>(samples_per_pixel),

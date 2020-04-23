@@ -32,9 +32,9 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	const auto wo = world_to_local(interaction->shading_space, interaction->wo);
 
 	for (const auto& emitter : scene->emitters()) {
-		const auto emitter_sample = emitter->sample<emitters::emitter_sample>(interaction.value(), samplers.sampler2d->next());
+		const auto emitter_sample = emitter->sample<emitters::emitter>(interaction.value(), samplers.sampler2d->next());
 		
-		if (emitter_sample.irradiance.is_black() || emitter_sample.pdf == 0) continue;
+		if (emitter_sample.intensity.is_black() || emitter_sample.pdf == 0) continue;
 		
 		// notice : the value of specular functions is zero
 		const auto wi = world_to_local(interaction->shading_space, emitter_sample.wi);
@@ -46,7 +46,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 			continue;
 
 		if (!function_value.is_black()) 
-			L += function_value * emitter_sample.irradiance * abs(dot(emitter_sample.wi, interaction->normal)) / emitter_sample.pdf;
+			L += function_value * emitter_sample.intensity * abs(dot(emitter_sample.wi, interaction->normal)) / emitter_sample.pdf;
 	}
 
 	// trace the rays with specular

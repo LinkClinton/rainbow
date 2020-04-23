@@ -29,3 +29,8 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::entity::intersect(c
 	// transform it from local to world space.
 	return mLocalToWorld(interaction.value());
 }
+
+bool rainbow::entity::visible() const noexcept
+{
+	return has_component<shape>() && has_component<material>();
+}

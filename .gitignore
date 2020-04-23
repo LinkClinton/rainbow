@@ -350,3 +350,8 @@ healthchecksdb
 /Rainbow/image_whitted.png
 /Rainbow/image_1024spp.png
 /Rainbow/image_128_128spp.png
+/Rainbow/image_8_8spp_depth5.png
+/Rainbow/image_8_8spp_depth10.png
+/Rainbow/image_32_32spp_depth5.png
+/Rainbow/image_16_16spp_depth5.png
+/Rainbow/image_16_16spp_depth10.png

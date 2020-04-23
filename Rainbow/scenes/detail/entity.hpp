@@ -14,7 +14,7 @@ namespace rainbow {
 		 */
 		
 		template <>
-		inline shape_sample entity::sample(const interaction& reference, const vector2& sample) const
+		inline shape::sample_type entity::sample<shape>(const interaction& reference, const vector2& sample) const
 		{
 			return shape_sample::transform(mLocalToWorld,
 				mShape->sample(
@@ -24,7 +24,7 @@ namespace rainbow {
 		}
 
 		template <>
-		inline emitter_sample entity::sample(const interaction& reference, const vector2& sample) const
+		inline emitter::sample_type entity::sample<emitter>(const interaction& reference, const vector2& sample) const
 		{
 			return emitter_sample::transform(mLocalToWorld,
 				mEmitter->sample(
@@ -35,13 +35,13 @@ namespace rainbow {
 		}
 
 		template <>
-		inline shape_sample entity::sample(const vector2& sample) const
+		inline shape::sample_type entity::sample<shape>(const vector2& sample) const
 		{
 			return shape_sample::transform(mLocalToWorld, mShape->sample(sample));
 		}
 
 		template <>
-		inline real entity::pdf<shape_sample>(const interaction& reference, const vector3& wi) const
+		inline real entity::pdf<shape>(const interaction& reference, const vector3& wi) const
 		{
 			return mShape->pdf(
 				transform_interaction(mWorldToLocal, reference),
@@ -49,7 +49,7 @@ namespace rainbow {
 		}
 
 		template <>
-		inline real entity::pdf<emitter_sample>(const interaction& reference, const vector3& wi) const
+		inline real entity::pdf<emitter>(const interaction& reference, const vector3& wi) const
 		{
 			return mEmitter->pdf(
 				mShape,
@@ -58,7 +58,7 @@ namespace rainbow {
 		}
 
 		template <>
-		inline real entity::pdf<shape_sample>() const
+		inline real entity::pdf<shape>() const
 		{
 			return mShape->pdf();
 		}
@@ -79,6 +79,12 @@ namespace rainbow {
 		inline std::shared_ptr<shape> entity::component() const noexcept
 		{
 			return mShape;
+		}
+
+		template <>
+		inline spectrum entity::evaluate<emitter>(const interaction& interaction, const vector3& wi) const
+		{
+			return mEmitter->evaluate(interaction, wi);
 		}
 
 		template <typename T>

@@ -24,7 +24,7 @@ namespace rainbow {
 		};
 
 		struct emitter_sample {
-			spectrum irradiance = 0;
+			spectrum intensity = 0;
 			vector3 position = vector3(0);
 			vector3 wi = vector3(0);
 			real pdf = 0;
@@ -36,7 +36,11 @@ namespace rainbow {
 			static emitter_sample transform(const transform& transform, const emitter_sample& sample);
 		};
 
+		bool is_delta_emitter(const emitter_type& type);
+		
 		class emitter : public interfaces::noncopyable {
+		public:
+			using sample_type = emitter_sample;
 		public:
 			explicit emitter(const emitter_type& type);
 
@@ -52,6 +56,8 @@ namespace rainbow {
 				const std::shared_ptr<shape>& shape) const = 0;
 			
 			emitter_type type() const noexcept;
+
+			bool is_delta() const noexcept;
 		protected:
 			
 			emitter_type mType;
