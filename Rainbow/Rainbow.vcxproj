@@ -190,6 +190,7 @@
     <ClCompile Include="scenes\entity.cpp" />
     <ClCompile Include="scenes\scene.cpp" />
     <ClCompile Include="shapes\disk.cpp" />
+    <ClCompile Include="shapes\mesh.cpp" />
     <ClCompile Include="shapes\shape.cpp" />
     <ClCompile Include="shapes\sphere.cpp" />
     <ClCompile Include="shared\coordinate_system.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="scenes\entity.hpp" />
     <ClInclude Include="scenes\scene.hpp" />
     <ClInclude Include="shapes\disk.hpp" />
+    <ClInclude Include="shapes\mesh.hpp" />
     <ClInclude Include="shapes\shape.hpp" />
     <ClInclude Include="shapes\sphere.hpp" />
     <ClInclude Include="shared\assert.hpp" />

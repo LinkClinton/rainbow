@@ -140,6 +140,9 @@
     <ClCompile Include="scenes\entity.cpp">
       <Filter>scenes</Filter>
     </ClCompile>
+    <ClCompile Include="shapes\mesh.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -458,6 +461,9 @@
     </ClInclude>
     <ClInclude Include="shared\logs\detail\log.hpp">
       <Filter>shared\logs\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\mesh.hpp">
+      <Filter>shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
