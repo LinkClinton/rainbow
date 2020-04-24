@@ -1,8 +1,11 @@
 #include "sampler_integrator.hpp"
 
+#include "../shared/logs/log.hpp"
+
 #define __PARALLEL_RENDER__
 
 #include <execution>
+#include <chrono>
 
 rainbow::integrators::sampler_integrator::sampler_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d, size_t max_depth) :
@@ -66,6 +69,15 @@ void rainbow::integrators::sampler_integrator::render(
 #endif
 
 	const auto samples_per_pixel = mSampler2D->samples_per_pixel();
+
+	logs::info("start rendering...");
+	logs::info("image min range : x = {0}, y = {1}.", bound.min.x, bound.min.y);
+	logs::info("image max range : x = {0}, y = {1}.", bound.max.x, bound.max.y);
+	logs::info("tile size : width = {0}, height = {1}.", tile_size, tile_size);
+
+	std::atomic_int finished_tile_count = 0;
+
+	const auto start_rendering_time = std::chrono::high_resolution_clock::now();
 	
 	std::for_each(execution_policy, inputs.begin(), inputs.end(), [&](const parallel_input& input)
 		{
@@ -94,10 +106,17 @@ void rainbow::integrators::sampler_integrator::render(
 					}
 				}
 			}
+
+			logs::info("finish tile {0}, finished {1} / total : {2}", input.tile_index, ++finished_tile_count, inputs.size());
 		});
 
 	for (size_t index = 0; index < outputs.size(); index++)
 		film->add_tile(outputs[index].tile);
+
+	const auto end_rendering_time = std::chrono::high_resolution_clock::now();
+	
+	logs::info("finish rendering..., time used {0}s.", 
+		std::chrono::duration_cast<std::chrono::duration<double>>(end_rendering_time - start_rendering_time).count());
 }
 
 rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::prepare_samplers(uint64 seed)
@@ -106,4 +125,3 @@ rainbow::integrators::sampler_group rainbow::integrators::sampler_integrator::pr
 		nullptr, mSampler2D->clone(seed)
 	);
 }
-

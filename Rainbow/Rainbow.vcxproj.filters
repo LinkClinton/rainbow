@@ -211,6 +211,12 @@
     <Filter Include="scenes\detail">
       <UniqueIdentifier>{75a11d51-6995-4669-9361-5c53370eafa9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\logs">
+      <UniqueIdentifier>{d7fd0ce4-c35d-4f7f-9196-9079135452b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\logs\detail">
+      <UniqueIdentifier>{c370a717-268e-4e52-bc6f-4033167efa00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\math\vector.hpp">
@@ -446,6 +452,12 @@
     </ClInclude>
     <ClInclude Include="scenes\detail\entity.hpp">
       <Filter>scenes\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\logs\log.hpp">
+      <Filter>shared\logs</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\logs\detail\log.hpp">
+      <Filter>shared\logs\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

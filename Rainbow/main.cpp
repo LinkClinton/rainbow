@@ -164,4 +164,6 @@ int main() {
 	integrator->render(camera, scene);
 	
 	film->write("image");
+
+	system("pause");
 }

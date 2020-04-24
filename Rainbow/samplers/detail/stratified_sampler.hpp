@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../stratified_sampler.hpp"
+#include "../../shared/logs/log.hpp"
 
 namespace rainbow {
 
@@ -36,6 +37,8 @@ namespace rainbow {
 			if (mCurrentDimension < mSamples.size())
 				return mSamples[mCurrentDimension++][this->mCurrentSampleIndex];
 
+			logs::warn("next sample will be random sample.");
+			
 			typename sampler_t<Dimension>::sample_type sample;
 
 			for (auto index = 0; index < Dimension; index++)

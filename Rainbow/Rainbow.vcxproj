@@ -252,6 +252,8 @@
     <ClInclude Include="shared\coordinate_system.hpp" />
     <ClInclude Include="shared\interactions\interaction.hpp" />
     <ClInclude Include="shared\interactions\surface_interaction.hpp" />
+    <ClInclude Include="shared\logs\detail\log.hpp" />
+    <ClInclude Include="shared\logs\log.hpp" />
     <ClInclude Include="shared\math\bound.hpp" />
     <ClInclude Include="shared\math\detail\bound.hpp" />
     <ClInclude Include="shared\math\detail\math.hpp" />
