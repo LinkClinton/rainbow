@@ -21,6 +21,8 @@ namespace rainbow {
 
 		surface_interaction operator()(const surface_interaction& interaction) const;
 		
+		coordinate_system operator()(const coordinate_system& system) const;
+		
 		ray operator()(const ray& ray) const;
 
 		matrix4x4 inverse_matrix() const noexcept;

@@ -29,11 +29,28 @@ rainbow::surface_interaction rainbow::transform::operator()(const surface_intera
 {
 	return surface_interaction(
 		interaction.entity,
+		(*this)(interaction.shading_space),
 		transform_vector(*this, interaction.dp_du),
 		transform_vector(*this, interaction.dp_dv),
 		transform_point(*this, interaction.point),
 		normalize(transform_vector(*this, interaction.wo)),
 		interaction.uv
+	);
+}
+
+rainbow::coordinate_system rainbow::transform::operator()(const coordinate_system& system) const
+{
+	auto shading_space_x = transform_vector(*this, system.x());
+	auto shading_space_y = transform_vector(*this, system.y());
+	auto shading_space_z = normalize(math::cross(shading_space_x, shading_space_y));
+
+	shading_space_x = normalize(shading_space_x);
+	shading_space_y = normalize(math::cross(shading_space_z, shading_space_x));
+
+	return coordinate_system(
+		shading_space_x,
+		shading_space_y,
+		shading_space_z
 	);
 }
 

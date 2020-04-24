@@ -23,6 +23,16 @@ rainbow::interactions::surface_interaction::surface_interaction(
 	);
 }
 
+rainbow::interactions::surface_interaction::surface_interaction(
+	const std::shared_ptr<const scenes::entity>& entity,
+	const coordinate_system& shading_space, 
+	const vector3& dp_du, const vector3& dp_dv, 
+	const vector3& point, const vector3& wo, const vector2& uv) :
+	interaction(normalize(math::cross(dp_du, dp_dv)), point, wo),
+	shading_space(shading_space), entity(entity), dp_du(dp_du), dp_dv(dp_dv), uv(uv)
+{
+}
+
 rainbow::vector3 rainbow::interactions::surface_interaction::from_space_to_world(const vector3& v) const noexcept
 {
 	return local_to_world(shading_space, v);

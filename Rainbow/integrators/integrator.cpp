@@ -62,7 +62,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 		auto functions_value = functions.evaluate(wo, wi, type);
 		auto functions_pdf = functions.pdf(wo, wi, type);
 
-		functions_value = functions_value * abs(dot(emitter_sample.wi, interaction.normal));
+		functions_value = functions_value * abs(dot(emitter_sample.wi, interaction.shading_space.z()));
 
 		if (!functions_value.is_black()) {
 			const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
@@ -81,7 +81,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 	if (!emitter->component<emitters::emitter>()->is_delta()) {
 		auto function_sample = functions.sample(interaction, samplers.sampler2d->next(), type);
 
-		function_sample.value = function_sample.value * abs(dot(function_sample.wi, interaction.normal));
+		function_sample.value = function_sample.value * abs(dot(function_sample.wi, interaction.shading_space.z()));
 
 		if (!function_sample.value.is_black() && function_sample.pdf > 0) {
 			const auto emitter_pdf = emitter->pdf<emitters::emitter>(interaction, function_sample.wi);

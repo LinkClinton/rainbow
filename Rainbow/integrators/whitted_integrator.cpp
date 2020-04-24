@@ -46,7 +46,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 			continue;
 
 		if (!function_value.is_black()) 
-			L += function_value * emitter_sample.intensity * abs(dot(emitter_sample.wi, interaction->normal)) / emitter_sample.pdf;
+			L += function_value * emitter_sample.intensity * abs(dot(emitter_sample.wi, interaction->shading_space.z())) / emitter_sample.pdf;
 	}
 
 	// trace the rays with specular
@@ -69,7 +69,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_reflect(
 		interaction, samplers.sampler2d->next(),
 		scattering_type::reflection | scattering_type::specular);
 
-	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));
+	const auto dot_value = abs(dot(scattering_sample.wi, interaction.shading_space.z()));
 	
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
@@ -91,7 +91,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
 		interaction, samplers.sampler2d->next(),
 		scattering_type::transmission | scattering_type::specular);
 
-	const auto dot_value = abs(dot(scattering_sample.wi, interaction.normal));
+	const auto dot_value = abs(dot(scattering_sample.wi, interaction.shading_space.z()));
 
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)

@@ -58,7 +58,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 
 		if (scattering_sample.value.is_black() || scattering_sample.pdf == 0) break;
 
-		beta = beta * scattering_sample.value * abs(dot(scattering_sample.wi, interaction->normal)) / scattering_sample.pdf;
+		beta = beta * scattering_sample.value * abs(dot(scattering_sample.wi, interaction->shading_space.z())) / scattering_sample.pdf;
 
 		ray = interaction->spawn_ray(scattering_sample.wi);
 
