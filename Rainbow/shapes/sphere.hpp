@@ -10,7 +10,7 @@ namespace rainbow {
 
 		class sphere : public shape {
 		public:
-			explicit sphere(real radius);
+			explicit sphere(real radius, bool reverse_orientation = false);
 
 			~sphere() = default;
 

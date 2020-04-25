@@ -15,7 +15,8 @@ namespace rainbow {
 				const std::vector<vector3>& positions,
 				const std::vector<vector3>& normals,
 				const std::vector<vector3>& uvs,
-				const std::vector<unsigned>& indices);
+				const std::vector<unsigned>& indices,
+				bool reverse_orientation = false);
 
 			~mesh() = default;
 
@@ -38,6 +39,10 @@ namespace rainbow {
 			bool has_normal() const noexcept;
 			
 			bool has_uv() const noexcept;
+
+			static std::shared_ptr<mesh> create_box(real width, real height, real depth);
+
+			static std::shared_ptr<mesh> create_quad(real width, real height);
 		private:
 			std::optional<surface_interaction> intersect_with_triangle(const ray& ray, size_t face) const;
 			

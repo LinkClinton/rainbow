@@ -33,6 +33,8 @@ namespace rainbow {
 		public:
 			shape() = default;
 
+			explicit shape(bool reverse_orientation);
+			
 			~shape() = default;
 			
 			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
@@ -46,6 +48,10 @@ namespace rainbow {
 			virtual real pdf() const = 0;
 
 			virtual real area() const noexcept = 0;
+
+			bool reverse_orientation() const noexcept;
+		private:
+			bool mReverseOrientation = false;
 		}; 
 		
 	}

@@ -14,6 +14,10 @@ rainbow::shapes::shape_sample rainbow::shapes::shape_sample::transform(const rai
 	);
 }
 
+rainbow::shapes::shape::shape(bool reverse_orientation) : mReverseOrientation(reverse_orientation)
+{
+}
+
 rainbow::shapes::shape_sample rainbow::shapes::shape::sample(const interaction& reference, const vector2& sample) const
 {
 	auto shape_sample = this->sample(sample);
@@ -47,4 +51,9 @@ rainbow::real rainbow::shapes::shape::pdf(const interaction& reference, const ve
 	if (isinf(pdf)) return 0;
 
 	return pdf;
+}
+
+bool rainbow::shapes::shape::reverse_orientation() const noexcept
+{
+	return mReverseOrientation;
 }

@@ -27,15 +27,15 @@ namespace rainbow {
 			surface_interaction(
 				const std::shared_ptr<const scenes::entity>& entity,
 				const vector3& dp_du, const vector3& dp_dv,
-				const vector3& point, const vector3& wo,
-				const vector2& uv);
+				const vector3& normal, const vector3& point,
+				const vector3& wo, const vector2& uv);
 
 			surface_interaction(
 				const std::shared_ptr<const scenes::entity>& entity,
 				const coordinate_system& shading_space,
 				const vector3& dp_du, const vector3& dp_dv,
-				const vector3& point, const vector3& wo,
-				const vector2& uv);
+				const vector3& normal, const vector3& point,
+				const vector3& wo, const vector2& uv);
 
 			vector3 from_space_to_world(const vector3& v) const noexcept;
 			

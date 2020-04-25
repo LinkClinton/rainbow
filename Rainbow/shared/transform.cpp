@@ -32,6 +32,7 @@ rainbow::surface_interaction rainbow::transform::operator()(const surface_intera
 		(*this)(interaction.shading_space),
 		transform_vector(*this, interaction.dp_du),
 		transform_vector(*this, interaction.dp_dv),
+		transform_normal(*this, interaction.normal),
 		transform_point(*this, interaction.point),
 		normalize(transform_vector(*this, interaction.wo)),
 		interaction.uv

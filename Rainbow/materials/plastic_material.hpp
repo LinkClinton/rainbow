@@ -14,7 +14,7 @@ namespace rainbow {
 				const std::shared_ptr<textures::texture2d<spectrum>>& specular,
 				const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
 				const std::shared_ptr<textures::texture2d<real>>& roughness,
-				bool map_roughness_to_alpha = false);
+				bool map_roughness_to_alpha = true);
 
 			~plastic_material() = default;
 

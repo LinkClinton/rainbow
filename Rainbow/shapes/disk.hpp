@@ -8,7 +8,7 @@ namespace rainbow {
 
 		class disk : public shape {
 		public:
-			explicit disk(real radius, real height = 0);
+			explicit disk(real radius, real height = 0, bool reverse_orientation = false);
 
 			~disk() = default;
 

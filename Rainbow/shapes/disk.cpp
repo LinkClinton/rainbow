@@ -2,7 +2,8 @@
 
 #include "../shared/sample_function.hpp"
 
-rainbow::shapes::disk::disk(real radius, real height) : mHeight(height), mRadius(radius)
+rainbow::shapes::disk::disk(real radius, real height, bool reverse_orientation) :
+	shape(reverse_orientation), mHeight(height), mRadius(radius)
 {
 }
 
@@ -46,14 +47,17 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(con
 
 	const auto dp_du = vector3(-phi_max * point_hit.y, phi_max * point_hit.x, 0);
 	const auto dp_dv = vector3(point_hit.x, point_hit.y, 0) * (inner_radius - outer_radius) / radius_hit;
-
+	const auto normal = 
+		reverse_orientation() ? -normalize(math::cross(dp_du, dp_dv)) : normalize(math::cross(dp_du, dp_dv));
+	
 	// in this version, we need set the ray.length to t_hit to avoid the ray intersect the objects far from this
 	ray.length = t_hit;
 
 	// the entity will be set when entity::intersect called
 	return surface_interaction(
 		nullptr,
-		dp_du, dp_dv, 
+		dp_du, dp_dv,
+		normal,
 		vector3(point_hit.x, point_hit.y, mHeight),
 		-ray.direction,
 		vector2(u, v)

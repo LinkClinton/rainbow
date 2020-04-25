@@ -3,7 +3,7 @@
 #include "../scatterings/scattering_function.hpp"
 #include "../shared/sample_function.hpp"
 
-rainbow::shapes::sphere::sphere(real radius) : mRadius(radius)
+rainbow::shapes::sphere::sphere(real radius, bool reverse_orientation) : shape(reverse_orientation), mRadius(radius)
 {
 }
 
@@ -63,7 +63,9 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 
 	const auto dp_du = vector3(-phi_max * point_hit.y, phi_max * point_hit.x, 0);
 	const auto dp_dv = vector3(point_hit.z * cos_phi, point_hit.z * sin_phi, -mRadius * sin(theta)) * (theta_max - theta_min);
-
+	const auto normal = 
+		reverse_orientation() ? -normalize(math::cross(dp_du, dp_dv)) : normalize(math::cross(dp_du, dp_dv));
+	
 	// in this version, we need set the ray.length to t_hit to avoid the ray intersect the objects far from this
 	ray.length = t_hit;
 
@@ -71,7 +73,7 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	// the entity will be set when entity::intersect called
 	return surface_interaction(
 		nullptr,
-		dp_du, dp_dv, point_hit, -ray.direction,
+		dp_du, dp_dv, normal, point_hit, -ray.direction,
 		vector2(u, v)
 	);
 }

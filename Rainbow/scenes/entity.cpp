@@ -19,6 +19,8 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::entity::intersect(c
 	const auto local_ray = mWorldToLocal(ray);
 	auto interaction = mShape->intersect(local_ray);
 
+	if (!interaction.has_value()) return std::nullopt;
+	
 	interaction->entity = shared_from_this();
 	
 	ray.length = local_ray.length;

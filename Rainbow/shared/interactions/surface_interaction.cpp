@@ -8,8 +8,9 @@ rainbow::interactions::surface_interaction::surface_interaction() :
 rainbow::interactions::surface_interaction::surface_interaction(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const vector3& dp_du, const vector3& dp_dv,
-	const vector3& point, const vector3& wo, const vector2& uv) :
-	interaction(normalize(math::cross(dp_du, dp_dv)), point, wo),
+	const vector3& normal, const vector3& point, 
+	const vector3& wo, const vector2& uv) :
+	interaction(normal, point, wo),
 	entity(entity), dp_du(dp_du), dp_dv(dp_dv), uv(uv)
 {
 	const auto shading_space_x = normalize(dp_du);
@@ -27,8 +28,9 @@ rainbow::interactions::surface_interaction::surface_interaction(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const coordinate_system& shading_space, 
 	const vector3& dp_du, const vector3& dp_dv, 
-	const vector3& point, const vector3& wo, const vector2& uv) :
-	interaction(normalize(math::cross(dp_du, dp_dv)), point, wo),
+	const vector3& normal, const vector3& point, 
+	const vector3& wo, const vector2& uv) :
+	interaction(normal, point, wo),
 	shading_space(shading_space), entity(entity), dp_du(dp_du), dp_dv(dp_dv), uv(uv)
 {
 }
