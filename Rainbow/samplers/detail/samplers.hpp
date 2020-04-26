@@ -14,7 +14,14 @@ namespace rainbow {
 
 		template <size_t Dimension>
 		sampler_t<Dimension>::sampler_t(size_t samples_per_pixel, size_t seed) :
-			mRandomGenerator(static_cast<uint64>(seed)), mCurrentSampleIndex(0),
+			mRandomGenerator(std::make_shared<random_generator>(static_cast<uint64>(seed))), mCurrentSampleIndex(0),
+			mSamplesPerPixel(samples_per_pixel)
+		{
+		}
+
+		template <size_t Dimension>
+		sampler_t<Dimension>::sampler_t(size_t samples_per_pixel, const std::shared_ptr<random_generator>& generator) :
+			mRandomGenerator(generator), mCurrentSampleIndex(0),
 			mSamplesPerPixel(samples_per_pixel)
 		{
 		}

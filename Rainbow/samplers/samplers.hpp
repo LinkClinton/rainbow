@@ -22,17 +22,21 @@ namespace rainbow {
 			
 			explicit sampler_t(size_t samples_per_pixel, size_t seed);
 
+			explicit sampler_t(size_t samples_per_pixel, const std::shared_ptr<random_generator>& generator);
+			
 			size_t samples_per_pixel() const noexcept;
 			
 			virtual std::shared_ptr<sampler_t<Dimension>> clone(size_t seed) const = 0;
 
+			virtual std::shared_ptr<sampler_t<Dimension>> clone(const std::shared_ptr<random_generator>& generator) const = 0;
+			
 			virtual sample_type next() = 0;
 			
 			virtual void next_sample();
 
 			virtual void reset();
 		protected:
-			random_generator mRandomGenerator;
+			std::shared_ptr<random_generator> mRandomGenerator;
 
 			size_t mCurrentSampleIndex;
 			size_t mSamplesPerPixel;

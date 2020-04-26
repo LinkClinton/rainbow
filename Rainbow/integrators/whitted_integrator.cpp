@@ -19,10 +19,12 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 	// if we do not find the shape that the ray intersect
 	// we will return L
 	if (!interaction.has_value()) return L;
-
+	
 	// get the scattering functions from material which the ray intersect
-	const auto scattering_functions = 
-		interaction->entity->component<material>()->build_scattering_functions(interaction.value());
+	const auto scattering_functions =
+		interaction->entity->has_component<material>() ?
+		interaction->entity->component<material>()->build_scattering_functions(interaction.value()) :
+		scattering_function_collection();
 
 	// when the scattering functions is empty, we can think it is a invisible shape
 	// we will continue spawn a ray without changing the direction
@@ -92,7 +94,7 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::specular_refract(
 		scattering_type::transmission | scattering_type::specular);
 
 	const auto dot_value = abs(dot(scattering_sample.wi, interaction.shading_space.z()));
-
+	
 	// we do not trace a ray that does not has contribution
 	if (scattering_sample.pdf <= 0 || scattering_sample.value.is_black() || dot_value == 0)
 		return 0;

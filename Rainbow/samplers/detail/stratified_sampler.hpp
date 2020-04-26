@@ -26,9 +26,26 @@ namespace rainbow {
 		}
 
 		template <size_t Dimension>
+		stratified_sampler_t<Dimension>::stratified_sampler_t(size_t samples_per_pixel_x, size_t samples_per_pixel_y,
+			size_t dimension, const std::shared_ptr<random_generator>& generator) :
+			sampler_t<Dimension>(samples_per_pixel_x* samples_per_pixel_y, generator), mSamples(dimension), mCurrentDimension(0),
+			mSamplesPerPixelX(samples_per_pixel_x), mSamplesPerPixelY(samples_per_pixel_y)
+		{
+			for (size_t index = 0; index < mSamples.size(); index++)
+				mSamples[index] = samples(this->mSamplesPerPixel);
+		}
+
+		template <size_t Dimension>
 		std::shared_ptr<sampler_t<Dimension>> stratified_sampler_t<Dimension>::clone(size_t seed) const
 		{
 			return std::make_shared<stratified_sampler_t<Dimension>>(mSamplesPerPixelX, mSamplesPerPixelY, mSamples.size(), seed);
+		}
+
+		template <size_t Dimension>
+		std::shared_ptr<sampler_t<Dimension>> stratified_sampler_t<Dimension>::clone(
+			const std::shared_ptr<random_generator>& generator) const
+		{
+			return std::make_shared<stratified_sampler_t<Dimension>>(mSamplesPerPixelX, mSamplesPerPixelY, mSamples.size(), generator);
 		}
 
 		template <size_t Dimension>
@@ -42,7 +59,7 @@ namespace rainbow {
 			typename sampler_t<Dimension>::sample_type sample;
 
 			for (auto index = 0; index < Dimension; index++)
-				sample[index] = this->mRandomGenerator.uniform_real();
+				sample[index] = this->mRandomGenerator->uniform_real();
 
 			return sample;
 		}
@@ -74,7 +91,7 @@ namespace rainbow {
 			const auto one = 1 - std::numeric_limits<real>::epsilon();
 
 			for (size_t index = 0; index < samples.size(); index++) {
-				const auto delta = mRandomGenerator.uniform_real();
+				const auto delta = mRandomGenerator->uniform_real();
 
 				samples[index].x = math::min((index + delta) * inv_samples, one);
 			}
@@ -84,7 +101,7 @@ namespace rainbow {
 		void stratified_sampler_t<Dimension>::shuffle(samples& samples)
 		{
 			for (size_t index = 0; index < samples.size(); index++) {
-				const auto other = index + this->mRandomGenerator.uint32(0, static_cast<uint32>(samples.size() - index - 1));
+				const auto other = index + this->mRandomGenerator->uint32(0, static_cast<uint32>(samples.size() - index - 1));
 
 				std::swap(samples[index], samples[other]);
 			}
@@ -101,8 +118,8 @@ namespace rainbow {
 			
 			for (size_t y = 0; y < mSamplesPerPixelY; y++) {
 				for (size_t x = 0; x < mSamplesPerPixelX; x++) {
-					const auto delta_x = mRandomGenerator.uniform_real();
-					const auto delta_y = mRandomGenerator.uniform_real();
+					const auto delta_x = mRandomGenerator->uniform_real();
+					const auto delta_y = mRandomGenerator->uniform_real();
 
 					samples[index].x = math::min((x + delta_x) * dx, one);
 					samples[index].y = math::min((y + delta_y) * dy, one);

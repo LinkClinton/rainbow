@@ -8,6 +8,8 @@
 
 #endif
 
+#include "../shared/logs/log.hpp"
+
 rainbow::cameras::pixel::pixel() : pixel(spectrums::spectrum(0), 0)
 {
 	
@@ -137,6 +139,8 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 		if (y_position < mPixelsBound.min.y || y_position >= mPixelsBound.max.y) continue;
 		
 		const auto spectrum = mPixels[index].spectrum();
+
+		if (spectrum.has_nan()) logs::warn("pixel [{0}, {1}] has nan.", x_position, y_position);
 		
 		colors[index * 4 + 0] = to_byte(spectrum.red());
 		colors[index * 4 + 1] = to_byte(spectrum.green());

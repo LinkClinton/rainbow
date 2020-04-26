@@ -1,5 +1,7 @@
 #include "path_integrator.hpp"
 
+#include "../shared/logs/log.hpp"
+
 rainbow::integrators::path_integrator::path_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d, 
 	const std::shared_ptr<sampler1d>& sampler1d, size_t max_depth) :
@@ -15,7 +17,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 {
 	spectrum beta = 1;
 	spectrum L = 0;
-
+	
 	// ray is the current ray in current bounces
 	auto ray = first_ray;
 
@@ -70,14 +72,16 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 			beta = beta / (1 - q);
 		}
 	}
-
+	
 	return L;
 }
 
 rainbow::integrators::sampler_group rainbow::integrators::path_integrator::prepare_samplers(uint64 seed)
 {
+	const auto generator = std::make_shared<random_generator>(seed);
+	
 	return sampler_group(
-		mSampler1D->clone(seed),
-		mSampler2D->clone(seed)
+		mSampler1D->clone(generator),
+		mSampler2D->clone(generator)
 	);
 }

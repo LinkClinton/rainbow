@@ -2,7 +2,9 @@
 
 #include "../shared/logs/log.hpp"
 
+#ifndef _DEBUG
 #define __PARALLEL_RENDER__
+#endif
 
 #include <execution>
 #include <chrono>

@@ -135,7 +135,7 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real wi
 		20, 21, 22, 20, 22, 23
 	};
 
-	return std::make_shared<mesh>(positions, normals, uvs, indices, true);
+	return std::make_shared<mesh>(positions, normals, uvs, indices);
 }
 
 std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real width, real height)

@@ -13,7 +13,12 @@ namespace rainbow {
 
 			explicit stratified_sampler_t(size_t samples_per_pixel_x, size_t samples_per_pixel_y, size_t dimension, size_t seed);
 
+			explicit stratified_sampler_t(size_t samples_per_pixel_x, size_t samples_per_pixel_y, size_t dimension,
+				const std::shared_ptr<random_generator>& generator);
+			
 			std::shared_ptr<sampler_t<Dimension>> clone(size_t seed) const override;
+
+			std::shared_ptr<sampler_t<Dimension>> clone(const std::shared_ptr<random_generator>& generator) const override;
 
 			typename sampler_t<Dimension>::sample_type next() override;
 

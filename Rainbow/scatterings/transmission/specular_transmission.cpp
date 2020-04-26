@@ -16,8 +16,9 @@ rainbow::spectrum rainbow::scatterings::specular_transmission::evaluate(const ve
 rainbow::scatterings::scattering_sample rainbow::scatterings::specular_transmission::sample(
 	const vector3& wo, const vector2& sample) const
 {
-	// the surface normal in the internal space, wo when wo and normal are in the same hemisphere
-	// the wi should from the out world.
+	// the surface normal indicate the outside of surface
+	// when dot(wo, normal) > 0, it means the ray intersect point on the surface from outside
+	// so the eta_i should be mEtaI(the eta of medium where surface normal on)
 	const auto entering = cos_theta(wo) > 0;
 
 	const auto eta_i = entering ? mEtaI : mEtaO;

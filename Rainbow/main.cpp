@@ -22,8 +22,8 @@ using namespace rainbow;
 vector2 resolution(1280 / 2, 720 / 2);
 
 int main() {
-	//const auto crop_window_min = vector2(0.2f);
-	//const auto crop_window_max = vector2(0.8f);
+	//const auto crop_window_min = vector2(0.4f, 0.3f);
+	//const auto crop_window_max = vector2(0.6f, 0.5f);
 
 	const auto crop_window_min = vector2(0.0f, 0.0f);
 	const auto crop_window_max = vector2(1.0f, 1.0f);
@@ -61,10 +61,11 @@ int main() {
 	
 	scene->add_entity(
 		std::make_shared<entity>(
-			std::make_shared<plastic_material>(
+			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.f, 0.f, 1.f)),
-				std::make_shared<constant_texture2d<real>>(0.04f), false),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
+				std::make_shared<constant_texture2d<real>>(1.5f)),
 			nullptr,
 			std::make_shared<sphere>(1.f),
 			translate(vector3(-1.8f, -1.8f, 1.0f)))
@@ -73,9 +74,9 @@ int main() {
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.04f), false),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0.f, 0.f)),
+				std::make_shared<constant_texture2d<real>>(0.5f)),
 			nullptr,
 			std::make_shared<sphere>(1.f),
 			translate(vector3(1.8f, -1.8f, 1.0f)))
@@ -84,12 +85,12 @@ int main() {
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.0f, 0.2f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.04f), false),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0.f, 0.f)),
+				std::make_shared<constant_texture2d<real>>(0.5f)),
 			nullptr,
 			mesh::create_box(2, 2, 2),
-			translate(vector3(0, 0, 1)) * rotate(45.f, vector3(0, 0, 1)))
+			translate(vector3(0, 0, 1.f)) * rotate(45.f, vector3(0, 0, 1)))
 	);
 	
 	scene->add_entity(
@@ -108,7 +109,7 @@ int main() {
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
 				std::make_shared<constant_texture2d<real>>(0.4f)
 				),
 			nullptr,

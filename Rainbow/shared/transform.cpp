@@ -118,7 +118,8 @@ rainbow::vector3 rainbow::transform_vector(const transform& transform, const vec
 
 rainbow::vector3 rainbow::transform_normal(const transform& transform, const vector3& normal)
 {
-	return normalize(transpose(transform.inverse_matrix()) * vector4(normal, 0));
+	// before normalize it, we should convert it from vector4 to vector3
+	return normalize(vector3(transpose(transform.inverse_matrix()) * vector4(normal, 0)));
 }
 
 rainbow::interaction rainbow::transform_interaction(const transform& transform, const interaction& interaction)

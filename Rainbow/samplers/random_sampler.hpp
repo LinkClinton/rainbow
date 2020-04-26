@@ -13,7 +13,11 @@ namespace rainbow {
 			
 			explicit random_sampler_t(size_t samples_per_pixel, size_t seed);
 
+			explicit random_sampler_t(size_t samples_per_pixel, const std::shared_ptr<random_generator>& generator);
+
 			std::shared_ptr<sampler_t<Dimension>> clone(size_t seed) const override;
+
+			std::shared_ptr<sampler_t<Dimension>> clone(const std::shared_ptr<random_generator>& generator) const override;
 
 			typename sampler_t<Dimension>::sample_type next() override;
 		};
