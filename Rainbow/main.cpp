@@ -36,105 +36,91 @@ int main() {
 	
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -4.f, 4.5f)) * rotate(45.f, vector3(1, 0, 0)),
+		translate(vector3(0, -9.3f, 10.5f)) * rotate(45.f, vector3(1, 0, 0)),
 		bound2(
-			vector2(-resolution.x * 0.5f, -resolution.y * 0.5f),
-			vector2(+resolution.x * 0.5f, +resolution.y * 0.5f)
+			vector2(-resolution.x, -resolution.y) * 0.1f,
+			vector2(+resolution.x, +resolution.y) * 0.1f
 		),
 		quarter_pi<real>()
 		);
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	/*scene->add_entity(
-		std::make_shared<entity>(
-			std::make_shared<glass_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.f)),
-				std::make_shared<constant_texture2d<real>>(1.5f)
-				),
-			nullptr,
-			std::make_shared<sphere>(1.f),
-			translate(vector3(-1.1f, 0, 1.0f)))
-	);*/
-	
-	scene->add_entity(
-		std::make_shared<entity>(
-			std::make_shared<glass_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.001f)),
-				std::make_shared<constant_texture2d<real>>(1.5f)),
-			nullptr,
-			std::make_shared<sphere>(1.f),
-			translate(vector3(-1.8f, -1.8f, 1.0f)))
-	);
-
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.5f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
+				std::make_shared<constant_texture2d<real>>(0.3f)),
 			nullptr,
 			std::make_shared<sphere>(1.f),
-			translate(vector3(1.8f, -1.8f, 1.0f)))
+			translate(vector3(0, 0, 1.f)))
 	);
 
 	scene->add_entity(
 		std::make_shared<entity>(
-			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.5f)),
+			std::make_shared<glass_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
+				std::make_shared<constant_texture2d<real>>(1.5f), false),
 			nullptr,
-			mesh::create_box(2, 2, 2),
-			translate(vector3(0, 0, 1.f)) * rotate(45.f, vector3(0, 0, 1)))
+			std::make_shared<sphere>(1.f),
+			translate(vector3(2.1f, 0, 1.f)))
 	);
-	
+
+	scene->add_entity(
+		std::make_shared<entity>(
+			std::make_shared<glass_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
+				std::make_shared<constant_texture2d<real>>(1.5f), false),
+			nullptr,
+			std::make_shared<sphere>(1.f),
+			translate(vector3(-2.1f, 0, 1.f)))
+	);
+
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<spectrum>>(0.83f),
-				std::make_shared<constant_texture2d<real>>(0.3f)
-				),
+				std::make_shared<constant_texture2d<real>>(0.3f)),
 			nullptr,
-			std::make_shared<disk>(500.f),
-			translate(vector3(0, 0, 0.f)))
+			mesh::create_quad(100, 100),
+			translate(vector3(0, 0, 0)))
 	);
 
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0.f, 0.f)),
-				std::make_shared<constant_texture2d<real>>(0.4f)
-				),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0, 0)),
+				std::make_shared<constant_texture2d<real>>(0.3f)),
 			nullptr,
-			std::make_shared<disk>(100.f),
-			translate(vector3(0, 1.5, 0)) * rotate(-90.f, vector3(1, 0, 0)))
+			mesh::create_quad(100, 100),
+			translate(vector3(0, 1.5f, 0)) * rotate(90.f, vector3(-1, 0, 0)))
 	);
 
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
-			std::make_shared<surface_light>(spectrum(4)),
+			std::make_shared<surface_light>(spectrum(10)),
 			std::make_shared<disk>(0.5f),
 			translate(vector3(0, 0.f, 5.f)) * rotate(180.f, vector3(1, 0, 0)))
 	);
 	
-	scene->add_entity(
+	/*scene->add_entity(
 		std::make_shared<entity>(nullptr,
-			std::make_shared<surface_light>(spectrum(8)),
-			std::make_shared<sphere>(0.5f),
-			translate(vector3(0, -2.0, 5.0f)))
-	);
+			std::make_shared<surface_light>(spectrum(2)),
+			std::make_shared<disk>(0.5f),
+			translate(vector3(0, 0.f, 3.f)) * rotate(180.f, vector3(1, 0, 0)))
+	);*/
 	
-	const auto samples_per_pixel_x = static_cast<size_t>(4);
-	const auto samples_per_pixel_y = static_cast<size_t>(4);
+	const auto samples_per_pixel_x = static_cast<size_t>(16);
+	const auto samples_per_pixel_y = static_cast<size_t>(16);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
-	const auto dimension = 16;
+	const auto dimension = 32;
 	
 	/*const auto integrator = std::make_shared<integrators::whitted_integrator>(
 		std::make_shared<random_sampler2d>(samples_per_pixel),
@@ -146,12 +132,12 @@ int main() {
 		//std::make_shared<random_sampler1d>(samples_per_pixel),
 		std::make_shared<stratified_sampler2d>(samples_per_pixel_x, samples_per_pixel_y, dimension),
 		std::make_shared<stratified_sampler1d>(samples_per_pixel_x, samples_per_pixel_y, dimension),
-		5
+		10
 		);
-
+	
 	integrator->render(camera, scene);
 	
 	film->write("image");
 
-	//system("pause");
+	system("pause");
 }

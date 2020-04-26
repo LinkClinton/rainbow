@@ -40,9 +40,9 @@ namespace rainbow {
 			
 			bool has_uv() const noexcept;
 
-			static std::shared_ptr<mesh> create_box(real width, real height, real depth);
+			static std::shared_ptr<mesh> create_box(real width, real height, real depth, bool reverse_orientation = false);
 
-			static std::shared_ptr<mesh> create_quad(real width, real height);
+			static std::shared_ptr<mesh> create_quad(real width, real height, bool reverse_orientation = false);
 		private:
 			std::optional<surface_interaction> intersect_with_triangle(const ray& ray, size_t face) const;
 			

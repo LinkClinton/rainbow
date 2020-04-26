@@ -87,7 +87,7 @@ bool rainbow::shapes::mesh::has_uv() const noexcept
 	return !mUVs.empty();
 }
 
-std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real width, real height, real depth)
+std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real width, real height, real depth, bool reverse_orientation)
 {
 	const auto w2 = 0.5f * width;
 	const auto h2 = 0.5f * height;
@@ -135,10 +135,10 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real wi
 		20, 21, 22, 20, 22, 23
 	};
 
-	return std::make_shared<mesh>(positions, normals, uvs, indices);
+	return std::make_shared<mesh>(positions, normals, uvs, indices, reverse_orientation);
 }
 
-std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real width, real height)
+std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real width, real height, bool reverse_orientation)
 {
 	const auto w2 = 0.5f * width;
 	const auto h2 = 0.5f * height;
@@ -163,7 +163,7 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real w
 		2, 3, 0
 	};
 
-	return std::make_shared<mesh>(positions, normals, uvs, indices);
+	return std::make_shared<mesh>(positions, normals, uvs, indices, reverse_orientation);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_with_triangle(const ray& ray, size_t face) const
