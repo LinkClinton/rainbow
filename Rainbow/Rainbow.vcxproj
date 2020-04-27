@@ -167,12 +167,12 @@
     <ClCompile Include="integrators\path_integrator.cpp" />
     <ClCompile Include="integrators\sampler_integrator.cpp" />
     <ClCompile Include="integrators\whitted_integrator.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="materials\matte_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
+    <ClCompile Include="rainbow\main.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
@@ -223,6 +223,7 @@
     <ClInclude Include="materials\matte_material.hpp" />
     <ClInclude Include="materials\mirror_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
+    <ClInclude Include="rainbow\test_scenes\glass_sphere_scene.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
     <ClInclude Include="samplers\detail\stratified_sampler.hpp" />

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="shared\random_generator.cpp">
       <Filter>shared</Filter>
     </ClCompile>
@@ -143,6 +142,9 @@
     <ClCompile Include="shapes\mesh.cpp">
       <Filter>shapes</Filter>
     </ClCompile>
+    <ClCompile Include="rainbow\main.cpp">
+      <Filter>rainbow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -219,6 +221,12 @@
     </Filter>
     <Filter Include="shared\logs\detail">
       <UniqueIdentifier>{c370a717-268e-4e52-bc6f-4033167efa00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rainbow">
+      <UniqueIdentifier>{6c414cd8-857d-4c2a-9c0d-26f041810de4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rainbow\test_scenes">
+      <UniqueIdentifier>{df125f87-189a-47fd-aa95-515a0f34dfe8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -464,6 +472,9 @@
     </ClInclude>
     <ClInclude Include="shapes\mesh.hpp">
       <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="rainbow\test_scenes\glass_sphere_scene.hpp">
+      <Filter>rainbow\test_scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

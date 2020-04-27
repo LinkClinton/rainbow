@@ -1,14 +1,17 @@
 #include "mesh.hpp"
 
+#include "../scatterings/scattering_function.hpp"
+#include "../shared/sample_function.hpp"
 #include "../shared/logs/log.hpp"
 
 rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& positions,
+	const std::vector<vector3>& tangents,
 	const std::vector<vector3>& normals,
 	const std::vector<vector3>& uvs,
 	const std::vector<unsigned>& indices,
 	bool reverse_orientation) : shape(reverse_orientation),
-	mPositions(positions), mNormals(normals), mUVs(uvs),
+	mPositions(positions), mTangents(tangents), mNormals(normals), mUVs(uvs),
 	mIndices(indices), mFaceCount(mIndices.size() / 3), mArea(0)
 {
 	for (size_t index = 0; index < mFaceCount; index++)
@@ -30,12 +33,41 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(con
 
 rainbow::shapes::shape_sample rainbow::shapes::mesh::sample(const vector2& sample) const
 {
-	throw std::exception("not implementation.");
+	const auto which = std::min(static_cast<size_t>(std::floor(sample.x * mFaceCount)),
+		mFaceCount - 1);
+
+	const auto sample_remapped = vector2(
+		std::min(sample.x * mFaceCount - which,
+			static_cast<real>(1) - std::numeric_limits<real>::epsilon()),
+		sample.y);
+
+	const auto positions = mesh::positions(which);
+
+	// sample the triangle and get the point in barycentric coordinates
+	const auto b = uniform_sample_triangle(sample_remapped);
+
+	interaction interaction;
+
+	interaction.point = positions[0] * b[0] + positions[1] * b[1] + positions[2] * (1 - b[0] - b[1]);
+	interaction.normal = normalize(math::cross(positions[1] - positions[0], positions[2] - positions[0]));
+
+	if (has_normal()) {
+		const auto normals = mesh::normals(which);
+		
+		interaction.normal = normals[0] * b[0] + normals[1] * b[1] + normals[2] * (1 - b[0] - b[1]);
+	}
+
+	if (reverse_orientation()) interaction.normal = interaction.normal * -1.f;
+
+	return shape_sample(
+		interaction,
+		pdf()
+	);
 }
 
 rainbow::real rainbow::shapes::mesh::pdf() const
 {
-	throw std::exception("not implementation.");
+	return 1 / area();
 }
 
 rainbow::real rainbow::shapes::mesh::area() const noexcept
@@ -59,6 +91,15 @@ std::array<rainbow::vector3, 3> rainbow::shapes::mesh::positions(size_t face) co
 	};
 }
 
+std::array<rainbow::vector3, 3> rainbow::shapes::mesh::tangents(size_t face) const noexcept
+{
+	return {
+		has_tangent() ? mTangents[mIndices[face * 3 + 0]] : vector3(),
+		has_tangent() ? mTangents[mIndices[face * 3 + 1]] : vector3(),
+		has_tangent() ? mTangents[mIndices[face * 3 + 2]] : vector3()
+	};
+}
+
 std::array<rainbow::vector3, 3> rainbow::shapes::mesh::normals(size_t face) const noexcept
 {
 	return {
@@ -75,6 +116,11 @@ std::array<rainbow::vector3, 3> rainbow::shapes::mesh::uvs(size_t face) const no
 		has_uv() ? mUVs[mIndices[face * 3 + 1]] : vector3(1, 0, 0),
 		has_uv() ? mUVs[mIndices[face * 3 + 2]] : vector3(1, 1, 0)
 	};
+}
+
+bool rainbow::shapes::mesh::has_tangent() const noexcept
+{
+	return !mTangents.empty();
 }
 
 bool rainbow::shapes::mesh::has_normal() const noexcept
@@ -104,6 +150,8 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real wi
 		vector3(+w2, +h2, -d2), vector3(+w2, +h2, +d2), vector3(+w2, -h2, +d2)
 	};
 
+	std::vector<vector3> tangents;
+	
 	std::vector<vector3> normals = {
 		vector3(+0.0f, +0.0f, -1.0f), vector3(+0.0f, +0.0f, -1.0f), vector3(+0.0f, +0.0f, -1.0f),
 		vector3(+0.0f, +0.0f, -1.0f), vector3(+0.0f, +0.0f, +1.0f), vector3(+0.0f, +0.0f, +1.0f),
@@ -135,7 +183,7 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real wi
 		20, 21, 22, 20, 22, 23
 	};
 
-	return std::make_shared<mesh>(positions, normals, uvs, indices, reverse_orientation);
+	return std::make_shared<mesh>(positions, tangents, normals, uvs, indices, reverse_orientation);
 }
 
 std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real width, real height, bool reverse_orientation)
@@ -148,6 +196,8 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real w
 		vector3(+w2, -h2, 0), vector3(+w2, +h2, 0)
 	};
 
+	std::vector<vector3> tangents;
+	
 	std::vector<vector3> normals = {
 		vector3(0, 0, 1), vector3(0, 0, 1),
 		vector3(0, 0, 1), vector3(0, 0, 1)
@@ -163,45 +213,114 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real w
 		2, 3, 0
 	};
 
-	return std::make_shared<mesh>(positions, normals, uvs, indices, reverse_orientation);
+	return std::make_shared<mesh>(positions, tangents, normals, uvs, indices, reverse_orientation);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_with_triangle(const ray& ray, size_t face) const
 {
-	const auto points = positions(face);
+	const auto positions = mesh::positions(face);
 	const auto uvs = mesh::uvs(face);
-	
-	const auto e1 = points[1] - points[0];
-	const auto e2 = points[2] - points[0];
+
+	const auto e1 = positions[1] - positions[0];
+	const auto e2 = positions[2] - positions[0];
 
 	const auto p_vec = math::cross(ray.direction, e2);
-	const auto t_vec = ray.origin - points[0];
+	const auto t_vec = ray.origin - positions[0];
 	const auto q_vec = math::cross(t_vec, e1);
-	
+
 	const auto inv_det = static_cast<real>(1) / dot(e1, p_vec);
-	
+
 	const auto b1 = dot(t_vec, p_vec) * inv_det;
 	const auto b2 = dot(ray.direction, q_vec) * inv_det;
 	const auto b0 = 1 - b1 - b2;
 
 	const auto t = dot(e2, q_vec) * inv_det;
 
-	if (t <= 0 || t >= ray.length) return {};
+	if (t <= 0 || t >= ray.length) return std::nullopt;
 
-	if (b0 < 0 || b0 > 1) return {};
-	if (b1 < 0 || b1 > 1) return {};
-	if (b2 < 0 || b2 > 1) return {};
+	if (b0 < 0 || b0 > 1) return std::nullopt;
+	if (b1 < 0 || b1 > 1) return std::nullopt;
+	if (b2 < 0 || b2 > 1) return std::nullopt;
 
-	const auto point = points[0] * b0 + points[1] * b1 + points[2] * b2;
+	const auto point = positions[0] * b0 + positions[1] * b1 + positions[2] * b2;
 	const auto uv = uvs[0] * b0 + uvs[1] * b1 + uvs[2] * b2;
 	const auto normal = reverse_orientation() ? -normalize(math::cross(e1, e2)) : normalize(math::cross(e1, e2));
-	const auto system = coordinate_system(normal);
+
+	const auto duv02 = uvs[0] - uvs[2];
+	const auto duv12 = uvs[1] - uvs[2];
+	const auto dp02 = positions[0] - positions[2];
+	const auto dp12 = positions[1] - positions[2];
+	const auto determinant = duv02[0] * duv12[1] - duv02[1] * duv12[0];
+	const auto inv_determinant = 1 / determinant;
+
+	auto dp_du = (+duv12[1] * dp02 - duv02[1] * dp12) * inv_determinant;
+	auto dp_dv = (-duv12[0] * dp02 + duv02[0] * dp12) * inv_determinant;
+	
+	// when the uv is degenerate, we will use normal to generate a space
+	if (abs(determinant) < 1e-8 || length(math::cross(dp_du, dp_dv)) == 0) {
+		// the triangle is degenerate, we can not intersect it
+		if (length_squared(normal) == 0) return std::nullopt;
+
+		const auto system = coordinate_system(normal);
+
+		dp_du = system.x();
+		dp_dv = system.y();
+	}
+
+	// compute the shading space
+	coordinate_system shading_space;
+
+	// when we have normal property, we will use barycentric coordinates to compute the z of shading space
+	// if we do not have it, we will use normal of triangle
+	if (has_normal()) {
+		// get normals
+		const auto normals = mesh::normals(face);
+
+		shading_space.z() = b0 * normals[0] + b1 * normals[1] + b2 * normals[2];
+
+		// reverse the normal if need
+		if (reverse_orientation()) shading_space.z() = shading_space.z() * -1.f;
+
+		// when the normal is degenerate, we will use surface normal
+		if (length_squared(shading_space.z()) <= 0) shading_space.z() = normal;
+	}
+	else shading_space.z() = normal;
+	
+	// when we have normal property, we will use barycentric coordinates to compute the x of shading space
+	// if we do not have it, we will use dp_du
+	if (has_tangent()) {
+		// get tangents
+		const auto tangents = mesh::tangents(face);
+
+		shading_space.x() = b0 * tangents[0] + b1 * tangents[1] + b2 * tangents[2];
+
+		// reverse the tangent if need
+		if (reverse_orientation()) shading_space.x() = shading_space.x() * -1.f;
+
+		// when the tangent is degenerate, we will use the dp_du
+		if (length_squared(shading_space.x()) <= 0) shading_space.x() = dp_du;
+	}
+	else shading_space.x() = dp_du;
+
+	shading_space.x() = normalize(shading_space.x());
+	shading_space.z() = normalize(shading_space.z());
+	
+	// now, compute the "bitangent"(y) of shading space
+	shading_space.y() = math::cross(shading_space.z(), shading_space.x());
+
+	if (length_squared(shading_space.y()) > 0) {
+		shading_space.y() = normalize(shading_space.y());
+		shading_space.x() = normalize(math::cross(shading_space.y(), shading_space.z()));
+	}
+	else
+		shading_space = coordinate_system(shading_space.z());
 
 	ray.length = t;
-	
+
 	return surface_interaction(
 		nullptr,
-		system.x(), system.y(),
+		shading_space,
+		dp_du, dp_dv,
 		normal, point, -ray.direction,
 		uv
 	);

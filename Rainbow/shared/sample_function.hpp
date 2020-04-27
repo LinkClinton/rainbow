@@ -13,6 +13,8 @@ namespace rainbow {
 	vector2 concentric_sample_disk(const vector2& sample);
 
 	vector3 uniform_sample_sphere(const vector2& sample);
+
+	vector2 uniform_sample_triangle(const vector2& sample);
 	
 	real uniform_sample_hemisphere_pdf();
 

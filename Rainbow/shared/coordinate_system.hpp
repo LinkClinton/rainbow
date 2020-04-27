@@ -18,6 +18,12 @@ namespace rainbow {
 		coordinate_system(const std::array<vector3, 3>& axes);
 		
 		coordinate_system(const vector3& x, const vector3& y, const vector3& z);
+
+		vector3& x() noexcept;
+
+		vector3& y() noexcept;
+
+		vector3& z() noexcept;
 		
 		vector3 x() const noexcept;
 

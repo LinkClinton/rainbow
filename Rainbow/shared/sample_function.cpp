@@ -54,6 +54,13 @@ rainbow::vector3 rainbow::uniform_sample_sphere(const vector2& sample)
 	return vector3(r * cos(phi), r * sin(phi), z);
 }
 
+rainbow::vector2 rainbow::uniform_sample_triangle(const vector2& sample)
+{
+	const auto u = sqrt(sample.x);
+
+	return vector2(1 - u, sample.y * u);
+}
+
 rainbow::real rainbow::uniform_sample_hemisphere_pdf()
 {
 	return one_over_two_pi<real>();

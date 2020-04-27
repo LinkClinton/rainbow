@@ -13,6 +13,7 @@ namespace rainbow {
 		public:
 			explicit mesh(
 				const std::vector<vector3>& positions,
+				const std::vector<vector3>& tangents,
 				const std::vector<vector3>& normals,
 				const std::vector<vector3>& uvs,
 				const std::vector<unsigned>& indices,
@@ -32,9 +33,13 @@ namespace rainbow {
 
 			std::array<vector3, 3> positions(size_t face) const noexcept;
 
+			std::array<vector3, 3> tangents(size_t face) const noexcept;
+			
 			std::array<vector3, 3> normals(size_t face) const noexcept;
 
 			std::array<vector3, 3> uvs(size_t face) const noexcept;
+
+			bool has_tangent() const noexcept;
 			
 			bool has_normal() const noexcept;
 			
@@ -47,6 +52,7 @@ namespace rainbow {
 			std::optional<surface_interaction> intersect_with_triangle(const ray& ray, size_t face) const;
 			
 			std::vector<vector3> mPositions;
+			std::vector<vector3> mTangents;
 			std::vector<vector3> mNormals;
 			std::vector<vector3> mUVs;
 			

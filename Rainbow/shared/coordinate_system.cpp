@@ -31,6 +31,21 @@ rainbow::coordinate_system::coordinate_system(const vector3& x, const vector3& y
 {
 }
 
+rainbow::vector3& rainbow::coordinate_system::x() noexcept
+{
+	return axes[0];
+}
+
+rainbow::vector3& rainbow::coordinate_system::y() noexcept
+{
+	return axes[1];
+}
+
+rainbow::vector3& rainbow::coordinate_system::z() noexcept
+{
+	return axes[2];
+}
+
 rainbow::vector3 rainbow::coordinate_system::x() const noexcept
 {
 	return axes[0];
