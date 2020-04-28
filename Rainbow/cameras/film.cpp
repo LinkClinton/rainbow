@@ -1,14 +1,7 @@
 #include "film.hpp"
 
-#ifdef __STB_WRITE_IMAGE__
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-
-#include <stb_image_write.h>
-
-#endif
-
 #include "../shared/logs/log.hpp"
+#include "../shared/file_system.hpp"
 
 rainbow::cameras::pixel::pixel() : pixel(spectrums::spectrum(0), 0)
 {
@@ -114,8 +107,6 @@ rainbow::cameras::film::film(
 	);
 }
 
-#ifdef __STB_WRITE_IMAGE__
-
 void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 {
 	using byte = unsigned char;
@@ -148,15 +139,8 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 		colors[index * 4 + 3] = 255;
 	}
 
-	stbi_write_png((file_name + ".png").c_str(),
-		mResolution.x,
-		mResolution.y,
-		4,
-		colors.data(),
-		0);
+	file_system::write_image(file_name + ".png", colors, mResolution.x, mResolution.y);
 }
-
-#endif
 
 void rainbow::cameras::film::add_sample(const vector2& position, const spectrum& sample) noexcept
 {
@@ -225,11 +209,4 @@ std::shared_ptr<rainbow::filter> rainbow::cameras::film::filter() const noexcept
 rainbow::int32 rainbow::cameras::film::pixel_index(const vector2i& position) const noexcept
 {
 	return position.y * mResolution.x + position.x;
-}
-
-rainbow::real rainbow::cameras::gamma_correct(real value)
-{
-	if (value <= 0.0031308f) return 12.92f * value;
-
-	return 1.055f * pow(value, 1.f / 2.4f) - 0.055f;
 }

@@ -10,8 +10,6 @@
 #include <vector>
 #include <memory>
 
-#define __STB_WRITE_IMAGE__
-
 namespace rainbow {
 
 	using namespace spectrums;
@@ -59,10 +57,8 @@ namespace rainbow {
 				const vector2i& resolution,
 				const bound2& crop_window);
 
-#ifdef __STB_WRITE_IMAGE__
 			void write(const std::string& file_name) const noexcept;
-#endif
-			
+		
 			void add_sample(const vector2& position, const spectrum& sample) noexcept;
 
 			void add_tile(const film_tile& tile);
@@ -83,7 +79,5 @@ namespace rainbow {
 			bound2i mPixelsBound;
 		};
 
-		real gamma_correct(real value);
-		
 	}
 }

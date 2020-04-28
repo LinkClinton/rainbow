@@ -145,6 +145,9 @@
     <ClCompile Include="rainbow\main.cpp">
       <Filter>rainbow</Filter>
     </ClCompile>
+    <ClCompile Include="shared\file_system.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -484,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="textures\detail\image_texture.hpp">
       <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\file_system.hpp">
+      <Filter>shared</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

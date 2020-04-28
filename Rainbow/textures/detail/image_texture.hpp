@@ -29,18 +29,21 @@ namespace rainbow {
 		T image_texture_t<2, T>::sample(const surface_interaction& interaction) const
 		{
 			const auto uv = vector2(
-				interaction.uv.x * this->mSize.x,
-				interaction.uv.y * this->mSize.y);
+				fmod(interaction.uv.x, 1) * (this->mSize.x - 1),
+				fmod(interaction.uv.y, 1) * (this->mSize.y - 1));
 
+			const auto min_range = vector2i(0);
+			const auto max_range = vector2i(this->mSize.x - 1, this->mSize.y - 1);
+			
 			// find the four point near the uv point
-			const auto uv00 = vector2i(floor(uv.x), floor(uv.y));
-			const auto uv01 = vector2i(floor(uv.x), ceil(uv.y));
-			const auto uv10 = vector2i(ceil(uv.x), floor(uv.y));
-			const auto uv11 = vector2i(ceil(uv.x), ceil(uv.y));
+			const auto uv00 = clamp(vector2i(floor(uv.x), floor(uv.y)), min_range, max_range);
+			const auto uv01 = clamp(vector2i(floor(uv.x), ceil(uv.y)), min_range, max_range);
+			const auto uv10 = clamp(vector2i(ceil(uv.x), floor(uv.y)), min_range, max_range);
+			const auto uv11 = clamp(vector2i(ceil(uv.x), ceil(uv.y)), min_range, max_range);
 
 			// find the delta value of uv
-			const auto du = uv.x - uv00.x;
-			const auto dv = uv.y - uv00.y;
+			const auto du = clamp(uv.x - uv00.x, 0.f, 1.f);
+			const auto dv = clamp(uv.y - uv00.y, 0.f, 1.f);
 
 			const auto v0 = lerp(
 				mValues[texture_region_t<2>::index(uv00)],

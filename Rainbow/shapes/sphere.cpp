@@ -47,8 +47,8 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	// now, we only use the whole sphere, so the phi_max should be 2 * pi
 	// theta should be the range [-1, 1]
 	const auto phi_max = two_pi<real>();
-	const auto theta_min = static_cast<real>(-1);
-	const auto theta_max = static_cast<real>(1);
+	const auto theta_min = acos(static_cast<real>(-1));
+	const auto theta_max = acos(static_cast<real>(1));
 	
 	// parametric representation of sphere hit
 	const auto theta = acos(clamp(point_hit.z / mRadius, static_cast<real>(-1), static_cast<real>(1)));
