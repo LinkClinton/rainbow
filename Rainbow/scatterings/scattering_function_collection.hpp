@@ -17,9 +17,11 @@ namespace rainbow {
 		class scattering_function_collection final {
 		public:
 			scattering_function_collection() = default;
+			
+			explicit scattering_function_collection(real eta);
 
 			explicit scattering_function_collection(
-				const std::vector<std::shared_ptr<scattering_function>>& functions);
+				const std::vector<std::shared_ptr<scattering_function>>& functions, real eta);
 
 			~scattering_function_collection() = default;
 
@@ -46,10 +48,14 @@ namespace rainbow {
 			size_t count(const scattering_type& include) const noexcept;
 			
 			size_t count() const noexcept;
+
+			real eta() const noexcept;
 		private:
 			std::vector<std::shared_ptr<scattering_function>> match(const scattering_type& include) const noexcept;
 		private:
 			std::vector<std::shared_ptr<scattering_function>> mScatteringFunctions;
+
+			real mEta = 1;
 		};
 		
 	}

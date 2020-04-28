@@ -476,5 +476,8 @@
     <ClInclude Include="rainbow\test_scenes\glass_sphere_scene.hpp">
       <Filter>rainbow\test_scenes</Filter>
     </ClInclude>
+    <ClInclude Include="rainbow\test_scenes\microfacet_specular_scene.hpp">
+      <Filter>rainbow\test_scenes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

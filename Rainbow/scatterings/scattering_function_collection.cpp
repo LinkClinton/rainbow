@@ -1,7 +1,11 @@
 #include "scattering_function_collection.hpp"
 
 rainbow::scatterings::scattering_function_collection::scattering_function_collection(
-	const std::vector<std::shared_ptr<scattering_function>>& functions) : mScatteringFunctions(functions)
+	const std::vector<std::shared_ptr<scattering_function>>& functions, real eta) : mScatteringFunctions(functions), mEta(eta)
+{
+}
+
+rainbow::scatterings::scattering_function_collection::scattering_function_collection(real eta) : mEta(eta)
 {
 }
 
@@ -144,6 +148,11 @@ size_t rainbow::scatterings::scattering_function_collection::count(const scatter
 size_t rainbow::scatterings::scattering_function_collection::count() const noexcept
 {
 	return mScatteringFunctions.size();
+}
+
+rainbow::real rainbow::scatterings::scattering_function_collection::eta() const noexcept
+{
+	return mEta;
 }
 
 std::vector<std::shared_ptr<rainbow::scatterings::scattering_function>>

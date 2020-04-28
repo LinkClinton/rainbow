@@ -8,6 +8,7 @@
 
 #include <execution>
 #include <chrono>
+#include <set>
 
 rainbow::integrators::sampler_integrator::sampler_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d, size_t max_depth) :
@@ -64,6 +65,13 @@ void rainbow::integrators::sampler_integrator::render(
 		}
 	}
 
+#ifdef _DEBUG
+	std::set<std::pair<int, int>> debug_pixel_lists;
+
+	for (const auto& debug_pixel : mDebugPixels) 
+		debug_pixel_lists.insert({ debug_pixel.x, debug_pixel.y });
+#endif
+
 #ifdef __PARALLEL_RENDER__
 	const auto execution_policy = std::execution::par;
 #else
@@ -87,17 +95,31 @@ void rainbow::integrators::sampler_integrator::render(
 
 			const auto trace_samplers = prepare_samplers(seed);
 
-			for (size_t y = input.tile.min.y; y < input.tile.max.y; y++) {
-				for (size_t x = input.tile.min.x; x < input.tile.max.x; x++) {
+			for (auto y = input.tile.min.y; y < input.tile.max.y; y++) {
+				for (auto x = input.tile.min.x; x < input.tile.max.x; x++) {
 					trace_samplers.reset();
 
 					for (size_t index = 0; index < samples_per_pixel; index++) {
 						const auto position = vector2i(x, y);
 						const auto sample = vector2(x, y) + trace_samplers.sampler2d->next();
-						const auto sample_index =
-							((y - bound.min.y) * bound_size.x + (x - bound.min.x)) * samples_per_pixel + index;
-
+						
 						const auto debug = integrator_debug_info(position, index);
+						
+#ifdef _DEBUG
+						// when mDebugPixels is not empty, the debug_pixel_lists is not empty too.
+						// when debug_pixel_lists is not empty, we will only trace the pixel that in the debug lists
+						// in other words, the pixels we called integrator::set_debug_trace_pixel().
+						if (!debug_pixel_lists.empty() && debug_pixel_lists.find({ x, y }) == debug_pixel_lists.end()) {
+
+							// we do not trace these sample, but the filter weight can not be zero
+							// so we will set the sample value to zero.
+							outputs[input.tile_index].tile.add_sample(sample, 0);
+							
+							trace_samplers.next_sample();
+
+							continue;
+						}
+#endif					
 
 						outputs[input.tile_index].tile.add_sample(
 							sample,

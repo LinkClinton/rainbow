@@ -49,6 +49,10 @@ namespace rainbow {
 			virtual void render(
 				const std::shared_ptr<camera>& camera,
 				const std::shared_ptr<scene>& scene) = 0;
+
+			void set_debug_trace_pixel(const vector2i& pixel);
+		protected:
+			std::vector<vector2i> mDebugPixels;
 		};
 
 		spectrum uniform_sample_one_emitter(

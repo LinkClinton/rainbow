@@ -54,7 +54,7 @@ namespace rainbow {
 			return mEmitter->pdf(
 				mShape,
 				transform_interaction(mWorldToLocal, reference),
-				transform_point(mWorldToLocal, wi));
+				transform_vector(mWorldToLocal, wi));
 		}
 
 		template <>

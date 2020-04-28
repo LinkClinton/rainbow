@@ -21,13 +21,13 @@ rainbow::materials::glass_material::glass_material(
 rainbow::scattering_function_collection rainbow::materials::glass_material::build_scattering_functions(
 	const surface_interaction& interaction) const noexcept
 {
-	scattering_function_collection functions;
-	
 	const auto eta = mEta->sample(interaction);
 	const auto roughness = mRoughness->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
 	const auto transmission = mTransmission->sample(interaction);
 
+	scattering_function_collection functions(eta);
+	
 	if (reflectance.is_black() && transmission.is_black()) return functions;
 
 	const auto is_specular = roughness == vector2(0);

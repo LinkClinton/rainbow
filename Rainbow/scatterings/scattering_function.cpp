@@ -140,6 +140,11 @@ bool rainbow::scatterings::match(const scattering_type& target, const scattering
 	return (target & flag) == flag;
 }
 
+bool rainbow::scatterings::has(const scattering_type& target, const scattering_type& flag)
+{
+	return (target & flag) == flag;
+}
+
 rainbow::scatterings::scattering_sample::scattering_sample(
 	const scattering_type& type, 
 	const spectrum& value,

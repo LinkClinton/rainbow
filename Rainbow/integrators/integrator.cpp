@@ -25,6 +25,11 @@ void rainbow::integrators::sampler_group::reset() const noexcept
 }
 
 
+void rainbow::integrators::integrator::set_debug_trace_pixel(const vector2i& pixel)
+{
+	mDebugPixels.push_back(pixel);
+}
+
 rainbow::spectrum rainbow::integrators::uniform_sample_one_emitter(
 	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
 	const surface_interaction& interaction,
@@ -87,7 +92,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 			const auto emitter_pdf = emitter->pdf<emitters::emitter>(interaction, function_sample.wi);
 
 			if (emitter_pdf == 0) return L;
-
+			
 			const auto ray = interaction.spawn_ray(function_sample.wi);
 			const auto emitter_interaction = scene->intersect(ray);
 
@@ -96,7 +101,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 
 			const auto intensity = emitter->evaluate<emitters::emitter>(emitter_interaction.value(), -function_sample.wi);
 			const auto weight = power_heuristic(function_sample.pdf, emitter_pdf);
-			
+
 			if (!intensity.is_black())
 				L += function_sample.value * intensity * weight / function_sample.pdf;
 		}

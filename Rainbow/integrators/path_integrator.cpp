@@ -17,6 +17,10 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 {
 	spectrum beta = 1;
 	spectrum L = 0;
+
+	real eta = 1;
+
+	auto specular_bounce = false;
 	
 	// ray is the current ray in current bounces
 	auto ray = first_ray;
@@ -28,7 +32,9 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		if (!interaction.has_value()) break;
 
 		// when the first ray intersect a light, we will evaluate the intensity of it
-		if (bounces == 0 && interaction->entity->has_component<emitter>()) 
+		// when the specular ray intersect an emitter, we will evaluate the intensity of it
+		// because the specular ray we do not solve it at "uniform_sample_one_emitter".
+		if ((bounces == 0 || specular_bounce) && interaction->entity->has_component<emitter>())
 			L += beta * interaction->entity->evaluate<emitter>(interaction.value(), -ray.direction);
 		
 		// get the scattering functions from material which the ray intersect
@@ -62,10 +68,21 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 
 		beta = beta * scattering_sample.value * abs(dot(scattering_sample.wi, interaction->shading_space.z())) / scattering_sample.pdf;
 
+		// indicate the path it is specular or not.
+		// if it is, we will evaluate it when we intersect an emitter at next bounce
+		specular_bounce = has(scattering_sample.type, scattering_type::specular);
+		
+		if (has(scattering_sample.type, scattering_type::specular | scattering_type::transmission)) {
+			const auto surface_eta = scattering_functions.eta();
+
+			eta = eta * ((dot(interaction->wo, interaction->normal) > 0) ? 
+				(surface_eta * surface_eta) : (1 / (surface_eta * surface_eta)));
+		}
+		
 		ray = interaction->spawn_ray(scattering_sample.wi);
 
 		if (bounces > 3) {
-			const auto q = max(static_cast<real>(0.05), 1 - beta.max_component());
+			const auto q = max(static_cast<real>(0.05), 1 - (beta * eta).max_component());
 			
 			if (samplers.sampler1d->next().x < q) break;
 

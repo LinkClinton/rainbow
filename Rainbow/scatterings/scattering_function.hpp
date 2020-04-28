@@ -77,6 +77,8 @@ namespace rainbow {
 		
 		bool match(const scattering_type& target, const scattering_type& flag);
 
+		bool has(const scattering_type& target, const scattering_type& flag);
+		
 		struct scattering_sample {
 			scattering_type type = scattering_type::unknown;
 			spectrum value = spectrum(0);
