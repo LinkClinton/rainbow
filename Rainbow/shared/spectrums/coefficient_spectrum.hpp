@@ -51,6 +51,13 @@ namespace rainbow {
 
 		template <size_t NumSpectrumSamples>
 		coefficient_spectrum<NumSpectrumSamples> sqrt(const coefficient_spectrum<NumSpectrumSamples>& spectrum);
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> lerp(
+			const coefficient_spectrum<NumSpectrumSamples>& s,
+			const coefficient_spectrum<NumSpectrumSamples>& t,
+			const real x);
+		
 	}
 }
 

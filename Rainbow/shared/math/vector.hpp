@@ -53,6 +53,9 @@ namespace rainbow {
 
 		template <size_t L, typename T>
 		vector_t<L, T> floor(const vector_t<L, T>& v);
+
+		template <size_t L, typename T>
+		vector_t<L, T> lerp(const vector_t<L, T>& s, const vector_t<L, T>& t, T x);
 	}
 }
 

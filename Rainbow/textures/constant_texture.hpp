@@ -9,9 +9,9 @@ namespace rainbow {
 		template <size_t Dimension, typename T>
 		class constant_texture_t final : public texture_t<Dimension, T> {
 		public:
-			explicit constant_texture_t(const T& value, const vector_t<Dimension, size_t>& size = texture_size<Dimension>(1));
+			explicit constant_texture_t(const T& value, const texture_size<Dimension>& size = texture_size<Dimension>(1));
 
-			T sample(const surface_interaction& interaction) override;
+			T sample(const surface_interaction& interaction) const override;
 		private:
 			T mValue;
 		};

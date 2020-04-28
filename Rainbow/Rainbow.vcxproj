@@ -285,7 +285,9 @@
     <ClInclude Include="shared\utilities.hpp" />
     <ClInclude Include="textures\constant_texture.hpp" />
     <ClInclude Include="textures\detail\constant_texture.hpp" />
+    <ClInclude Include="textures\detail\image_texture.hpp" />
     <ClInclude Include="textures\detail\texture.hpp" />
+    <ClInclude Include="textures\image_texture.hpp" />
     <ClInclude Include="textures\texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -51,6 +51,18 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T floor(const T& value)
+		{
+			return glm::floor(value);
+		}
+
+		template <typename T>
+		T ceil(const T& value)
+		{
+			return glm::ceil(value);
+		}
+
+		template <typename T>
 		T max(const T& v0, const T& v1)
 		{
 			return glm::max(v0, v1);

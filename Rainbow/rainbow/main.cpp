@@ -2,6 +2,7 @@
 #include "../integrators/path_integrator.hpp"
 #include "../cameras/perspective_camera.hpp"
 #include "../textures/constant_texture.hpp"
+#include "../textures/image_texture.hpp"
 #include "../materials/plastic_material.hpp"
 #include "../materials/mirror_material.hpp"
 #include "../materials/matte_material.hpp"

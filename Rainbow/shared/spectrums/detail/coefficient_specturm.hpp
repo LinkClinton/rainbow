@@ -221,5 +221,13 @@ namespace rainbow {
 			return result;
 		}
 
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> lerp(
+			const coefficient_spectrum<NumSpectrumSamples>& s,
+			const coefficient_spectrum<NumSpectrumSamples>& t, const real x)
+		{
+			return s * (1 - x) + t * x;
+		}
+
 	}
 }
