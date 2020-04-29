@@ -11,6 +11,7 @@
 #include "../samplers/random_sampler.hpp"
 #include "../filters/gaussian_filter.hpp"
 #include "../filters/box_filter.hpp"
+#include "../emitters/environment_light.hpp"
 #include "../emitters/surface_light.hpp"
 #include "../emitters/point_light.hpp"
 #include "../shared/file_system.hpp"
@@ -21,7 +22,7 @@
 
 using namespace rainbow;
 
-int main() {	
+int main() {
 	const vector2 resolution(1280 / 2, 720 / 2);
 
 	//const auto crop_window_min = vector2(0.2f, 0.55f);
@@ -50,10 +51,11 @@ int main() {
 
 	scene->add_entity(
 		std::make_shared<entity>(
-			std::make_shared<plastic_material>(
+			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0.f, 0.f)),
-				file_system::read_texture2d<real>("roughness.png")),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
+				std::make_shared<constant_texture2d<real>>(1.5f), false),
 			nullptr,
 			std::make_shared<sphere>(2.f),
 			translate(vector3(0, 0, 2.f)))
@@ -86,6 +88,13 @@ int main() {
 			std::make_shared<surface_light>(spectrum(4)),
 			mesh::create_quad(4, 4),
 			translate(vector3(0, 0.f, 9.f)) * rotate(180.f, vector3(1, 0, 0)))
+	);
+
+	scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<environment_light>(spectrum(0.05f), 20.f),
+			nullptr,
+			transform())
 	);
 	
 	const auto samples_per_pixel_x = static_cast<size_t>(4);

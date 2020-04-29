@@ -29,7 +29,17 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		const auto interaction = scene->intersect(ray);
 
 		// if we do not find the shape that the ray intersect we can end this tracing
-		if (!interaction.has_value()) break;
+		if (!interaction.has_value()) {
+			// if it is not first bounce or it is not specular bounce at last bounce
+			// we just end this tracing
+			// if it is first bounce or it is specular bounce, we will evaluate the environment light
+			if (bounces != 0 && !specular_bounce) break;
+
+			for (const auto& environment : scene->environments())
+				L += beta * environment->evaluate<emitter>(interactions::interaction(), -ray.direction);
+
+			break;
+		}
 
 		// when the first ray intersect a light, we will evaluate the intensity of it
 		// when the specular ray intersect an emitter, we will evaluate the intensity of it

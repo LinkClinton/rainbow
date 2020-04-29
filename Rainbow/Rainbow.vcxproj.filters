@@ -148,6 +148,9 @@
     <ClCompile Include="shared\file_system.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="emitters\environment_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -490,6 +493,9 @@
     </ClInclude>
     <ClInclude Include="shared\file_system.hpp">
       <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\environment_light.hpp">
+      <Filter>emitters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

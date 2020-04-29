@@ -5,6 +5,11 @@ rainbow::interactions::surface_interaction::surface_interaction() :
 {
 }
 
+rainbow::interactions::surface_interaction::surface_interaction(const std::shared_ptr<const scenes::entity>& entity) :
+	entity(entity), dp_du(0), dp_dv(0), uv(0)
+{
+}
+
 rainbow::interactions::surface_interaction::surface_interaction(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const vector3& dp_du, const vector3& dp_dv,

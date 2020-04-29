@@ -94,7 +94,14 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 			if (emitter_pdf == 0) return L;
 			
 			const auto ray = interaction.spawn_ray(function_sample.wi);
-			const auto emitter_interaction = scene->intersect(ray);
+
+			// if the emitter is environment light, we do not need to do intersect test
+			// because it is the sphere bound that contains all entities
+			// we only set the surface_interaction::entity
+			const auto emitter_interaction = 
+				emitter->component<emitters::emitter>()->is_environment() ? 
+					std::optional<surface_interaction>(surface_interaction(emitter)) :
+					scene->intersect(ray);
 
 			if (!emitter_interaction.has_value() || emitter_interaction->entity != emitter)
 				return L;

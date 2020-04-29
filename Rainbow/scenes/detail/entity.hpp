@@ -57,6 +57,15 @@ namespace rainbow {
 				transform_vector(mWorldToLocal, wi));
 		}
 
+
+		template <>
+		inline spectrum entity::evaluate<emitter>(const interaction& interaction, const vector3& wi) const
+		{
+			return mEmitter->evaluate(
+				transform_interaction(mWorldToLocal, interaction), 
+				transform_vector(mWorldToLocal, wi));
+		}
+
 		template <>
 		inline real entity::pdf<shape>() const
 		{
@@ -79,12 +88,6 @@ namespace rainbow {
 		inline std::shared_ptr<shape> entity::component() const noexcept
 		{
 			return mShape;
-		}
-
-		template <>
-		inline spectrum entity::evaluate<emitter>(const interaction& interaction, const vector3& wi) const
-		{
-			return mEmitter->evaluate(interaction, wi);
 		}
 
 		template <typename T>

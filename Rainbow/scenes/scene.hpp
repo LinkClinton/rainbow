@@ -28,9 +28,12 @@ namespace rainbow {
 			std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const;
 
 			const std::vector<std::shared_ptr<entity>>& emitters() const noexcept;
+
+			const std::vector<std::shared_ptr<entity>>& environments() const noexcept;
 		private:
 			std::vector<std::shared_ptr<entity>> mEntities;
 			std::vector<std::shared_ptr<entity>> mEmitters;
+			std::vector<std::shared_ptr<entity>> mEnvironments;
 		};
 		
 	}

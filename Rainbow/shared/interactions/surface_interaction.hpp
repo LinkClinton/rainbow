@@ -25,6 +25,9 @@ namespace rainbow {
 			surface_interaction();
 
 			surface_interaction(
+				const std::shared_ptr<const scenes::entity>& entity);
+			
+			surface_interaction(
 				const std::shared_ptr<const scenes::entity>& entity,
 				const vector3& dp_du, const vector3& dp_dv,
 				const vector3& normal, const vector3& point,

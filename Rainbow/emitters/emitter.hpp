@@ -20,8 +20,13 @@ namespace rainbow {
 
 		enum class emitter_type : uint32 {
 			delta_position = 1 << 0,
+			environment = 1 << 1,
 			surface = 1 << 2,
 		};
+
+		emitter_type operator&(const emitter_type& lhs, const emitter_type& rhs);
+		
+		bool has(const emitter_type& type, const emitter_type& flag);
 
 		struct emitter_sample {
 			spectrum intensity = 0;
@@ -31,12 +36,14 @@ namespace rainbow {
 
 			emitter_sample() = default;
 
-			emitter_sample(const spectrum& irradiance, const vector3& position, const vector3& wi, real pdf);
+			emitter_sample(const spectrum& intensity, const vector3& position, const vector3& wi, real pdf);
 
 			static emitter_sample transform(const transform& transform, const emitter_sample& sample);
 		};
 
 		bool is_delta_emitter(const emitter_type& type);
+
+		bool is_environment_emitter(const emitter_type& type);
 		
 		class emitter : public interfaces::noncopyable {
 		public:
@@ -57,6 +64,8 @@ namespace rainbow {
 			
 			emitter_type type() const noexcept;
 
+			bool is_environment() const noexcept;
+			
 			bool is_delta() const noexcept;
 		protected:
 			
