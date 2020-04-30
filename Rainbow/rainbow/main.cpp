@@ -41,7 +41,7 @@ int main() {
 	
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -8.f, 10.f)) * rotate(45.f, vector3(1, 0, 0)),
+		translate(vector3(0, -8.f, 10.f)) * rotate(90.f, vector3(1, 0, 0)),
 		bound2(
 			vector2(-resolution.x, -resolution.y) * 0.3f,
 			vector2(+resolution.x, +resolution.y) * 0.3f
@@ -51,7 +51,7 @@ int main() {
 
 	const auto scene = std::make_shared<scenes::scene>();
 
-	scene->add_entity(
+	/*scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<glass_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
@@ -61,9 +61,9 @@ int main() {
 			nullptr,
 			std::make_shared<sphere>(2.f),
 			translate(vector3(0, 0, 2.f)))
-	);
+	);*/
 
-	scene->add_entity(
+	/*scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
@@ -83,18 +83,20 @@ int main() {
 			nullptr,
 			mesh::create_quad(100, 100),
 			translate(vector3(0, 2.f, 0)) * rotate(90.f, vector3(-1, 0, 0)))
-	);
+	);*/
 	
-	scene->add_entity(
+	/*scene->add_entity(
 		std::make_shared<entity>(nullptr,
 			std::make_shared<surface_light>(spectrum(4)),
 			mesh::create_quad(4, 4),
 			translate(vector3(0, 0.f, 9.f)) * rotate(180.f, vector3(1, 0, 0)))
-	);
+	);*/
 
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
-			std::make_shared<environment_light>(spectrum(0.05f), 20.f),
+			std::make_shared<environment_light>(
+				file_system::read_texture2d_hdr<spectrum>("./newport_loft.hdr"),
+				spectrum(1.f), 20.f),
 			nullptr,
 			transform())
 	);

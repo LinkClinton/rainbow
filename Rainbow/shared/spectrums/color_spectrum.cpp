@@ -37,3 +37,8 @@ rainbow::real rainbow::spectrums::color_spectrum::blue() const noexcept
 {
 	return coefficient[2];
 }
+
+rainbow::real rainbow::spectrums::color_spectrum::luminance() const noexcept
+{
+	return coefficient[0] * 0.212671f + coefficient[1] * 0.715160f + coefficient[2] * 0.072169f;
+}

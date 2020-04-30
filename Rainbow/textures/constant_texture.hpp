@@ -12,6 +12,8 @@ namespace rainbow {
 			explicit constant_texture_t(const T& value, const texture_size<Dimension>& size = texture_size<Dimension>(1));
 
 			T sample(const surface_interaction& interaction) const override;
+
+			T sample(const vector2& point) const override;
 		private:
 			T mValue;
 		};

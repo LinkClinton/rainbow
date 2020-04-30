@@ -36,6 +36,10 @@ namespace rainbow {
 		vector3 face_forward(const vector3& v, const vector3& forward);
 		
 		vector3 spherical_direction(real sin_theta, real cos_theta, real phi);
+
+		real spherical_theta(const vector3& v);
+
+		real spherical_phi(const vector3& v);
 		
 		/*
 		 * reflection : theta_o = theta_i, phi_o = phi_i + pi

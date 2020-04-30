@@ -53,3 +53,30 @@ rainbow::image_info rainbow::file_system::read_image(const std::string& name, bo
 #endif
 }
 
+rainbow::image_info rainbow::file_system::read_image_hdr(const std::string& name, bool gamma)
+{
+#ifdef __STB_IMAGE__
+	auto channel = 0;
+	auto width = 0;
+	auto height = 0;
+
+	image_info info;
+
+	const auto data = stbi_loadf(name.c_str(), &width, &height, &channel, STBI_rgb_alpha);
+
+	info.width = width;
+	info.height = height;
+	info.data = std::vector<real>(info.width * info.height * 4);
+
+	for (size_t index = 0; index < info.data.size(); index++) 
+		info.data[index] = gamma ? inverse_gamma_correct(data[index]) : data[index];
+
+	stbi_image_free(data);
+
+	return info;
+#else
+	logs::error("no method to read image.");
+	return {};
+#endif
+}
+

@@ -24,6 +24,8 @@ namespace rainbow {
 
 			color_spectrum(real red, real green, real blue);
 
+			real luminance() const noexcept;
+			
 			real red() const noexcept;
 
 			real green() const noexcept;

@@ -82,7 +82,10 @@ namespace rainbow {
 
 		inline size_t distribution_t<1>::find_interval(real x) const
 		{
-			return std::lower_bound(mCDFs.begin(), mCDFs.end(), x) - mCDFs.begin();
+			assert(x >= 0);
+
+			// because x >= 0 and mCDFs[0] = 0, the value upper_bound() - begin() >= 1
+			return (std::upper_bound(mCDFs.begin(), mCDFs.end(), x) - mCDFs.begin()) - 1;
 		}
 
 		inline distribution_t<2>::distribution_t(const std::vector<real>& value, size_t width, size_t height) :

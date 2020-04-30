@@ -41,6 +41,8 @@ namespace rainbow {
 			~texture_sample_t() = default;
 
 			virtual T sample(const surface_interaction& interaction) const = 0;
+
+			virtual T sample(const vector2& point) const = 0;
 		};
 	
 		template <size_t Dimension, typename T>

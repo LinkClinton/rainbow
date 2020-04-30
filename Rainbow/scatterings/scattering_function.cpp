@@ -90,6 +90,18 @@ rainbow::vector3 rainbow::scatterings::spherical_direction(real sin_theta, real 
 	);
 }
 
+rainbow::real rainbow::scatterings::spherical_theta(const vector3& v)
+{
+	return acos(clamp(v.z, static_cast<real>(-1), static_cast<real>(1)));
+}
+
+rainbow::real rainbow::scatterings::spherical_phi(const vector3& v)
+{
+	const auto phi = atan2(v.y, v.x);
+
+	return phi < 0 ? phi + two_pi<real>() : phi;
+}
+
 rainbow::vector3 rainbow::scatterings::reflect(const vector3& wi, const vector3& normal)
 {
 	// because the origin of wi and wo is (0, 0, 0)

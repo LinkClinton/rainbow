@@ -20,6 +20,8 @@ namespace rainbow {
 			~image_texture_t() = default;
 
 			T sample(const surface_interaction& interaction) const override;
+
+			T sample(const vector2& point) const override;
 		private:
 			std::vector<T> mValues;
 		};
