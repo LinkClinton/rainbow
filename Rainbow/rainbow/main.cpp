@@ -20,6 +20,8 @@
 #include "../shapes/mesh.hpp"
 #include "../scenes/scene.hpp"
 
+#include "../shared/distributions/distribution.hpp"
+
 using namespace rainbow;
 
 int main() {

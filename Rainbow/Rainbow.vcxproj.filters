@@ -234,6 +234,12 @@
     <Filter Include="rainbow\test_scenes">
       <UniqueIdentifier>{df125f87-189a-47fd-aa95-515a0f34dfe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\distributions">
+      <UniqueIdentifier>{23329565-25e0-4b96-9d33-c40c6b6643ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\distributions\detail">
+      <UniqueIdentifier>{1ca900f2-3c7d-463b-aeb5-b7cf380b237a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\math\vector.hpp">
@@ -496,6 +502,12 @@
     </ClInclude>
     <ClInclude Include="emitters\environment_light.hpp">
       <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\distributions\distribution.hpp">
+      <Filter>shared\distributions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\distributions\detail\distribution.hpp">
+      <Filter>shared\distributions\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
