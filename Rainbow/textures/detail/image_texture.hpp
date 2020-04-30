@@ -9,7 +9,7 @@ namespace rainbow {
 		template <typename T>
 		T lerp(const T& s, const T& t, real x)
 		{
-			return s * (1 - x) + t * s;
+			return s * (1 - x) + t * x;
 		}
 
 		template <typename T>

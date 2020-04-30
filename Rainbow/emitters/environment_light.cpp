@@ -4,6 +4,8 @@
 #include "../textures/constant_texture.hpp"
 #include "../shared/sample_function.hpp"
 
+#include "../shared/logs/log.hpp"
+
 rainbow::emitters::environment_light::environment_light(const spectrum& intensity, real radius) :
 	environment_light(std::make_shared<constant_texture2d<spectrum>>(spectrum(1)), intensity, radius)
 {
@@ -21,7 +23,7 @@ rainbow::emitters::environment_light::environment_light(
 	for (size_t y = 0; y < mEnvironmentMap->size().y; y++) {
 		const auto y_position = (y + static_cast<real>(0.5)) / size.y;
 		const auto sin_theta = sin(y_position * pi<real>());
-		
+
 		for (size_t x = 0; x < mEnvironmentMap->size().x; x++) {
 			const auto x_position = (x + static_cast<real>(0.5)) / size.x;
 			const auto sample_point = vector2(x_position, y_position);
@@ -64,7 +66,7 @@ rainbow::emitters::emitter_sample rainbow::emitters::environment_light::sample(
 
 	const auto pdf = sin_theta != 0 ? distribution_sample.pdf / (two_pi<real>() * pi<real>() * sin_theta) : 0;
 	const auto wi = scatterings::spherical_direction(sin_theta, cos_theta, phi);
-	
+
 	return emitter_sample(
 		mIntensity * mEnvironmentMap->sample(distribution_sample.value),
 		mRadius * wi,
