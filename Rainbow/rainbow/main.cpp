@@ -25,6 +25,7 @@
 using namespace rainbow;
 
 int main() {
+	
 	const vector2 resolution(1280 / 2, 720 / 2);
 
 	//const auto crop_window_min = vector2(0.2f, 0.55f);
@@ -41,7 +42,7 @@ int main() {
 	
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -8.f, 10.f)) * rotate(45.f, vector3(1, 0, 0)),
+		translate(vector3(0, -10, 0)) * rotate(90.f, vector3(1, 0, 0)),
 		bound2(
 			vector2(-resolution.x, -resolution.y) * 0.3f,
 			vector2(+resolution.x, +resolution.y) * 0.3f
@@ -53,14 +54,13 @@ int main() {
 
 	scene->add_entity(
 		std::make_shared<entity>(
-			std::make_shared<glass_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
-				std::make_shared<constant_texture2d<real>>(1.5f), false),
+			std::make_shared<plastic_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0, 0)),
+				std::make_shared<constant_texture2d<real>>(0.f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
-			translate(vector3(0, 0, 2.f)))
+			translate(vector3(0, 0, 0.f)))
 	);
 
 	/*scene->add_entity(
@@ -95,10 +95,10 @@ int main() {
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
 			std::make_shared<environment_light>(
-				file_system::read_texture2d_hdr<spectrum>("./newport_loft.hdr"),
+				file_system::read_texture2d_hdr<spectrum>("./any.hdr"),
 				spectrum(1.f), 20.f),
 			nullptr,
-			transform())
+			scale(vector3(-1, 1, 1)))
 	);
 	
 	const auto samples_per_pixel_x = static_cast<size_t>(4);

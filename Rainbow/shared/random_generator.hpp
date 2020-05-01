@@ -8,13 +8,13 @@
 
 namespace rainbow {
 
-	class random_generator : public interfaces::noncopyable {
+	class default_random_generator final : public interfaces::noncopyable {
 	public:
-		random_generator();
+		default_random_generator();
 
-		~random_generator() = default;
+		~default_random_generator() = default;
 		
-		explicit random_generator(const uint64 seed);
+		explicit default_random_generator(const uint64 seed);
 
 		real uniform_real();
 		
@@ -27,4 +27,26 @@ namespace rainbow {
 		std::uniform_real_distribution<rainbow::real> mDistribution;
 	};
 	
+	class pcg32 final : public interfaces::noncopyable {
+	public:
+		pcg32();
+
+		~pcg32() = default;
+
+		explicit pcg32(const uint64 seed);
+		
+		real uniform_real();
+
+		uint32 uniform_uint32();
+
+		real real(real min = 0, real max = 1);
+		
+		uint32 uint32(uint32 min, uint32 max);
+	private:
+		rainbow::uint32 uint32(rainbow::uint32 value);
+		
+		uint64 mState, mInc;
+	};
+	
+	using random_generator = pcg32;
 }

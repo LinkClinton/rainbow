@@ -99,7 +99,7 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 			beta = beta / (1 - q);
 		}
 	}
-	
+
 	return L;
 }
 

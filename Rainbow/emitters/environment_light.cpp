@@ -16,15 +16,15 @@ rainbow::emitters::environment_light::environment_light(
 	const spectrum& intensity, real radius) :
 	emitter(emitter_type::environment), mEnvironmentMap(environment_map), mIntensity(intensity), mRadius(radius)
 {
-	auto distribution = std::vector<real>(mEnvironmentMap->size().x * mEnvironmentMap->size().y);
+	const auto size = vector2_t<size_t>(mEnvironmentMap->size().x, mEnvironmentMap->size().y);
 
-	const auto size = mEnvironmentMap->size();
-	
-	for (size_t y = 0; y < mEnvironmentMap->size().y; y++) {
+	auto distribution = std::vector<real>(size.x * size.y);
+
+	for (size_t y = 0; y < size.y; y++) {
 		const auto y_position = (y + static_cast<real>(0.5)) / size.y;
 		const auto sin_theta = sin(y_position * pi<real>());
 
-		for (size_t x = 0; x < mEnvironmentMap->size().x; x++) {
+		for (size_t x = 0; x < size.x; x++) {
 			const auto x_position = (x + static_cast<real>(0.5)) / size.x;
 			const auto sample_point = vector2(x_position, y_position);
 			
@@ -79,8 +79,8 @@ rainbow::real rainbow::emitters::environment_light::pdf(
 	const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const
 {
 	// in environment light, the interaction is always with default interaction.
-	// the wi will be the inverse direction of the trace ray
-	const auto w = normalize(-wi);
+	// the wi will be the trace ray
+	const auto w = normalize(wi);
 
 	const auto theta = scatterings::spherical_theta(w);
 	const auto phi = scatterings::spherical_phi(w);

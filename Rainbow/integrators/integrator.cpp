@@ -1,5 +1,7 @@
 #include "integrator.hpp"
 
+#include "../shared/logs/log.hpp"
+
 rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel, size_t sample) :
 	pixel(pixel), sample(sample)
 {
@@ -113,7 +115,7 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 				L += function_sample.value * intensity * weight / function_sample.pdf;
 		}
 	}
-	
+
 	return L;
 }
 
