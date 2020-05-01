@@ -16,7 +16,7 @@ rainbow::emitters::environment_light::environment_light(
 	const spectrum& intensity, real radius) :
 	emitter(emitter_type::environment), mEnvironmentMap(environment_map), mIntensity(intensity), mRadius(radius)
 {
-	const auto size = vector2_t<size_t>(mEnvironmentMap->size().x, mEnvironmentMap->size().y);
+	const auto size = vector2_t<size_t>(mEnvironmentMap->size().x * 2, mEnvironmentMap->size().y * 2);
 
 	auto distribution = std::vector<real>(size.x * size.y);
 
@@ -63,13 +63,13 @@ rainbow::emitters::emitter_sample rainbow::emitters::environment_light::sample(
 
 	const auto cos_theta = cos(theta);
 	const auto sin_theta = sin(theta);
-
+	
 	const auto pdf = sin_theta != 0 ? distribution_sample.pdf / (two_pi<real>() * pi<real>() * sin_theta) : 0;
 	const auto wi = scatterings::spherical_direction(sin_theta, cos_theta, phi);
 
 	return emitter_sample(
 		mIntensity * mEnvironmentMap->sample(distribution_sample.value),
-		mRadius * wi,
+		reference.point + 2 * mRadius * wi,
 		wi,
 		pdf
 	);
@@ -93,7 +93,7 @@ rainbow::real rainbow::emitters::environment_light::pdf(
 		phi * one_over_two_pi<real>(),
 		theta * one_over_pi<real>()));
 	
-	return  distribution_pdf / (two_pi<real>() * pi<real>() * sin_theta);
+	return distribution_pdf / (two_pi<real>() * pi<real>() * sin_theta);
 }
 
 rainbow::spectrum rainbow::emitters::environment_light::power(const std::shared_ptr<shape>& shape) const

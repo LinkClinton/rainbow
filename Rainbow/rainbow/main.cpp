@@ -44,8 +44,8 @@ int main() {
 		film,
 		translate(vector3(0, -10, 0)) * rotate(90.f, vector3(1, 0, 0)),
 		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.3f,
-			vector2(+resolution.x, +resolution.y) * 0.3f
+			vector2(-resolution.x, -resolution.y) * 0.28f,
+			vector2(+resolution.x, +resolution.y) * 0.28f
 		),
 		quarter_pi<real>()
 		);
@@ -55,8 +55,8 @@ int main() {
 	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0, 0)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
 				std::make_shared<constant_texture2d<real>>(0.f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
@@ -119,6 +119,8 @@ int main() {
 		5
 		);
 
+	integrator->set_debug_trace_pixel(vector2i(277, 165));
+	
 	integrator->render(camera, scene);
 	
 	film->write("image");

@@ -1,5 +1,7 @@
 #include "scattering_function_collection.hpp"
 
+#include "../shared/logs/log.hpp"
+
 rainbow::scatterings::scattering_function_collection::scattering_function_collection(
 	const std::vector<std::shared_ptr<scattering_function>>& functions, real eta) : mScatteringFunctions(functions), mEta(eta)
 {

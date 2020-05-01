@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../shared/logs/log.hpp"
 #include "../distribution.hpp"
 
 #include <algorithm>
@@ -93,7 +94,7 @@ namespace rainbow {
 		{
 			mCDFs = std::vector<std::shared_ptr<distribution_t<1>>>(height);
 			
-			auto integrals = std::vector<real>(width);
+			auto integrals = std::vector<real>(height);
 			
 			for (size_t y = 0; y < height; y++) {
 				// compute the row begin position and end position

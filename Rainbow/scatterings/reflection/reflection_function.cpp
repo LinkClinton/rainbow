@@ -1,6 +1,7 @@
 #include "reflection_function.hpp"
 
 #include "../../shared/sample_function.hpp"
+#include "../../shared/logs/log.hpp"
 
 rainbow::scatterings::reflection_function::reflection_function(
 	const scattering_type& type, const spectrum& reflectance) :
