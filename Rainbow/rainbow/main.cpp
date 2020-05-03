@@ -20,8 +20,6 @@
 #include "../shapes/mesh.hpp"
 #include "../scenes/scene.hpp"
 
-#include "../shared/distributions/distribution.hpp"
-
 using namespace rainbow;
 
 int main() {
@@ -42,7 +40,7 @@ int main() {
 	
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -10, 0)) * rotate(90.f, vector3(1, 0, 0)),
+		translate(vector3(0, -8, 10)) * rotate(45.f, vector3(1, 0, 0)),
 		bound2(
 			vector2(-resolution.x, -resolution.y) * 0.28f,
 			vector2(+resolution.x, +resolution.y) * 0.28f
@@ -56,51 +54,63 @@ int main() {
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.5f, 0, 0)),
 				std::make_shared<constant_texture2d<real>>(0.f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
-			translate(vector3(0, 0, 0.f)))
+			translate(vector3(2.1f, 0, 2.f)))
 	);
 
-	/*scene->add_entity(
+	scene->add_entity(
+		std::make_shared<entity>(
+			std::make_shared<glass_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.85f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.3f)),
+				std::make_shared<constant_texture2d<vector2>>(vector2(0.0001f)),
+				std::make_shared<constant_texture2d<real>>(1.5f), false),
+			nullptr,
+			std::make_shared<sphere>(2.f),
+			translate(vector3(-2.1f, 0, 2.f)))
+	);
+
+	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(0.83f),
-				std::make_shared<constant_texture2d<real>>(0.3f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0, 0.25f, 0.25f)),
+				std::make_shared<constant_texture2d<real>>(0.01f)),
+			nullptr,
+			std::make_shared<sphere>(2.f),
+			translate(vector3(0, 3.7f, 2.f)))
+	);
+
+	scene->add_entity(
+		std::make_shared<entity>(
+			std::make_shared<plastic_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(2.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.1f)),
+				std::make_shared<constant_texture2d<real>>(0.f)),
 			nullptr,
 			mesh::create_quad(100, 100),
 			translate(vector3(0, 0, 0)))
 	);
 
 	scene->add_entity(
-		std::make_shared<entity>(
-			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0, 0)),
-				std::make_shared<constant_texture2d<real>>(0.3f)),
-			nullptr,
-			mesh::create_quad(100, 100),
-			translate(vector3(0, 2.f, 0)) * rotate(90.f, vector3(-1, 0, 0)))
-	);*/
-	
-	/*scene->add_entity(
 		std::make_shared<entity>(nullptr,
-			std::make_shared<surface_light>(spectrum(4)),
-			mesh::create_quad(4, 4),
+			std::make_shared<surface_light>(spectrum(2)),
+			std::make_shared<disk>(3.f),
 			translate(vector3(0, 0.f, 9.f)) * rotate(180.f, vector3(1, 0, 0)))
-	);*/
+	);
 
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
 			std::make_shared<environment_light>(
 				file_system::read_texture2d_hdr<spectrum>("./any.hdr"),
-				spectrum(1.f), 20.f),
+				spectrum(0.2f), 20.f),
 			nullptr,
 			scale(vector3(-1, 1, 1)))
 	);
-	
+
 	const auto samples_per_pixel_x = static_cast<size_t>(4);
 	const auto samples_per_pixel_y = static_cast<size_t>(4);
 	const auto samples_per_pixel = samples_per_pixel_x * samples_per_pixel_y;
@@ -119,8 +129,6 @@ int main() {
 		5
 		);
 
-	integrator->set_debug_trace_pixel(vector2i(277, 165));
-	
 	integrator->render(camera, scene);
 	
 	film->write("image");

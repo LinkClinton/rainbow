@@ -5,6 +5,8 @@
 #include <vector>
 #include <array>
 
+#define __GLTF_LOADER__
+
 namespace rainbow {
 
 	namespace shapes {
@@ -62,6 +64,9 @@ namespace rainbow {
 			
 			real mArea;
 		};
-		
+
+#ifdef __GLTF_LOADER__
+		std::vector<std::shared_ptr<mesh>> load_glb_mesh(const std::string& file);
+#endif
 	}
 }

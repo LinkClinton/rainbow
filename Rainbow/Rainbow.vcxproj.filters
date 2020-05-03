@@ -509,5 +509,8 @@
     <ClInclude Include="shared\distributions\detail\distribution.hpp">
       <Filter>shared\distributions\detail</Filter>
     </ClInclude>
+    <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp">
+      <Filter>rainbow\test_scenes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
