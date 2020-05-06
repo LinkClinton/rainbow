@@ -30,6 +30,27 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::entity::intersect(c
 	return mLocalToWorld(interaction.value());
 }
 
+rainbow::bound3 rainbow::entity::bounding_box(size_t index) const
+{
+	assert(mShape != nullptr);
+
+	// we will create the bounding box(axis-aligned-bounding-box) in world space
+	// because if we create it on local space and transform it to world space may increase the volume of box
+	// the index means which part of shape we want to query
+	// for mesh, it is the triangle index and for others, it is 0.
+	return mShape->bounding_box(mLocalToWorld, index);
+}
+
+rainbow::bound3 rainbow::entity::bounding_box() const
+{
+	assert(mShape != nullptr);
+
+	// we will create the bounding box(axis-aligned-bounding-box) in world space
+	// because if we create it on local space and transform it to world space may increase the volume of box
+	// it will return the bounding box of all part of shape
+	return mShape->bounding_box(mLocalToWorld);
+}
+
 bool rainbow::entity::visible() const noexcept
 {
 	return has_component<shape>() && has_component<material>();

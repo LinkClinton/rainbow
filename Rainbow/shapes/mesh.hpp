@@ -29,9 +29,9 @@ namespace rainbow {
 
 			real pdf() const override;
 
+			real area(size_t index) const noexcept override;
+			
 			real area() const noexcept override;
-
-			real face_area(size_t face) const noexcept;
 
 			std::array<vector3, 3> positions(size_t face) const noexcept;
 

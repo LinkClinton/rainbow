@@ -80,6 +80,13 @@ rainbow::real rainbow::shapes::disk::pdf() const
 	return 1 / area();
 }
 
+rainbow::real rainbow::shapes::disk::area(size_t index) const noexcept
+{
+	assert(index == 0);
+	
+	return area();
+}
+
 rainbow::real rainbow::shapes::disk::area() const noexcept
 {
 	return two_pi<real>() * mRadius;

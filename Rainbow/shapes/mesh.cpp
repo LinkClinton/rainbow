@@ -25,7 +25,7 @@ rainbow::shapes::mesh::mesh(
 	mIndices(indices), mFaceCount(mIndices.size() / 3), mArea(0)
 {
 	for (size_t index = 0; index < mFaceCount; index++)
-		mArea = mArea + face_area(index);
+		mArea = mArea + area(index);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray) const
@@ -80,16 +80,16 @@ rainbow::real rainbow::shapes::mesh::pdf() const
 	return 1 / area();
 }
 
+rainbow::real rainbow::shapes::mesh::area(size_t index) const noexcept
+{
+	const auto points = positions(index);
+
+	return static_cast<real>(0.5) * length(math::cross(points[2] - points[0], points[2] - points[1]));
+}
+
 rainbow::real rainbow::shapes::mesh::area() const noexcept
 {
 	return mArea;
-}
-
-rainbow::real rainbow::shapes::mesh::face_area(size_t face) const noexcept
-{
-	const auto points = positions(face);
-
-	return static_cast<real>(0.5) * length(math::cross(points[2] - points[0], points[2] - points[1]));
 }
 
 std::array<rainbow::vector3, 3> rainbow::shapes::mesh::positions(size_t face) const noexcept

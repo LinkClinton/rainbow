@@ -186,6 +186,13 @@ rainbow::real rainbow::shapes::sphere::pdf() const
 	return 1 / area();
 }
 
+rainbow::real rainbow::shapes::sphere::area(size_t index) const noexcept
+{
+	assert(index == 0);
+	
+	return area();
+}
+
 rainbow::real rainbow::shapes::sphere::area() const noexcept
 {
 	return 4 * pi<real>() * mRadius * mRadius;

@@ -39,6 +39,10 @@ namespace rainbow {
 			
 			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
 
+			virtual bound3 bounding_box(const transform& transform, size_t index) const = 0;
+
+			virtual bound3 bounding_box(const transform& transform) const = 0;
+			
 			virtual shape_sample sample(const interaction& reference, const vector2& sample) const;
 
 			virtual shape_sample sample(const vector2& sample) const = 0;
@@ -47,8 +51,10 @@ namespace rainbow {
 
 			virtual real pdf() const = 0;
 
+			virtual real area(size_t index) const noexcept = 0;
+			
 			virtual real area() const noexcept = 0;
-
+			
 			bool reverse_orientation() const noexcept;
 		private:
 			bool mReverseOrientation = false;

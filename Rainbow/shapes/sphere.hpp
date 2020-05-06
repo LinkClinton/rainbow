@@ -24,6 +24,8 @@ namespace rainbow {
 
 			real pdf() const override;
 
+			real area(size_t index) const noexcept override;
+			
 			real area() const noexcept override;
 		private:
 			real mRadius;

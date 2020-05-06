@@ -19,6 +19,9 @@ namespace rainbow {
 		transform& operator*=(const transform& right);
 		transform operator*(const transform& right) const;
 
+		bool operator==(const transform& right) const;
+		bool operator!=(const transform& right) const;
+		
 		surface_interaction operator()(const surface_interaction& interaction) const;
 		
 		coordinate_system operator()(const coordinate_system& system) const;
@@ -30,11 +33,13 @@ namespace rainbow {
 		matrix4x4 matrix() const noexcept;
 		
 		transform inverse() const;
+
+		static transform identity();
 	private:
 		matrix4x4 mInverseTransform;
 		matrix4x4 mTransform;
 	};
-
+	
 	transform translate(const vector3& vec);
 
 	transform rotate(const float angle, const vector3& axis);

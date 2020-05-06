@@ -1,6 +1,6 @@
 #include "transform.hpp"
 
-rainbow::transform::transform() : transform(identity<real>(), identity<real>())
+rainbow::transform::transform() : transform(math::identity<real>(), math::identity<real>())
 {
 }
 
@@ -23,6 +23,16 @@ rainbow::transform rainbow::transform::operator*(const transform& right) const
 		mTransform * right.mTransform,
 		right.mInverseTransform * mInverseTransform
 	);
+}
+
+bool rainbow::transform::operator==(const transform& right) const
+{
+	return mTransform == right.mTransform && mInverseTransform == right.mInverseTransform;
+}
+
+bool rainbow::transform::operator!=(const transform& right) const
+{
+	return !operator==(right);
 }
 
 rainbow::surface_interaction rainbow::transform::operator()(const surface_interaction& interaction) const
@@ -76,6 +86,11 @@ rainbow::matrix4x4 rainbow::transform::matrix() const noexcept
 rainbow::transform rainbow::transform::inverse() const
 {
 	return transform(mInverseTransform, mTransform);
+}
+
+rainbow::transform rainbow::transform::identity()
+{
+	return transform();
 }
 
 rainbow::transform rainbow::translate(const vector3& vec)

@@ -151,6 +151,12 @@
     <ClCompile Include="emitters\environment_light.cpp">
       <Filter>emitters</Filter>
     </ClCompile>
+    <ClCompile Include="shared\accelerators\accelerator.cpp">
+      <Filter>shared\accelerators</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\accelerators\bounding_volume_hierarchy.cpp">
+      <Filter>shared\accelerators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -239,6 +245,9 @@
     </Filter>
     <Filter Include="shared\distributions\detail">
       <UniqueIdentifier>{1ca900f2-3c7d-463b-aeb5-b7cf380b237a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\accelerators">
+      <UniqueIdentifier>{6df73d4a-eb11-4265-97ed-3d1d59d4dd1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +520,12 @@
     </ClInclude>
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp">
       <Filter>rainbow\test_scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\accelerator.hpp">
+      <Filter>shared\accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\bounding_volume_hierarchy.hpp">
+      <Filter>shared\accelerators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
