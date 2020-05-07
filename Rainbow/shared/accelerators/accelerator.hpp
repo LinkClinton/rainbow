@@ -21,6 +21,20 @@ namespace rainbow {
 			bounding_box() = default;
 
 			bounding_box(const std::shared_ptr<const scenes::entity>& entity, size_t index = 0);
+
+			bounding_box(const vector3& v0, const vector3& v1);
+
+			bounding_box(const bounding_box& box0, const bounding_box& box1);
+
+			bool intersect(const ray& ray) const;
+			
+			void union_it(const bounding_box& box) noexcept;
+
+			void union_it(const vector3& point) noexcept;
+
+			size_t max_dimension() const noexcept;
+			
+			vector3 centroid() const noexcept;
 		};
 		
 		class accelerator : public interfaces::noncopyable {
