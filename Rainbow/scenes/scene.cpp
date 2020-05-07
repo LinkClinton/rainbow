@@ -1,5 +1,7 @@
 #include "scene.hpp"
 
+#include "../shared/accelerators/bounding_volume_hierarchy.hpp"
+
 void rainbow::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 {
 	if (entity->has_component<emitter>()) {
@@ -12,8 +14,24 @@ void rainbow::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 	mEntities.push_back(entity);
 }
 
+void rainbow::scene::build_accelerator()
+{
+	std::vector<bounding_box> boxes;
+
+	for (const auto& entity : mEntities) {
+		if (!entity->has_component<shape>()) continue;
+
+		for (size_t index = 0; index < entity->component<shape>()->count(); index++) 
+			boxes.push_back(bounding_box(entity, index));
+	}
+	
+	mAccelerator = std::make_shared<bounding_volume_hierarchy>(boxes);
+}
+
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(const ray& ray) const
 {
+	if (mAccelerator != nullptr) return mAccelerator->intersect(ray);
+	
 	std::optional<surface_interaction> nearest_interaction;
 
 	for (const auto& entity : mEntities) {
@@ -27,6 +45,8 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(co
 
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect_with_shadow_ray(const ray& ray) const
 {
+	if (mAccelerator != nullptr) return mAccelerator->intersect_with_shadow_ray(ray);
+	
 	std::optional<surface_interaction> nearest_interaction;
 
 	for (const auto& entity : mEntities) {

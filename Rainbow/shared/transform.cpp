@@ -65,6 +65,22 @@ rainbow::coordinate_system rainbow::transform::operator()(const coordinate_syste
 	);
 }
 
+rainbow::bound3 rainbow::transform::operator()(const bound3& bound) const
+{
+	auto result = bound3(
+		transform_point(*this, bound.min),
+		transform_point(*this, bound.max));
+
+	result.union_it(transform_point(*this, vector3(bound.min.x, bound.min.y, bound.max.z)));
+	result.union_it(transform_point(*this, vector3(bound.min.x, bound.max.y, bound.min.z)));
+	result.union_it(transform_point(*this, vector3(bound.min.x, bound.max.y, bound.max.z)));
+	result.union_it(transform_point(*this, vector3(bound.max.x, bound.min.y, bound.min.z)));
+	result.union_it(transform_point(*this, vector3(bound.max.x, bound.min.y, bound.max.z)));
+	result.union_it(transform_point(*this, vector3(bound.max.x, bound.max.y, bound.min.z)));
+
+	return result;
+}
+
 rainbow::ray rainbow::transform::operator()(const ray& ray) const
 {
 	return rainbow::ray(

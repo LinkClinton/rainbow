@@ -129,6 +129,8 @@ int main() {
 		5
 		);
 
+	scene->build_accelerator();
+	
 	integrator->render(camera, scene);
 	
 	film->write("image");

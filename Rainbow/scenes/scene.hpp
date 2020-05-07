@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../shared/accelerators/accelerator.hpp"
 #include "../interfaces/noncopyable.hpp"
 #include "../emitters/emitter.hpp"
 #include "../shapes/shape.hpp"
@@ -10,6 +11,7 @@
 
 namespace rainbow {
 
+	using namespace accelerators;
 	using namespace emitters;
 	using namespace shapes;
 	
@@ -22,6 +24,8 @@ namespace rainbow {
 			~scene() = default;
 
 			void add_entity(const std::shared_ptr<entity>& entity);
+
+			void build_accelerator();
 			
 			std::optional<surface_interaction> intersect(const ray& ray) const;
 
@@ -34,6 +38,8 @@ namespace rainbow {
 			std::vector<std::shared_ptr<entity>> mEntities;
 			std::vector<std::shared_ptr<entity>> mEmitters;
 			std::vector<std::shared_ptr<entity>> mEnvironments;
+
+			std::shared_ptr<accelerator> mAccelerator;
 		};
 		
 	}

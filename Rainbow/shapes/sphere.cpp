@@ -78,6 +78,27 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 	);
 }
 
+std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray, size_t index) const
+{
+	assert(index < mCount);
+
+	return intersect(ray);
+}
+
+rainbow::bound3 rainbow::shapes::sphere::bounding_box(const transform& transform, size_t index) const
+{
+	assert(index < mCount);
+	
+	return bounding_box(transform);
+}
+
+rainbow::bound3 rainbow::shapes::sphere::bounding_box(const transform& transform) const
+{
+	const auto center = transform_point(transform, vector3(0));
+
+	return bound3(center - mRadius, center + mRadius);
+}
+
 rainbow::shapes::shape_sample rainbow::shapes::sphere::sample(const interaction& reference, const vector2& sample) const
 {
 	const auto center = vector3(0);
@@ -188,7 +209,7 @@ rainbow::real rainbow::shapes::sphere::pdf() const
 
 rainbow::real rainbow::shapes::sphere::area(size_t index) const noexcept
 {
-	assert(index == 0);
+	assert(index < mCount);
 	
 	return area();
 }

@@ -14,6 +14,10 @@ namespace rainbow {
 			bound_t();
 
 			bound_t(const vector_t<Dimension, T>& p0, const vector_t<Dimension, T>& p1);
+
+			void union_it(const bound_t<Dimension, T>& bound);
+
+			void union_it(const vector_t<Dimension, T>& v);
 		};
 
 		template <typename T>

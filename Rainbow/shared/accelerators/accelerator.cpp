@@ -18,7 +18,27 @@ rainbow::accelerators::bounding_box::bounding_box(const bounding_box& box0, cons
 
 bool rainbow::accelerators::bounding_box::intersect(const ray& ray) const
 {
-	
+	auto t0 = static_cast<real>(0), t1 = ray.length;
+
+	// enum the slab of axis-aligned bounding box
+	for (int dimension = 0; dimension < 3; dimension++) {
+		// if the direction[dimension] is 0, the inv_direction will be INF.
+		const auto inv_direction = 1 / ray.direction[dimension];
+
+		// find the t value of intersect point on the ray
+		auto near = (box.min[dimension] - ray.origin[dimension]) * inv_direction;
+		auto far = (box.max[dimension] - ray.origin[dimension]) * inv_direction;
+
+		// if the direction of ray is negative, the near will greater than far, we need swap them.
+		if (near > far) std::swap(near, far);
+
+		t0 = max(t0, near);
+		t1 = min(t1, far);
+
+		if (t0 > t1) return false;
+	}
+
+	return true;
 }
 
 void rainbow::accelerators::bounding_box::union_it(const bounding_box& box) noexcept

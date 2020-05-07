@@ -20,11 +20,11 @@ rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& normals,
 	const std::vector<vector3>& uvs,
 	const std::vector<unsigned>& indices,
-	bool reverse_orientation) : shape(reverse_orientation),
+	bool reverse_orientation) : shape(reverse_orientation, indices.size() / 3),
 	mPositions(positions), mTangents(tangents), mNormals(normals), mUVs(uvs),
-	mIndices(indices), mFaceCount(mIndices.size() / 3), mArea(0)
+	mIndices(indices), mArea(0)
 {
-	for (size_t index = 0; index < mFaceCount; index++)
+	for (size_t index = 0; index < mCount; index++)
 		mArea = mArea + area(index);
 }
 
@@ -32,7 +32,7 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(con
 {
 	std::optional<surface_interaction> nearest_interaction;
 
-	for (size_t index = 0; index < mFaceCount; index++) {
+	for (size_t index = 0; index < mCount; index++) {
 		const auto interaction = intersect_with_triangle(ray, index);
 
 		if (interaction.has_value()) nearest_interaction = interaction;
@@ -41,13 +41,50 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(con
 	return nearest_interaction;
 }
 
+std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray, size_t index) const
+{
+	return intersect_with_triangle(ray, index);
+}
+
+rainbow::bound3 rainbow::shapes::mesh::bounding_box(const transform& transform, size_t index) const
+{
+	assert(index < mCount);
+	
+	auto positions = mesh::positions(index);
+
+	// we transform the triangle vertex from local space to other space
+	positions[0] = transform_point(transform, positions[0]);
+	positions[1] = transform_point(transform, positions[1]);
+	positions[2] = transform_point(transform, positions[2]);
+
+	// build the axis-aligned bounding box
+	auto bound = bound3(positions[0], positions[1]);
+
+	bound.union_it(positions[2]);
+
+	return bound;
+}
+
+rainbow::bound3 rainbow::shapes::mesh::bounding_box(const transform& transform) const
+{
+	assert(mCount > 0);
+
+	// we will compute all bounding boxes of triangles and union them
+	auto bound = bounding_box(transform, 0);
+
+	for (size_t index = 1; index < mCount; index++)
+		bound.union_it(bounding_box(transform, index));
+
+	return bound;
+}
+
 rainbow::shapes::shape_sample rainbow::shapes::mesh::sample(const vector2& sample) const
 {
-	const auto which = std::min(static_cast<size_t>(std::floor(sample.x * mFaceCount)),
-		mFaceCount - 1);
+	const auto which = std::min(static_cast<size_t>(std::floor(sample.x * mCount)),
+		mCount - 1);
 
 	const auto sample_remapped = vector2(
-		std::min(sample.x * mFaceCount - which,
+		std::min(sample.x * mCount - which,
 			static_cast<real>(1) - std::numeric_limits<real>::epsilon()),
 		sample.y);
 

@@ -25,6 +25,8 @@ namespace rainbow {
 		surface_interaction operator()(const surface_interaction& interaction) const;
 		
 		coordinate_system operator()(const coordinate_system& system) const;
+
+		bound3 operator()(const bound3& bound) const;
 		
 		ray operator()(const ray& ray) const;
 

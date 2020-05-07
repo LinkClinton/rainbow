@@ -14,7 +14,7 @@ rainbow::shapes::shape_sample rainbow::shapes::shape_sample::transform(const rai
 	);
 }
 
-rainbow::shapes::shape::shape(bool reverse_orientation) : mReverseOrientation(reverse_orientation)
+rainbow::shapes::shape::shape(bool reverse_orientation, size_t count) : mReverseOrientation(reverse_orientation), mCount(count)
 {
 }
 
@@ -56,4 +56,9 @@ rainbow::real rainbow::shapes::shape::pdf(const interaction& reference, const ve
 bool rainbow::shapes::shape::reverse_orientation() const noexcept
 {
 	return mReverseOrientation;
+}
+
+size_t rainbow::shapes::shape::count() const noexcept
+{
+	return mCount;
 }

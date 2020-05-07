@@ -25,6 +25,12 @@ namespace rainbow {
 
 			std::optional<surface_interaction> intersect(const ray& ray) const override;
 
+			std::optional<surface_interaction> intersect(const ray& ray, size_t index) const override;
+			
+			bound3 bounding_box(const transform& transform, size_t index) const override;
+
+			bound3 bounding_box(const transform& transform) const override;
+			
 			shape_sample sample(const vector2& sample) const override;
 
 			real pdf() const override;
@@ -59,8 +65,6 @@ namespace rainbow {
 			std::vector<vector3> mUVs;
 			
 			std::vector<unsigned> mIndices;
-
-			size_t mFaceCount;
 			
 			real mArea;
 		};

@@ -49,12 +49,98 @@ std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volu
 	const ray& ray) const
 {
 	std::stack<bounding_volume_hierarchy_node*> stack;
-
+	std::optional<surface_interaction> nearest_interaction;
+	
 	stack.push(mRoot);
+
+	const auto inv_direction = static_cast<real>(1) / ray.direction;
+	const bool is_negative_direction[3] = {
+		inv_direction.x < 0,
+		inv_direction.y < 0,
+		inv_direction.z < 0
+	};
 	
 	while (!stack.empty()) {
 		const auto node = stack.top(); stack.pop();
+
+		// if the ray is not intersect with this node
+		// there are no entities in this node's bounding box intersect with ray
+		if (!node->box.intersect(ray)) continue;
+
+		// if the node is leaf, we can test the entities in this node with ray
+		if (node->is_leaf()) {
+
+			// loop all entities in this node to find the nearest interaction
+			for (auto index = node->begin; index < node->end; index++) {
+				const auto interaction = 
+					mBoundingBoxes[index].entity->intersect(ray, mBoundingBoxes[index].index);
+
+				if (interaction.has_value()) nearest_interaction = interaction;
+			}
+
+			continue;
+		}
+
+		// if the direction of ray is negative, the near child should be the right child
+		// if the direction of ray is not negative, the near child should be the left child
+		// we will travel the near child firstly
+		if (is_negative_direction[node->axis])
+			stack.push(node->left), stack.push(node->right);
+		else
+			stack.push(node->right), stack.push(node->left);
 	}
+
+	return nearest_interaction;
+}
+
+std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volume_hierarchy::intersect_with_shadow_ray(
+	const ray& ray) const
+{
+	std::stack<bounding_volume_hierarchy_node*> stack;
+	std::optional<surface_interaction> nearest_interaction;
+
+	stack.push(mRoot);
+
+	const auto inv_direction = static_cast<real>(1) / ray.direction;
+	const bool is_negative_direction[3] = {
+		inv_direction.x < 0,
+		inv_direction.y < 0,
+		inv_direction.z < 0
+	};
+
+	while (!stack.empty()) {
+		const auto node = stack.top(); stack.pop();
+
+		// if the ray is not intersect with this node
+		// there are no entities in this node's bounding box intersect with ray
+		if (!node->box.intersect(ray)) continue;
+
+		// if the node is leaf, we can test the entities in this node with ray
+		if (node->is_leaf()) {
+
+			// loop all entities in this node to find the nearest interaction
+			for (auto index = node->begin; index < node->end; index++) {
+				// because we will intersect with shadow ray, so we do not intersect invisible entity
+				if (!mBoundingBoxes[index].entity->visible()) continue;
+				
+				const auto interaction = mBoundingBoxes[index].entity->intersect(ray);
+
+				if (interaction.has_value()) nearest_interaction = interaction;
+			}
+
+			continue;
+		}
+
+		// if the direction of ray is negative, the near child should be the right child
+		// if the direction of ray is not negative, the near child should be the left child
+		// we will travel the near child firstly
+		if (is_negative_direction[node->axis])
+			stack.push(node->left), stack.push(node->right);
+		else
+			stack.push(node->right), stack.push(node->left);
+	}
+
+	return nearest_interaction;
 }
 
 rainbow::accelerators::bounding_volume_hierarchy_node* rainbow::accelerators::bounding_volume_hierarchy::recursive_build(size_t begin, size_t end)
@@ -83,7 +169,7 @@ rainbow::accelerators::bounding_volume_hierarchy_node* rainbow::accelerators::bo
 
 	// if the centroid of all boxes are same, we can not divide them into nodes,
 	// so the node should be leaf
-	if (centroid_box.box.max[dimension] == centroid_box.box.min[dimension])
+	if (centroid_box.box.max[static_cast<int>(dimension)] == centroid_box.box.min[static_cast<int>(dimension)])
 		return &((*node) = bounding_volume_hierarchy_node(union_box, begin, end));
 
 	const auto middle = split(centroid_box, union_box, dimension, begin, end);
@@ -123,7 +209,7 @@ size_t rainbow::accelerators::bounding_volume_hierarchy::split_equal_count(
 		mBoundingBoxes.data() + end,
 		[dimension](const bounding_box& left, const bounding_box& right)
 		{
-			return left.centroid()[dimension] < right.centroid()[dimension];
+			return left.centroid()[static_cast<int>(dimension)] < right.centroid()[static_cast<int>(dimension)];
 		});
 
 	return middle;

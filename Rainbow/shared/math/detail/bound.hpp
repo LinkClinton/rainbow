@@ -17,5 +17,19 @@ namespace rainbow {
 		{	
 		}
 
+		template <size_t Dimension, typename T>
+		void bound_t<Dimension, T>::union_it(const bound_t<Dimension, T>& bound)
+		{
+			min = math::min(min, bound.min);
+			max = math::max(max, bound.max);
+		}
+
+		template <size_t Dimension, typename T>
+		void bound_t<Dimension, T>::union_it(const vector_t<Dimension, T>& v)
+		{
+			min = math::min(min, v);
+			max = math::max(max, v);
+		}
+
 	}
 }
