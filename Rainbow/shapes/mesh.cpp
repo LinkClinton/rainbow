@@ -369,7 +369,8 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_wit
 		shading_space,
 		dp_du, dp_dv,
 		normal, point, -ray.direction,
-		uv
+		uv,
+		face
 	);
 }
 

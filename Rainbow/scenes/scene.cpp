@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
 #include "../shared/accelerators/bounding_volume_hierarchy.hpp"
+#include "../shared/logs/log.hpp"
 
 void rainbow::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 {

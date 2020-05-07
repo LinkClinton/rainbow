@@ -229,6 +229,7 @@
     <ClInclude Include="materials\mirror_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp" />
+    <ClInclude Include="rainbow\test_scenes\glass_bottle_scene.hpp" />
     <ClInclude Include="rainbow\test_scenes\glass_sphere_scene.hpp" />
     <ClInclude Include="rainbow\test_scenes\microfacet_specular_scene.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />

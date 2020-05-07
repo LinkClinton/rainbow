@@ -15,7 +15,7 @@ namespace rainbow {
 		ray();
 
 		ray(const vector3& direction, const vector3& origin,
-			const real length = std::numeric_limits<real>::max());
+			const real length = std::numeric_limits<real>::infinity());
 
 		vector3 begin_point() const;
 

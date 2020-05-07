@@ -45,7 +45,8 @@ rainbow::surface_interaction rainbow::transform::operator()(const surface_intera
 		transform_normal(*this, interaction.normal),
 		transform_point(*this, interaction.point),
 		normalize(transform_vector(*this, interaction.wo)),
-		interaction.uv
+		interaction.uv,
+		interaction.index
 	);
 }
 
@@ -83,10 +84,15 @@ rainbow::bound3 rainbow::transform::operator()(const bound3& bound) const
 
 rainbow::ray rainbow::transform::operator()(const ray& ray) const
 {
+	// if the transform has scale transform, the direction of will scale too
+	// so the length is not right, we should scale it with length of direction
+	// and normalize the direction again
+	const auto direction = transform_vector(*this, ray.direction);
+	
 	return rainbow::ray(
-		normalize(transform_vector(*this, ray.direction)),
+		normalize(direction),
 		transform_point(*this, ray.origin), 
-		ray.length);
+		ray.length * length(direction));
 }
 
 rainbow::matrix4x4 rainbow::transform::inverse_matrix() const noexcept

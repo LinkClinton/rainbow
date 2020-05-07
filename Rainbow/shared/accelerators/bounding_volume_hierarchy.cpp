@@ -1,5 +1,7 @@
 #include "bounding_volume_hierarchy.hpp"
 
+#include "../logs/log.hpp"
+
 #include <algorithm>
 #include <stack>
 
@@ -59,7 +61,7 @@ std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volu
 		inv_direction.y < 0,
 		inv_direction.z < 0
 	};
-	
+
 	while (!stack.empty()) {
 		const auto node = stack.top(); stack.pop();
 
@@ -84,10 +86,12 @@ std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volu
 		// if the direction of ray is negative, the near child should be the right child
 		// if the direction of ray is not negative, the near child should be the left child
 		// we will travel the near child firstly
-		if (is_negative_direction[node->axis])
-			stack.push(node->left), stack.push(node->right);
-		else
-			stack.push(node->right), stack.push(node->left);
+		if (is_negative_direction[node->axis]) {
+			stack.push(node->left); stack.push(node->right);
+		}
+		else {
+			stack.push(node->right); stack.push(node->left);
+		}
 	}
 
 	return nearest_interaction;
@@ -120,10 +124,10 @@ std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volu
 
 			// loop all entities in this node to find the nearest interaction
 			for (auto index = node->begin; index < node->end; index++) {
-				// because we will intersect with shadow ray, so we do not intersect invisible entity
 				if (!mBoundingBoxes[index].entity->visible()) continue;
 				
-				const auto interaction = mBoundingBoxes[index].entity->intersect(ray);
+				const auto interaction =
+					mBoundingBoxes[index].entity->intersect(ray, mBoundingBoxes[index].index);
 
 				if (interaction.has_value()) nearest_interaction = interaction;
 			}
@@ -134,10 +138,12 @@ std::optional<rainbow::surface_interaction> rainbow::accelerators::bounding_volu
 		// if the direction of ray is negative, the near child should be the right child
 		// if the direction of ray is not negative, the near child should be the left child
 		// we will travel the near child firstly
-		if (is_negative_direction[node->axis])
-			stack.push(node->left), stack.push(node->right);
-		else
-			stack.push(node->right), stack.push(node->left);
+		if (is_negative_direction[node->axis]) {
+			stack.push(node->left); stack.push(node->right);
+		}
+		else {
+			stack.push(node->right); stack.push(node->left);
+		}
 	}
 
 	return nearest_interaction;

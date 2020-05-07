@@ -24,8 +24,9 @@ std::optional<rainbow::surface_interaction> rainbow::scenes::entity::intersect(c
 	
 	interaction->entity = shared_from_this();
 	
-	ray.length = local_ray.length;
-	
+	// if the transform has scale transform, the length of should be scale too.
+	ray.length = mLocalToWorld(local_ray).length;
+
 	// transform it from local to world space.
 	return mLocalToWorld(interaction.value());
 }
@@ -44,7 +45,8 @@ std::optional<rainbow::surface_interaction> rainbow::entity::intersect(const ray
 
 	interaction->entity = shared_from_this();
 
-	ray.length = local_ray.length;
+	// if the transform has scale transform, the length of should be scale too.
+	ray.length = mLocalToWorld(local_ray).length;
 
 	// transform it from local to world space.
 	return mLocalToWorld(interaction.value());
