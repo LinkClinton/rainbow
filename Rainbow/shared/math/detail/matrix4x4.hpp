@@ -49,18 +49,9 @@ namespace rainbow {
 		}
 
 		template <typename T>
-		matrix4x4_t<T> perspective(const real fov, const real near, const real far)
+		matrix4x4_t<T> perspective(real fov, real width, real height, real near, real far)
 		{
-			const auto perspective = matrix4x4_t<T>(
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, far / (far - near), -(far * near) / (far - near),
-				0, 0, 1, 0
-			);
-
-			const auto invTanAngle = 1 / glm::tan(fov / 2);
-
-			return scale(vector3_t<T>(invTanAngle, invTanAngle, 1)) * perspective;
+			return glm::perspectiveFov(fov, width, height, near, far);
 		}
 
 #else

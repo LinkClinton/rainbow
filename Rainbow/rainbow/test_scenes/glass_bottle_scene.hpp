@@ -39,10 +39,6 @@ inline void render_glass_bottle_scene(const std::string& image)
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
 		translate(vector3(0, -10, 4)) * rotate(70.f, vector3(1, 0, 0)),
-		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.28f,
-			vector2(+resolution.x, +resolution.y) * 0.28f
-		),
 		quarter_pi<real>()
 		);
 

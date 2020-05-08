@@ -39,10 +39,6 @@ inline void render_microfacet_specular_scene(const std::string& output_file)
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
 		translate(vector3(0, -10.f, 4.f)) * rotate(75.f, vector3(1, 0, 0)),
-		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.3f,
-			vector2(+resolution.x, +resolution.y) * 0.3f
-		),
 		quarter_pi<real>()
 		);
 

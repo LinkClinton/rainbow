@@ -4,7 +4,21 @@ rainbow::cameras::perspective_camera::perspective_camera(
 	const std::shared_ptr<cameras::film>& film,
 	const transform& transform,
 	const bound2& screen_window,
-	const real fov) : projective_camera(film, perspective(fov), transform, screen_window)
+	const real fov) :
+	projective_camera(film, perspective(fov, 
+		static_cast<real>(film->resolution().x), 
+		static_cast<real>(film->resolution().y)), transform, screen_window)
+{
+}
+
+rainbow::cameras::perspective_camera::perspective_camera(
+	const std::shared_ptr<cameras::film>& film,
+	const transform& transform, 
+	const real fov) :
+	projective_camera(film, perspective(fov, 
+		static_cast<real>(film->resolution().x), 
+		static_cast<real>(film->resolution().y)), transform, 
+		bound2(vector2(-1), vector2(1)))
 {
 }
 

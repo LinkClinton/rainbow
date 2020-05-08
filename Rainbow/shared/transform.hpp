@@ -44,12 +44,12 @@ namespace rainbow {
 	
 	transform translate(const vector3& vec);
 
-	transform rotate(const float angle, const vector3& axis);
+	transform rotate(real angle, const vector3& axis);
 
 	transform scale(const vector3& vec);
 
-	transform perspective(const real fov, const real near = 0.01, const real far = 1000);
-
+	transform perspective(real fov, real width, real height, real near = 0.01, real far = 1000);
+	
 	vector3 transform_point(const transform& transform, const vector3& point);
 
 	vector3 transform_vector(const transform& transform, const vector3& vector);

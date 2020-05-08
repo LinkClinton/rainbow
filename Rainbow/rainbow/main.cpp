@@ -36,14 +36,10 @@ int main() {
 		vector2i(resolution.x, resolution.y),
 		bound2(crop_window_min, crop_window_max)
 		);
-	
+
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
-		translate(vector3(0, -10, 4)) * rotate(70.f, vector3(1, 0, 0)),
-		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.28f,
-			vector2(+resolution.x, +resolution.y) * 0.28f
-		),
+		translate(vector3(0, -8, 2.f)) * rotate(90.f, vector3(1, 0, 0)),
 		quarter_pi<real>()
 		);
 
@@ -72,7 +68,7 @@ int main() {
 			translate(vector3(-2.1f, 0, 2.f)))
 	);*/
 
-	/*scene->add_entity(
+	scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
 				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
@@ -80,30 +76,35 @@ int main() {
 				std::make_shared<constant_texture2d<real>>(0.01f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
-			translate(vector3(0, 3.7f, 2.f)))
-	);*/
-
-	scene->add_entity(
-		std::make_shared<entity>(
-			std::make_shared<matte_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(1)),
-				std::make_shared<constant_texture2d<real>>(0.f)),
-			nullptr,
-			load_glb_mesh("./dragon.glb")[0],
-			scale(vector3(0.05f)) //translate(vector3(0, -3.5, 2.)) * rotate(90.f, vector3(1, 0, 0)) * scale(vector3(15))
-			)
+			translate(vector3(0, 3.7, 2.f)))
 	);
-	
+
 	/*scene->add_entity(
 		std::make_shared<entity>(
 			std::make_shared<plastic_material>(
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(2.f)),
-				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.1f)),
-				std::make_shared<constant_texture2d<real>>(0.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.4f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(0.4f)),
+				std::make_shared<constant_texture2d<real>>(0.03f)),
+			nullptr,
+			load_glb_mesh("./dragon.glb")[0],
+			translate(vector3(0, 0, 0.8f)) * 
+			rotate(-90.f, vector3(0, 0, 1)) * 
+			rotate(-53.f, vector3(0, 1, 0)) * 
+			scale(vector3(0.02f))
+			//translate(vector3(0, -3.5, 2.)) * rotate(90.f, vector3(1, 0, 0)) * scale(vector3(15))
+			)
+	);*/
+	
+	scene->add_entity(
+		std::make_shared<entity>(
+			std::make_shared<plastic_material>(
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f)),
+				std::make_shared<constant_texture2d<spectrum>>(spectrum(1.f, 0, 0)),
+				std::make_shared<constant_texture2d<real>>(0.3f)),
 			nullptr,
 			mesh::create_quad(100, 100),
 			translate(vector3(0, 0, 0)))
-	);*/
+	);
 
 	scene->add_entity(
 		std::make_shared<entity>(nullptr,
@@ -112,14 +113,21 @@ int main() {
 			translate(vector3(0, 0.f, 9.f)) * rotate(180.f, vector3(1, 0, 0)))
 	);
 
-	scene->add_entity(
+	/*scene->add_entity(
+		std::make_shared<entity>(nullptr,
+			std::make_shared<point_light>(spectrum(20)),
+			nullptr,
+			translate(vector3(0, 0.f, 9.f)) * rotate(180.f, vector3(1, 0, 0)))
+	);*/
+
+	/*scene->add_entity(
 		std::make_shared<entity>(nullptr,
 			std::make_shared<environment_light>(
 				file_system::read_texture2d_hdr<spectrum>("./any.hdr"),
 				spectrum(0.2f), 20.f),
 			nullptr,
 			scale(vector3(-1, 1, 1)))
-	);
+	);*/
 
 	const auto samples_per_pixel_x = static_cast<size_t>(4);
 	const auto samples_per_pixel_y = static_cast<size_t>(4);

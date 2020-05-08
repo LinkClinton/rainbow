@@ -39,10 +39,6 @@ inline void render_glass_sphere_scene(const std::string& output_file)
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
 		translate(vector3(0, -9.3f, 10.5f)) * rotate(45.f, vector3(1, 0, 0)),
-		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.1f,
-			vector2(+resolution.x, +resolution.y) * 0.1f
-		),
 		quarter_pi<real>()
 		);
 

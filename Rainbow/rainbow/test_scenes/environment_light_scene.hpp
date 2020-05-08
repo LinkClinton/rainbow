@@ -39,10 +39,6 @@ inline void render_environment_light_scene(const std::string& image) {
 	const auto camera = std::make_shared<perspective_camera>(
 		film,
 		translate(vector3(0, -8, 10)) * rotate(45.f, vector3(1, 0, 0)),
-		bound2(
-			vector2(-resolution.x, -resolution.y) * 0.28f,
-			vector2(+resolution.x, +resolution.y) * 0.28f
-		),
 		quarter_pi<real>()
 		);
 
