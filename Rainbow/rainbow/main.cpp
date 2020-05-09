@@ -82,7 +82,7 @@ int main() {
 				std::make_shared<constant_texture2d<real>>(0.01f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
-			translate(vector3(0, 0, 0)) * scale(vector3(0.01f)))
+			translate(vector3(0, 0, 2)))
 	);
 
 	/*scene->add_entity(
