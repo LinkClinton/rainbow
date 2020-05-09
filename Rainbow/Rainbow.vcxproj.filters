@@ -157,6 +157,12 @@
     <ClCompile Include="shared\accelerators\bounding_volume_hierarchy.cpp">
       <Filter>shared\accelerators</Filter>
     </ClCompile>
+    <ClCompile Include="scenes\loaders\gltf_loader.cpp">
+      <Filter>scenes\loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\loaders\obj_loader.cpp">
+      <Filter>scenes\loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -248,6 +254,9 @@
     </Filter>
     <Filter Include="shared\accelerators">
       <UniqueIdentifier>{6df73d4a-eb11-4265-97ed-3d1d59d4dd1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scenes\loaders">
+      <UniqueIdentifier>{5002dfd4-5609-4ba7-a781-82940091feb7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -529,6 +538,12 @@
     </ClInclude>
     <ClInclude Include="rainbow\test_scenes\glass_bottle_scene.hpp">
       <Filter>rainbow\test_scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\loaders\gltf_loader.hpp">
+      <Filter>scenes\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\loaders\obj_loader.hpp">
+      <Filter>scenes\loaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

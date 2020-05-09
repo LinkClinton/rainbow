@@ -18,6 +18,9 @@
 #include "../shapes/sphere.hpp"
 #include "../shapes/disk.hpp"
 #include "../shapes/mesh.hpp"
+
+#include "../scenes/loaders/gltf_loader.hpp"
+#include "../scenes/loaders/obj_loader.hpp"
 #include "../scenes/scene.hpp"
 
 using namespace rainbow;
@@ -76,7 +79,7 @@ int main() {
 				std::make_shared<constant_texture2d<real>>(0.01f)),
 			nullptr,
 			std::make_shared<sphere>(2.f),
-			translate(vector3(0, 3.7, 2.f)))
+			translate(vector3(0, 0, 0)) * scale(vector3(0.01f)))
 	);
 
 	/*scene->add_entity(

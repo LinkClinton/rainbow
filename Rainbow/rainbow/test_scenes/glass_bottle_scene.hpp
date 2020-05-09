@@ -19,6 +19,8 @@
 #include "../../shapes/sphere.hpp"
 #include "../../shapes/disk.hpp"
 #include "../../shapes/mesh.hpp"
+
+#include "../../scenes/loaders/gltf_loader.hpp"
 #include "../../scenes/scene.hpp"
 
 using namespace rainbow;
@@ -75,7 +77,7 @@ inline void render_glass_bottle_scene(const std::string& image)
 				std::make_shared<constant_texture2d<vector2>>(vector2(0.01f)),
 				std::make_shared<constant_texture2d<real>>(1.5f), false),
 			nullptr,
-			load_glb_mesh("./WaterBottle.glb")[0],
+			loaders::load_glb_mesh("./WaterBottle.glb")[0],
 			translate(vector3(0, -3.5, 2.)) * rotate(90.f, vector3(1, 0, 0)) * scale(vector3(15))
 			)
 	);

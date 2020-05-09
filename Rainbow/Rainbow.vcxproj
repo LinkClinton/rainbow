@@ -189,6 +189,8 @@
     <ClCompile Include="scatterings\transmission\specular_transmission.cpp" />
     <ClCompile Include="scatterings\transmission\transmission_function.cpp" />
     <ClCompile Include="scenes\entity.cpp" />
+    <ClCompile Include="scenes\loaders\gltf_loader.cpp" />
+    <ClCompile Include="scenes\loaders\obj_loader.cpp" />
     <ClCompile Include="scenes\scene.cpp" />
     <ClCompile Include="shapes\disk.cpp" />
     <ClCompile Include="shapes\mesh.cpp" />
@@ -254,6 +256,8 @@
     <ClInclude Include="scatterings\transmission\transmission_function.hpp" />
     <ClInclude Include="scenes\detail\entity.hpp" />
     <ClInclude Include="scenes\entity.hpp" />
+    <ClInclude Include="scenes\loaders\gltf_loader.hpp" />
+    <ClInclude Include="scenes\loaders\obj_loader.hpp" />
     <ClInclude Include="scenes\scene.hpp" />
     <ClInclude Include="shapes\disk.hpp" />
     <ClInclude Include="shapes\mesh.hpp" />
