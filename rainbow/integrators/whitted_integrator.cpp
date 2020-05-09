@@ -42,9 +42,10 @@ rainbow::spectrum rainbow::integrators::whitted_integrator::trace(
 		const auto wi = world_to_local(interaction->shading_space, emitter_sample.wi);
 		const auto function_value = scattering_functions.evaluate(wo, wi);
 		const auto shadow_ray = interaction->spawn_ray_to(emitter_sample.position);
-	
+		const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
+		
 		// spawn a shadow ray to test the emitter is visible
-		if (scene->intersect_with_shadow_ray(shadow_ray).has_value())
+		if (shadow_interaction.has_value() && shadow_interaction->entity != emitter)
 			continue;
 
 		if (!function_value.is_black()) 

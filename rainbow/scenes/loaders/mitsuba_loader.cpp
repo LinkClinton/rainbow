@@ -5,6 +5,7 @@
 #include "../../textures/constant_texture.hpp"
 #include "../../materials/matte_material.hpp"
 #include "../../filters/gaussian_filter.hpp"
+#include "../../filters/box_filter.hpp"
 #include "../../samplers/stratified_sampler.hpp"
 #include "../../samplers/random_sampler.hpp"
 #include "../../emitters/surface_light.hpp"

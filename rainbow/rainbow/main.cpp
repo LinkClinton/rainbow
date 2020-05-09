@@ -28,8 +28,7 @@ using namespace rainbow;
 
 int main() {
 	auto info = loaders::load_mitsuba_scene("./../scenes/cbox/cbox.xml");
-
-	info.sample_count = 4;
+	
 	info.build();
 	info.render();
 	info.write("image");

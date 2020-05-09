@@ -73,8 +73,11 @@ rainbow::spectrum rainbow::integrators::estimate_lighting(
 
 		if (!functions_value.is_black()) {
 			const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
+			const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
-			if (!scene->intersect_with_shadow_ray(shadow_ray).has_value()) {
+			// if the shadow ray intersect a entity that is not the emitter
+			// we need skip this shading, because the ray from emitter to entity is occluded
+			if (!shadow_interaction.has_value() || shadow_interaction->entity == emitter) {
 
 				if (emitter->component<emitters::emitter>()->is_delta())
 					L += functions_value * emitter_sample.intensity / emitter_sample.pdf;
