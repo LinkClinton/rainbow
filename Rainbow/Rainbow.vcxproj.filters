@@ -163,6 +163,9 @@
     <ClCompile Include="scenes\loaders\obj_loader.cpp">
       <Filter>scenes\loaders</Filter>
     </ClCompile>
+    <ClCompile Include="scenes\loaders\mitsuba_loader.cpp">
+      <Filter>scenes\loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">
@@ -543,6 +546,9 @@
       <Filter>scenes\loaders</Filter>
     </ClInclude>
     <ClInclude Include="scenes\loaders\obj_loader.hpp">
+      <Filter>scenes\loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\loaders\mitsuba_loader.hpp">
       <Filter>scenes\loaders</Filter>
     </ClInclude>
   </ItemGroup>

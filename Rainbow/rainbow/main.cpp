@@ -19,6 +19,7 @@
 #include "../shapes/disk.hpp"
 #include "../shapes/mesh.hpp"
 
+#include "../scenes/loaders/mitsuba_loader.hpp"
 #include "../scenes/loaders/gltf_loader.hpp"
 #include "../scenes/loaders/obj_loader.hpp"
 #include "../scenes/scene.hpp"
@@ -26,8 +27,10 @@
 using namespace rainbow;
 
 int main() {
+	loaders::load_mitsuba_scene("./cbox.xml");
+	
 	const vector2 resolution(1280 / 2, 720 / 2);
-
+	
 	//const auto crop_window_min = vector2(0.2f, 0.55f);
 	//const auto crop_window_max = vector2(0.4f, 0.75f);
 

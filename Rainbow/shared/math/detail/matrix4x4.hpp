@@ -54,6 +54,12 @@ namespace rainbow {
 			return glm::perspectiveFov(fov, width, height, near, far);
 		}
 
+		template <typename T>
+		matrix4x4_t<T> look_at(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up)
+		{
+			return glm::lookAt(origin, target, up);
+		}
+
 #else
 
 #endif

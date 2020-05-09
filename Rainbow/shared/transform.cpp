@@ -139,6 +139,13 @@ rainbow::transform rainbow::perspective(real fov, real width, real height, real 
 	return transform(matrix, inverse(matrix));
 }
 
+rainbow::transform rainbow::look_at(const vector3& origin, const vector3& target, const vector3& up)
+{
+	const auto matrix = math::look_at(origin, target, up);
+
+	return transform(matrix, inverse(matrix));
+}
+
 rainbow::vector3 rainbow::transform_point(const transform& transform, const vector3& point)
 {
 	const auto v = transform.matrix() * vector4(point, 1);
