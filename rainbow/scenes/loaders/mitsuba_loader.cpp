@@ -2,9 +2,15 @@
 
 #include "../../integrators/path_integrator.hpp"
 #include "../../cameras/perspective_camera.hpp"
+#include "../../textures/constant_texture.hpp"
+#include "../../materials/matte_material.hpp"
 #include "../../filters/gaussian_filter.hpp"
+#include "../../samplers/stratified_sampler.hpp"
+#include "../../samplers/random_sampler.hpp"
+#include "../../emitters/surface_light.hpp"
 #include "../../shared/logs/log.hpp"
 
+#include <filesystem>
 #include <sstream>
 
 #ifdef __MITSUBA_LOADER__
@@ -19,15 +25,41 @@
 #ifdef __MITSUBA_LOADER__
 
 const std::string MITSUBA_INTEGRATOR_ELEMENT = "integrator";
+const std::string MITSUBA_TRANSLATE_ELEMENT = "translate";
 const std::string MITSUBA_TRANSFORM_ELEMENT = "transform";
+const std::string MITSUBA_REFERENCE_ELEMENT = "ref";
+const std::string MITSUBA_SPECTRUM_ELEMENT = "spectrum";
 const std::string MITSUBA_SAMPLER_ELEMENT = "sampler";
 const std::string MITSUBA_INTEGER_ELEMENT = "integer";
+const std::string MITSUBA_EMITTER_ELEMENT = "emitter";
 const std::string MITSUBA_FILTER_ELEMENT = "rfilter";
 const std::string MITSUBA_SENSOR_ELEMENT = "sensor";
+const std::string MITSUBA_STRING_ELEMENT = "string";
+const std::string MITSUBA_SHAPE_ELEMENT = "shape";
 const std::string MITSUBA_FLOAT_ELEMENT = "float";
 const std::string MITSUBA_FILM_ELEMENT = "film";
+const std::string MITSUBA_BSDF_ELEMENT = "bsdf";
 
 namespace rainbow::scenes::loaders {
+
+	void scene_info::build()
+	{
+		integrator = std::make_shared<path_integrator>(
+			std::make_shared<random_sampler2d>(sample_count),
+			std::make_shared<random_sampler1d>(sample_count));
+		
+		scene->build_accelerator();
+	}
+
+	void scene_info::render() const
+	{
+		integrator->render(camera, scene);
+	}
+
+	void scene_info::write(const std::string& file_name) const
+	{
+		film->write(file_name);
+	}
 
 	real read_real(const std::string& value)
 	{
@@ -79,6 +111,26 @@ namespace rainbow::scenes::loaders {
 		return ret;
 	}
 
+	spectrum read_spectrum(const std::string& value)
+	{
+		std::vector<real> lambdas;
+		std::vector<real> strengths;
+		std::stringstream stream(value);
+
+		std::string wave;
+		
+		while (std::getline(stream, wave, ',')) {
+			const auto middle = wave.find(':');
+			const auto lambda = read_real(wave.substr(0, middle));
+			const auto strength = read_real(wave.substr(middle + 1, wave.length() - middle - 1));
+
+			lambdas.push_back(lambda);
+			strengths.push_back(strength);
+		}
+
+		return spectrum(lambdas, strengths);
+	}
+
 	void loop_all_children(const tinyxml2::XMLNode* node, const std::function<void(const tinyxml2::XMLNode*)>& function)
 	{
 		auto current = node->FirstChild();
@@ -89,29 +141,48 @@ namespace rainbow::scenes::loaders {
 			current = current->NextSibling();
 		}
 	}
+
+	void process_look_at(const tinyxml2::XMLNode* node, transform& transform)
+	{
+		const auto element = node->ToElement();
+		
+		const auto origin = read_vector3(element->Attribute("origin"));
+		const auto target = read_vector3(element->Attribute("target"));
+		const auto up = read_vector3(element->Attribute("up"));
+
+		transform *= rainbow::look_at_right_hand(origin, target, up).inverse();
+	}
+
+	void process_translate(const tinyxml2::XMLNode* node, transform& transform)
+	{
+		const auto element = node->ToElement();
+
+		const auto x = read_real(element->Attribute("x"));
+		const auto y = read_real(element->Attribute("y"));
+		const auto z = read_real(element->Attribute("z"));
+
+		transform *= translate(vector3(x, y, z));
+	}
 	
 	void process_transform(const tinyxml2::XMLNode* node, transform& transform)
 	{
-		const auto element = node->FirstChildElement();
+		loop_all_children(node, [&](const tinyxml2::XMLNode* current)
+			{
+				// "look_at" is mitsuba 2.0 name, "lookAt" is mitsuba 0.6 name
+				if (current->Value() == std::string("look_at") || current->Value() == std::string("lookAt"))
+					process_look_at(current, transform);
 
-		// mitsuba 0.6 use "lookAt" but mitsuba 2.0 use "look_at"
-		if (element->Value() == std::string("lookAt") || element->Value() == std::string("look_at")) {
-			const auto origin = read_vector3(element->Attribute("origin"));
-			const auto target = read_vector3(element->Attribute("target"));
-			const auto up = read_vector3(element->Attribute("up"));
+				if (current->Value() == MITSUBA_TRANSLATE_ELEMENT)
+					process_translate(current, transform);
 
-			transform = rainbow::look_at(origin, target, up).inverse();
-
-			return;
-		}
-
-		// todo:
+				//todo: solve other transform
+			});
 	}
 	
 	void process_float(const tinyxml2::XMLNode* node, real& value)
 	{
 		// read real for example :
-		// <float name = "float_property" value = "1.">
+		// <float name = "float_property" value = "1."/>
 		value = read_real(node->ToElement()->Attribute("value"));
 	}
 
@@ -119,8 +190,15 @@ namespace rainbow::scenes::loaders {
 	void process_integer(const tinyxml2::XMLNode* node, T& value)
 	{
 		// read integer for example :
-		// <integer name = "integer_property" value = "1">
+		// <integer name = "integer_property" value = "1"/>
 		value = read_integer<T>(node->ToElement()->Attribute("value"));
+	}
+
+	void process_spectrum(const tinyxml2::XMLNode* node, spectrum& value)
+	{
+		// read spectrum
+		// <spectrum name = "reflectance" value = "length:value, length:value..."/>
+		value = read_spectrum(node->ToElement()->Attribute("value"));
 	}
 	
 	void process_integrator(const tinyxml2::XMLNode* node, scene_info& info)
@@ -216,36 +294,131 @@ namespace rainbow::scenes::loaders {
 					process_float(current, fov);
 			});
 
-		info.camera = std::make_shared<perspective_camera>(info.film, transform, fov);
+		info.camera = std::make_shared<perspective_camera>(info.film, transform, radians(fov));
 	}
 
+	void process_diffuse_bsdf(const tinyxml2::XMLNode* node, std::shared_ptr<material>& material)
+	{
+		auto diffuse = spectrum(1);
+
+		loop_all_children(node, [&](const tinyxml2::XMLNode* current)
+			{
+				if (current->Value() == MITSUBA_SPECTRUM_ELEMENT)
+					process_spectrum(current, diffuse);
+			});
+
+		material = std::make_shared<matte_material>(
+			std::make_shared<constant_texture2d<spectrum>>(diffuse),
+			std::make_shared<constant_texture2d<real>>(0.f));
+	}
+	
+	void process_bsdf(const tinyxml2::XMLNode* node, scene_info& info)
+	{
+		const auto element = node->ToElement();
+		const auto type = std::string(element->Attribute("type"));
+		const auto id = std::string(element->Attribute("id"));
+
+		std::shared_ptr<material> material;
+		
+		if (type == "diffuse") process_diffuse_bsdf(node, material);
+
+		info.materials.insert({ id, material });
+	}
+
+	void process_obj_mesh(const tinyxml2::XMLNode* node, const scene_info& info, std::shared_ptr<shape>& shape)
+	{
+		// load obj mesh from value
+		// <string name = "filename" value = "path"/>
+		shape = load_obj_mesh(info.directory + "/" + node->ToElement()->Attribute("value"))[0];
+	}
+
+	void process_reference_bsdf(const tinyxml2::XMLNode* node, const scene_info& info, std::shared_ptr<material>& material)
+	{
+		material = info.materials.at(node->ToElement()->Attribute("id"));
+	}
+
+	void process_emitter_area(const tinyxml2::XMLNode* node, std::shared_ptr<emitter>& emitter)
+	{
+		auto radiance = spectrum(1);
+
+		loop_all_children(node, [&](const tinyxml2::XMLNode* current)
+			{
+				if (current->Value() == MITSUBA_SPECTRUM_ELEMENT)
+					process_spectrum(current, radiance);
+			});
+
+		emitter = std::make_shared<surface_light>(radiance);
+	}
+	
+	void process_emitter(const tinyxml2::XMLNode* node, std::shared_ptr<emitter>& emitter)
+	{
+		const auto type = std::string(node->ToElement()->Attribute("type"));
+
+		if (type == "area") process_emitter_area(node, emitter);
+	}
+	
+	void process_shape(const tinyxml2::XMLNode* node, scene_info& info)
+	{
+		const auto type = std::string(node->ToElement()->Attribute("type"));
+
+		// we only support obj mode
+		if (type != "obj") return;
+
+		std::shared_ptr<material> material;
+		std::shared_ptr<emitter> emitter;
+		std::shared_ptr<shape> shape;
+
+		transform transform;
+		
+		loop_all_children(node, [&](const tinyxml2::XMLNode* current)
+			{
+				if (current->Value() == MITSUBA_STRING_ELEMENT)
+					process_obj_mesh(current, info, shape);
+
+				if (current->Value() == MITSUBA_TRANSFORM_ELEMENT)
+					process_transform(current, transform);
+
+				if (current->Value() == MITSUBA_REFERENCE_ELEMENT)
+					process_reference_bsdf(current, info, material);
+
+				if (current->Value() == MITSUBA_EMITTER_ELEMENT)
+					process_emitter(current, emitter);
+			});
+
+		info.scene->add_entity(std::make_shared<entity>(material, emitter, shape, transform));
+	}
+	
 	void process_scene(const tinyxml2::XMLNode* node, scene_info& info) {
-		auto current = node->FirstChild();
+		info.scene = std::make_shared<scene>();
 
-		while (current != nullptr) {
+		loop_all_children(node, [&](const tinyxml2::XMLNode* current)
+			{
+				if (current->Value() == MITSUBA_INTEGRATOR_ELEMENT)
+					process_integrator(current, info);
 
-			logs::info(current->Value());
-			
-			if (current->Value() == MITSUBA_INTEGRATOR_ELEMENT)
-				process_integrator(current, info);
+				if (current->Value() == MITSUBA_SENSOR_ELEMENT)
+					process_sensor(current, info);
 
-			if (current->Value() == MITSUBA_SENSOR_ELEMENT)
-				process_sensor(current, info);
-			
-			current = current->NextSibling();
-		}
+				if (current->Value() == MITSUBA_BSDF_ELEMENT)
+					process_bsdf(current, info);
+
+				if (current->Value() == MITSUBA_SHAPE_ELEMENT)
+					process_shape(current, info);
+			});
 	}
 
-	scene_info loaders::load_mitsuba_scene(const std::string& filename)
+	scene_info loaders::load_mitsuba_scene(const std::string& file_name)
 	{
 		scene_info info;
 
+		info.directory = std::filesystem::path(file_name).parent_path().generic_string();
+
 		tinyxml2::XMLDocument doc;
 
-		doc.LoadFile(filename.c_str());
+		doc.LoadFile(file_name.c_str());
 
 		process_scene(doc.LastChild(), info);
-		
+
 		return info;
 	}
 	

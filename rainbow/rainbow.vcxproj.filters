@@ -554,5 +554,8 @@
     <ClInclude Include="textures\texture.hpp">
       <Filter>textures</Filter>
     </ClInclude>
+    <ClInclude Include="shared\spectrums\cie_samples.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

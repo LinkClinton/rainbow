@@ -90,7 +90,7 @@ namespace rainbow {
 					recursive_read_glb_mesh(model, &model->nodes[child], meshes);
 			}
 
-			std::vector<std::shared_ptr<mesh>> load_glb_mesh(const std::string& file)
+			std::vector<std::shared_ptr<mesh>> load_glb_mesh(const std::string& file_name)
 			{
 				tinygltf::Model model;
 				std::string error;
@@ -98,7 +98,7 @@ namespace rainbow {
 
 				tinygltf::TinyGLTF loader;
 
-				loader.LoadBinaryFromFile(&model, &error, &warning, file);
+				loader.LoadBinaryFromFile(&model, &error, &warning, file_name);
 
 				std::vector<bool> is_root(model.nodes.size(), true);
 

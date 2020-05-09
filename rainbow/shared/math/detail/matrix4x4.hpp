@@ -55,9 +55,15 @@ namespace rainbow {
 		}
 
 		template <typename T>
-		matrix4x4_t<T> look_at(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up)
+		matrix4x4_t<T> look_at_right_hand(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up)
 		{
-			return glm::lookAt(origin, target, up);
+			return glm::lookAtRH(origin, target, up);
+		}
+
+		template <typename T>
+		matrix4x4_t<T> look_at_left_hand(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up)
+		{
+			return glm::lookAtLH(origin, target, up);
 		}
 
 #else

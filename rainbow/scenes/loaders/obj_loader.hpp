@@ -17,7 +17,7 @@ namespace rainbow {
 		namespace loaders {
 
 #ifdef __OBJ_LOADER__
-			std::vector<std::shared_ptr<mesh>> load_obj_mesh(const std::string& filename);
+			std::vector<std::shared_ptr<mesh>> load_obj_mesh(const std::string& file_name);
 #endif
 			
 		}

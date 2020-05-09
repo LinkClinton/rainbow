@@ -296,6 +296,7 @@
     <ClInclude Include="shared\random_number_generator.hpp" />
     <ClInclude Include="shared\ray.hpp" />
     <ClInclude Include="shared\sample_function.hpp" />
+    <ClInclude Include="shared\spectrums\cie_samples.hpp" />
     <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp" />
     <ClInclude Include="shared\spectrums\color_spectrum.hpp" />
     <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp" />

@@ -37,7 +37,10 @@ namespace rainbow {
 		matrix4x4_t<T> perspective(real fov, real width, real height, real near, real far);
 
 		template <typename T>
-		matrix4x4_t<T> look_at(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up);
+		matrix4x4_t<T> look_at_right_hand(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up);
+
+		template <typename T>
+		matrix4x4_t<T> look_at_left_hand(const vector3_t<T>& origin, const vector3_t<T>& target, const vector3_t<T>& up);
 	}
 }
 

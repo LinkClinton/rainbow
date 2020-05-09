@@ -10,7 +10,7 @@
 
 #ifdef __OBJ_LOADER__
 
-std::vector<std::shared_ptr<rainbow::mesh>> rainbow::loaders::load_obj_mesh(const std::string& filename)
+std::vector<std::shared_ptr<rainbow::mesh>> rainbow::loaders::load_obj_mesh(const std::string& file_name)
 {
 	std::vector<tinyobj::material_t> materials;
 	std::vector<tinyobj::shape_t> shapes;
@@ -19,7 +19,7 @@ std::vector<std::shared_ptr<rainbow::mesh>> rainbow::loaders::load_obj_mesh(cons
 	std::string warning;
 	std::string error;
 
-	const auto ret = LoadObj(&attribute, &shapes, &materials, &warning, &error, filename.c_str());
+	const auto ret = LoadObj(&attribute, &shapes, &materials, &warning, &error, file_name.c_str());
 
 	if (!warning.empty()) logs::warn(warning);
 	if (!error.empty()) logs::error(error);

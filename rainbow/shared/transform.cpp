@@ -139,9 +139,16 @@ rainbow::transform rainbow::perspective(real fov, real width, real height, real 
 	return transform(matrix, inverse(matrix));
 }
 
-rainbow::transform rainbow::look_at(const vector3& origin, const vector3& target, const vector3& up)
+rainbow::transform rainbow::look_at_right_hand(const vector3& origin, const vector3& target, const vector3& up)
 {
-	const auto matrix = math::look_at(origin, target, up);
+	const auto matrix = math::look_at_right_hand(origin, target, up);
+
+	return transform(matrix, inverse(matrix));
+}
+
+rainbow::transform rainbow::look_at_left_hand(const vector3& origin, const vector3& target, const vector3& up)
+{
+	const auto matrix = math::look_at_left_hand(origin, target, up);
 
 	return transform(matrix, inverse(matrix));
 }

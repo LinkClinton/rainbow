@@ -27,7 +27,16 @@
 using namespace rainbow;
 
 int main() {
-	loaders::load_mitsuba_scene("./cbox.xml");
+	auto info = loaders::load_mitsuba_scene("./../scenes/cbox/cbox.xml");
+
+	info.sample_count = 4;
+	info.build();
+	info.render();
+	info.write("image");
+
+	system("pause");
+	
+	return 0;
 	
 	const vector2 resolution(1280 / 2, 720 / 2);
 	

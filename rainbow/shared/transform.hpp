@@ -50,7 +50,9 @@ namespace rainbow {
 
 	transform perspective(real fov, real width, real height, real near = 0.01, real far = 1000);
 
-	transform look_at(const vector3& origin, const vector3& target, const vector3& up);
+	transform look_at_right_hand(const vector3& origin, const vector3& target, const vector3& up);
+
+	transform look_at_left_hand(const vector3& origin, const vector3& target, const vector3& up);
 	
 	vector3 transform_point(const transform& transform, const vector3& point);
 

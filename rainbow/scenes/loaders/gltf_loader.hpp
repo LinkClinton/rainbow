@@ -17,7 +17,7 @@ namespace rainbow {
 		namespace loaders {
 
 #ifdef __GLTF_LOADER__
-			std::vector<std::shared_ptr<mesh>> load_glb_mesh(const std::string& file);
+			std::vector<std::shared_ptr<mesh>> load_glb_mesh(const std::string& file_name);
 #endif
 			
 		}		
