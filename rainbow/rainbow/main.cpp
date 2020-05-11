@@ -1,4 +1,4 @@
-#include "../integrators/whitted_integrator.hpp"
+/*#include "../integrators/whitted_integrator.hpp"
 #include "../integrators/path_integrator.hpp"
 #include "../cameras/perspective_camera.hpp"
 #include "../textures/constant_texture.hpp"
@@ -169,3 +169,4 @@ int main() {
 
 	system("pause");
 }
+*/

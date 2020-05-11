@@ -1,9 +1,5 @@
-# Rainbow
+# rainbow
 
-Rainbow is a simple physical based rendering renderer. 
+Rainbow is the core of physical based rendering renderer.
 
-This renderer is under construction now.
-
-## Screenshots
-
-![image](./screenshots/CornellBox_MitsubaScene.png)
+This core is under construction now.
