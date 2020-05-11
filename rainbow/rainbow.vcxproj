@@ -173,7 +173,6 @@
     <ClCompile Include="materials\matte_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
-    <ClCompile Include="rainbow\main.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
@@ -190,8 +189,6 @@
     <ClCompile Include="scatterings\transmission\transmission_function.cpp" />
     <ClCompile Include="scenes\entity.cpp" />
     <ClCompile Include="scenes\loaders\gltf_loader.cpp" />
-    <ClCompile Include="scenes\loaders\mitsuba_loader.cpp" />
-    <ClCompile Include="scenes\loaders\obj_loader.cpp" />
     <ClCompile Include="scenes\scene.cpp" />
     <ClCompile Include="shapes\disk.cpp" />
     <ClCompile Include="shapes\mesh.cpp" />
@@ -258,8 +255,6 @@
     <ClInclude Include="scenes\detail\entity.hpp" />
     <ClInclude Include="scenes\entity.hpp" />
     <ClInclude Include="scenes\loaders\gltf_loader.hpp" />
-    <ClInclude Include="scenes\loaders\mitsuba_loader.hpp" />
-    <ClInclude Include="scenes\loaders\obj_loader.hpp" />
     <ClInclude Include="scenes\scene.hpp" />
     <ClInclude Include="shapes\disk.hpp" />
     <ClInclude Include="shapes\mesh.hpp" />
