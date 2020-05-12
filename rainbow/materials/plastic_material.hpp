@@ -16,6 +16,13 @@ namespace rainbow {
 				const std::shared_ptr<textures::texture2d<real>>& roughness,
 				bool map_roughness_to_alpha = true);
 
+			explicit plastic_material(
+				const std::shared_ptr<textures::texture2d<spectrum>>& specular,
+				const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
+				const std::shared_ptr<textures::texture2d<real>>& roughness,
+				const std::shared_ptr<textures::texture2d<real>>& eta,
+				bool map_roughness_to_alpha = true);
+			
 			~plastic_material() = default;
 
 			scattering_function_collection build_scattering_functions(
@@ -25,7 +32,8 @@ namespace rainbow {
 			std::shared_ptr<textures::texture2d<spectrum>> mSpecular;
 			std::shared_ptr<textures::texture2d<spectrum>> mDiffuse;
 			std::shared_ptr<textures::texture2d<real>> mRoughness;
-
+			std::shared_ptr<textures::texture2d<real>> mEta;
+			
 			bool mMapRoughnessToAlpha;
 		};
 		

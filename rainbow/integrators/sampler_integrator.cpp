@@ -117,7 +117,7 @@ void rainbow::integrators::sampler_integrator::render(
 							
 							trace_samplers.next_sample();
 
-							continue;
+							break;
 						}
 #endif					
 
