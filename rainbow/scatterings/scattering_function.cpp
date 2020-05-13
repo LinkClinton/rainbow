@@ -38,10 +38,10 @@ rainbow::real rainbow::scatterings::sin_phi(const vector3& w)
 {
 	// the phi is the angle between projected w in x-y plane and x-axis
 	// and the w is a normalize vector
-	// so cos_phi = w.y / length(w.x, w,y, 0) = w.y / sin_theta
+	// so sin_phi = w.y / length(w.x, w,y, 0) = w.y / sin_theta
 	const auto sin = sin_theta(w);
 
-	return sin == 0 ? 1 : clamp(w.y / sin,
+	return sin == 0 ? 0 : clamp(w.y / sin,
 		static_cast<real>(-1),
 		static_cast<real>(1));
 }

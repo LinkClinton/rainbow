@@ -23,7 +23,8 @@ rainbow::spectrum rainbow::scatterings::scattering_function_collection::evaluate
 	if (wo.z == 0) return 0;
 
 	// get the scattering type, if the wo and wi are in the same hemisphere, it is reflection.
-	const auto type = same_hemisphere(wo, wi) ? scattering_type::reflection : scattering_type::transmission;
+	// the normal may not be (0, 0, 1) in microfacet model
+	const auto type = dot(wo, wi) ? scattering_type::reflection : scattering_type::transmission;
 
 	spectrum f = 0;
 
@@ -67,7 +68,7 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::scattering_functio
 	// and the value and pdf of specular scattering are 0
 	// if the function we sample is not specular, we need calculate all functions(specular will return 0 of pdf and evaluate)
 	if (!scatterings::match(scattering_sample.type, scattering_type::specular)) {
-		const auto type = same_hemisphere(wo, scattering_sample.wi) ? scattering_type::reflection : scattering_type::transmission;
+		const auto type = dot(wo, scattering_sample.wi) ? scattering_type::reflection : scattering_type::transmission;
 
 		scattering_sample.value = 0;
 		scattering_sample.pdf = 0;
