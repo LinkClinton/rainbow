@@ -15,6 +15,11 @@ namespace rainbow {
 		 * k is the absorption coefficient for conductor
 		 */
 
+		/*
+		 * cos_theta_i is the cos theta of surface normal and incident ray
+		 * eta_i is the eta of space incident ray in
+		 * eta_o is the eta of space transmission ray in
+		 */
 		real fresnel_reflect_dielectric(real cos_theta_i, real eta_i, real eta_o);
 
 		spectrum fresnel_reflect_conductor(real cos_theta_i,

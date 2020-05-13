@@ -12,7 +12,7 @@ rainbow::materials::plastic_material::plastic_material(
 	const std::shared_ptr<textures::texture2d<real>>& roughness,
 	bool map_roughness_to_alpha) :
 	mSpecular(specular), mDiffuse(diffuse), mRoughness(roughness),
-	mEta(std::make_shared<textures::constant_texture2d<real>>(static_cast<real>(1 / 1.5))),
+	mEta(std::make_shared<textures::constant_texture2d<real>>(static_cast<real>(1.49f))),
 	mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
