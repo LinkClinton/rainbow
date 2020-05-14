@@ -55,6 +55,13 @@ namespace rainbow {
 			std::vector<vector2i> mDebugPixels;
 		};
 
+		std::tuple<std::optional<surface_interaction>, real> find_emitter(
+			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+			const surface_interaction& interaction, const vector3& wi);
+		
+		std::tuple<std::shared_ptr<const entity>, real> uniform_sample_one_emitter(
+			const std::shared_ptr<scene>& scene, const sampler_group& samplers);
+		
 		spectrum uniform_sample_one_emitter(
 			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 			const surface_interaction& interaction,

@@ -32,6 +32,51 @@ void rainbow::integrators::integrator::set_debug_trace_pixel(const vector2i& pix
 	mDebugPixels.push_back(pixel);
 }
 
+std::tuple<std::optional<rainbow::surface_interaction>, rainbow::real> rainbow::integrators::find_emitter(
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const surface_interaction& interaction, const vector3& wi)
+{
+	// give the direction of incident ray(wi), we need find the emitter it from
+	// first, we spawn ray from surface interaction
+	const auto emitter_ray = interaction.spawn_ray(wi);
+	const auto emitter_interaction = scene->intersect(emitter_ray);
+
+	const auto intersect_emitter = (emitter_interaction.has_value() && emitter_interaction->entity->has_component<emitter>());
+
+	// if the ray do not intersect the emitter entity and we do not have environment emitter
+	// we return nullptr and 0
+	if (!intersect_emitter && scene->environments().empty()) return { std::nullopt, static_cast<real>(0) };
+
+	const auto pdf = static_cast<real>(1) / scene->emitters().size();
+	
+	// if the ray intersect a entity with emitter we will return the entity
+	// if not, we will find the environment emitter
+	if (intersect_emitter) return { emitter_interaction, pdf };
+
+	const auto which = std::min(
+		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * scene->environments().size())),
+		scene->environments().size() - 1);
+
+	return { surface_interaction(scene->environments()[which]), pdf };
+}
+
+std::tuple<std::shared_ptr<const rainbow::entity>, rainbow::real> rainbow::integrators::uniform_sample_one_emitter(
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers)
+{
+	// sample a emitter from scene
+	// when there are no emitters in scene, we only return 0 
+	if (scene->emitters().empty()) return { nullptr, static_cast<real>(0) };
+
+	const auto& emitters = scene->emitters();
+
+	const auto which = std::min(
+		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * emitters.size())),
+		emitters.size() - 1);
+	const auto pdf = static_cast<real>(1) / emitters.size();
+
+	return { emitters[which], pdf };
+}
+
 rainbow::spectrum rainbow::integrators::uniform_sample_one_emitter(
 	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
 	const surface_interaction& interaction,

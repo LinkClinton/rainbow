@@ -252,6 +252,9 @@
     <ClCompile Include="shared\utilities.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="integrators\direct_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -541,6 +544,9 @@
     </ClInclude>
     <ClInclude Include="shared\spectrums\cie_samples.hpp">
       <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\direct_integrator.hpp">
+      <Filter>integrators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
