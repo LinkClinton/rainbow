@@ -1,5 +1,7 @@
 #include "direct_integrator.hpp"
 
+#include "../shared/logs/log.hpp"
+
 rainbow::integrators::direct_integrator::direct_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d,
 	const std::shared_ptr<sampler1d>& sampler1d, 
@@ -74,7 +76,7 @@ rainbow::spectrum rainbow::integrators::direct_integrator::trace(
 
 			function_value = function_value * abs(dot(emitter_sample.wi, interaction->shading_space.z()));
 
-			if (function_value.is_black()) continue;
+			if (function_value.is_black() || function_pdf <= 0) continue;
 
 			const auto shadow_ray = interaction->spawn_ray_to(emitter_sample.position);
 			const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
@@ -115,6 +117,8 @@ rainbow::spectrum rainbow::integrators::direct_integrator::trace(
 				const auto emitter_value = emitter->evaluate<emitters::emitter>(emitter_interaction.value(), -function_sample.wi);
 				const auto emitter_pdf = emitter->pdf<emitters::emitter>(interaction.value(), function_sample.wi) * pdf;
 
+				if (emitter_value.is_black() || emitter_pdf <= 0) continue;
+				
 				// if the bsdf is delta, the weight should be 1
 				// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
 				// f is the scattering functions, g is the emitter, p is the pdf
@@ -129,7 +133,7 @@ rainbow::spectrum rainbow::integrators::direct_integrator::trace(
 			}
 		}
 	}
-	
+
 	return L;
 }
 
