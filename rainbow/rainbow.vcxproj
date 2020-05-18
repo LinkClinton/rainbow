@@ -172,6 +172,7 @@
     <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="materials\matte_material.cpp" />
+    <ClCompile Include="materials\metal_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="materials\glass_material.hpp" />
     <ClInclude Include="materials\material.hpp" />
     <ClInclude Include="materials\matte_material.hpp" />
+    <ClInclude Include="materials\metal_material.hpp" />
     <ClInclude Include="materials\mirror_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp" />

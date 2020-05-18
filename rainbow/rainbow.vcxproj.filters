@@ -255,6 +255,9 @@
     <ClCompile Include="integrators\direct_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
+    <ClCompile Include="materials\metal_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -547,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="integrators\direct_integrator.hpp">
       <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\metal_material.hpp">
+      <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
