@@ -26,6 +26,13 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		void image_texture_t<2, T>::multiply(const T& value)
+		{
+			for (size_t index = 0; index < mValues.size(); index++)
+				mValues[index] *= value;
+		}
+
+		template <typename T>
 		T image_texture_t<2, T>::sample(const surface_interaction& interaction) const
 		{
 			return sample(interaction.uv);
@@ -35,8 +42,8 @@ namespace rainbow {
 		T image_texture_t<2, T>::sample(const vector2& point) const
 		{
 			const auto uv = vector2(
-				fmod(point.x, 1) * this->mSize.x - 0.5,
-				fmod(point.y, 1) * this->mSize.y - 0.5);
+				mod(point.x, static_cast<real>(1)) * this->mSize.x - 0.5,
+				mod(point.y, static_cast<real>(1)) * this->mSize.y - 0.5);
 
 			const auto min_range = vector2i(0);
 			const auto max_range = vector2i(this->mSize.x - 1, this->mSize.y - 1);

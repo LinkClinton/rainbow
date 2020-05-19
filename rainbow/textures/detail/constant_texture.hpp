@@ -13,6 +13,12 @@ namespace rainbow {
 		}
 
 		template <size_t Dimension, typename T>
+		void constant_texture_t<Dimension, T>::multiply(const T& value)
+		{
+			mValue *= value;
+		}
+
+		template <size_t Dimension, typename T>
 		T constant_texture_t<Dimension, T>::sample(const surface_interaction& interaction) const
 		{
 			return mValue;

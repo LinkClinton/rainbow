@@ -175,6 +175,7 @@
     <ClCompile Include="materials\metal_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
+    <ClCompile Include="materials\uber_material.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="materials\metal_material.hpp" />
     <ClInclude Include="materials\mirror_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
+    <ClInclude Include="materials\uber_material.hpp" />
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp" />
     <ClInclude Include="rainbow\test_scenes\glass_bottle_scene.hpp" />
     <ClInclude Include="rainbow\test_scenes\glass_sphere_scene.hpp" />

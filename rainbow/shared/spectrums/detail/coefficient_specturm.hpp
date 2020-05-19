@@ -229,5 +229,19 @@ namespace rainbow {
 			return s * (1 - x) + t * x;
 		}
 
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> clamp(
+			const coefficient_spectrum<NumSpectrumSamples>& value,
+			const coefficient_spectrum<NumSpectrumSamples>& min, 
+			const coefficient_spectrum<NumSpectrumSamples>& max)
+		{
+			coefficient_spectrum<NumSpectrumSamples> ret;
+			
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				ret.coefficient[index] = math::clamp(value.coefficient[index], min.coefficient[index], max.coefficient[index]);
+
+			return ret;
+		}
+
 	}
 }

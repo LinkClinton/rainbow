@@ -57,7 +57,12 @@ namespace rainbow {
 			const coefficient_spectrum<NumSpectrumSamples>& s,
 			const coefficient_spectrum<NumSpectrumSamples>& t,
 			const real x);
-		
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> clamp(
+			const coefficient_spectrum<NumSpectrumSamples>& value,
+			const coefficient_spectrum<NumSpectrumSamples>& min = coefficient_spectrum<NumSpectrumSamples>(0),
+			const coefficient_spectrum<NumSpectrumSamples>& max = coefficient_spectrum<NumSpectrumSamples>(1));
 	}
 }
 

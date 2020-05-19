@@ -51,6 +51,8 @@ namespace rainbow {
 		public:
 			explicit texture_t(const vector_t<Dimension, size_t>& size);
 
+			virtual void multiply(const T& value) = 0;
+			
 			~texture_t() = default;
 		};
 		

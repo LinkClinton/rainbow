@@ -81,6 +81,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T mod(const T& value, const T& mod)
+		{
+			return glm::mod(value, mod);
+		}
+
+		template <typename T>
 		T sqrt(const T& v)
 		{
 			return glm::sqrt(v);
