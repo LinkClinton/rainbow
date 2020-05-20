@@ -132,9 +132,16 @@ rainbow::transform rainbow::scale(const vector3& vec)
 	return transform(math::scale(vec), math::scale(static_cast<real>(1) / vec));
 }
 
-rainbow::transform rainbow::perspective(real fov, real width, real height, real near, real far)
+rainbow::transform rainbow::perspective_right_hand(real fov, real width, real height, real near, real far)
 {
-	const auto matrix = math::perspective<real>(fov, width, height, near, far);
+	const auto matrix = math::perspective_right_hand<real>(fov, width, height, near, far);
+
+	return transform(matrix, inverse(matrix));
+}
+
+rainbow::transform rainbow::perspective_left_hand(real fov, real width, real height, real near, real far)
+{
+	const auto matrix = math::perspective_left_hand<real>(fov, width, height, near, far);
 
 	return transform(matrix, inverse(matrix));
 }

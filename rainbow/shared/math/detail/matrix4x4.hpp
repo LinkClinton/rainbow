@@ -49,9 +49,15 @@ namespace rainbow {
 		}
 
 		template <typename T>
-		matrix4x4_t<T> perspective(real fov, real width, real height, real near, real far)
+		matrix4x4_t<T> perspective_right_hand(real fov, real width, real height, real near, real far)
 		{
-			return glm::perspectiveFov(fov, width, height, near, far);
+			return glm::perspectiveFovRH(fov, width, height, near, far);
+		}
+
+		template <typename T>
+		matrix4x4_t<T> perspective_left_hand(real fov, real width, real height, real near, real far)
+		{
+			return glm::perspectiveFovLH(fov, width, height, near, far);
 		}
 
 		template <typename T>

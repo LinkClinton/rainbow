@@ -48,8 +48,10 @@ namespace rainbow {
 
 	transform scale(const vector3& vec);
 
-	transform perspective(real fov, real width, real height, real near = 0.01, real far = 1000);
+	transform perspective_right_hand(real fov, real width, real height, real near = 0.01, real far = 1000);
 
+	transform perspective_left_hand(real fov, real width, real height, real near = 0.01, real far = 1000);
+	
 	transform look_at_right_hand(const vector3& origin, const vector3& target, const vector3& up);
 
 	transform look_at_left_hand(const vector3& origin, const vector3& target, const vector3& up);
