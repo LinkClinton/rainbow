@@ -11,7 +11,8 @@ namespace rainbow {
 			explicit path_integrator(
 				const std::shared_ptr<sampler2d>& sampler2d,
 				const std::shared_ptr<sampler1d>& sampler1d,
-				size_t max_depth = 5);
+				size_t max_depth = 5,
+				real threshold = 1);
 
 			~path_integrator() = default;
 
@@ -25,6 +26,8 @@ namespace rainbow {
 			sampler_group prepare_samplers(uint64 seed) override;
 		private:
 			std::shared_ptr<sampler1d> mSampler1D;
+
+			real mThreshold = static_cast<real>(1.0);
 		};
 		
 	}

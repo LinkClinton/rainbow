@@ -4,8 +4,9 @@
 
 rainbow::integrators::path_integrator::path_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d, 
-	const std::shared_ptr<sampler1d>& sampler1d, size_t max_depth) :
-	sampler_integrator(sampler2d, max_depth), mSampler1D(sampler1d)
+	const std::shared_ptr<sampler1d>& sampler1d, 
+	size_t max_depth, real threshold) :
+	sampler_integrator(sampler2d, max_depth), mSampler1D(sampler1d), mThreshold(threshold)
 {
 }
 
@@ -91,8 +92,10 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		
 		ray = interaction->spawn_ray(scattering_sample.wi);
 
-		if (bounces > 3) {
-			const auto q = max(static_cast<real>(0.05), 1 - (beta * eta).max_component());
+		const auto max_component = (beta * eta).max_component();
+		
+		if (max_component < mThreshold && bounces > 3) {
+			const auto q = max(static_cast<real>(0.05), 1 - max_component);
 			
 			if (samplers.sampler1d->next().x < q) break;
 
