@@ -33,7 +33,7 @@ void rainbow::integrators::integrator::set_debug_trace_pixel(const vector2i& pix
 }
 
 std::tuple<std::optional<rainbow::surface_interaction>, rainbow::real> rainbow::integrators::find_emitter(
-	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 	const surface_interaction& interaction, const vector3& wi)
 {
 	// give the direction of incident ray(wi), we need find the emitter it from
@@ -43,29 +43,21 @@ std::tuple<std::optional<rainbow::surface_interaction>, rainbow::real> rainbow::
 
 	const auto intersect_emitter = (emitter_interaction.has_value() && emitter_interaction->entity->has_component<emitter>());
 	const auto is_environment = (!scene->environments().empty() && !emitter_interaction.has_value());
-	
+
 	// if the ray do not intersect the emitter entity and environment emitter
 	// we return nullptr and 0
 	if (!intersect_emitter && !is_environment) return { std::nullopt, static_cast<real>(0) };
 
-	const auto emitters_distribution = scene->emitters_distribution();
-	
+	const auto pdf = static_cast<real>(1) / scene->emitters().size();
+
 	// if the ray intersect a entity with emitter we will return the entity
 	// if not, we will find the environment emitter
-	if (intersect_emitter) {
-		// if we have the emitters_distribution, the pdf should be the (power.luminance / total power.luminance).
-		const auto pdf = emitters_distribution == nullptr ? static_cast<real>(1) / scene->emitters().size() :
-			emitter_interaction->entity->power().luminance() / (emitters_distribution->integral() * emitters_distribution->count());
-
-		return { emitter_interaction, pdf };
-	}
+	if (intersect_emitter) return { emitter_interaction, pdf };
 
 	const auto which = std::min(
 		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * scene->environments().size())),
 		scene->environments().size() - 1);
-	const auto pdf = emitters_distribution == nullptr ? static_cast<real>(1) / scene->emitters().size() :
-		scene->environments()[which]->power().luminance() / (emitters_distribution->integral() * emitters_distribution->count());
-	
+
 	return { surface_interaction(scene->environments()[which]), pdf };
 }
 
@@ -78,19 +70,12 @@ std::tuple<std::shared_ptr<const rainbow::entity>, rainbow::real> rainbow::integ
 
 	const auto& emitters = scene->emitters();
 
-	// if the emitters_distribution is nullptr, we will sample it with unifrom way
-	if (scene->emitters_distribution() == nullptr) {
-		const auto which = std::min(
-			static_cast<size_t>(std::floor(samplers.sampler1d->next().x * emitters.size())),
-			emitters.size() - 1);
-		const auto pdf = static_cast<real>(1) / emitters.size();
+	const auto which = std::min(
+		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * emitters.size())),
+		emitters.size() - 1);
+	const auto pdf = static_cast<real>(1) / emitters.size();
 
-		return { emitters[which], pdf };
-	}
-
-	const auto sample = scene->emitters_distribution()->sample_discrete(samplers.sampler1d->next());
-
-	return { emitters[sample.offset], sample.pdf };
+	return { emitters[which], pdf };
 }
 
 rainbow::spectrum rainbow::integrators::uniform_sample_one_emitter(

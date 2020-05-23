@@ -27,26 +27,22 @@ namespace rainbow {
 
 			void add_entity(const std::shared_ptr<entity>& entity);
 
-			void build_emitters_distribution();
-
 			void build_accelerator();
 
 			std::optional<surface_interaction> intersect(const ray& ray) const;
 
 			std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const;
 
+			const std::vector<std::shared_ptr<entity>>& entities() const noexcept;
+			
 			const std::vector<std::shared_ptr<entity>>& emitters() const noexcept;
 
 			const std::vector<std::shared_ptr<entity>>& environments() const noexcept;
-
-			std::shared_ptr<distribution1d> emitters_distribution() const noexcept;
 		private:
 			std::vector<std::shared_ptr<entity>> mEntities;
 			std::vector<std::shared_ptr<entity>> mEmitters;
 			std::vector<std::shared_ptr<entity>> mEnvironments;
 
-			std::shared_ptr<distribution1d> mEmittersDistribution;
-			
 			std::shared_ptr<accelerator> mAccelerator;
 		};
 		
