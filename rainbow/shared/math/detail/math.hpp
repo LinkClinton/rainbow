@@ -111,6 +111,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T one_minus_epsilon()
+		{
+			return static_cast<real>(1) - std::numeric_limits<real>::epsilon();
+		}
+
+		template <typename T>
 		T one_over_two_pi()
 		{
 			return glm::one_over_two_pi<T>();

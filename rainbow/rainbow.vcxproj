@@ -175,10 +175,12 @@
     <ClCompile Include="materials\metal_material.cpp" />
     <ClCompile Include="materials\mirror_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
+    <ClCompile Include="materials\substrate_material.cpp" />
     <ClCompile Include="materials\uber_material.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
+    <ClCompile Include="scatterings\reflection\fresnel_blend_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\microfacet_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\oren_nayar_reflection.cpp" />
@@ -233,6 +235,7 @@
     <ClInclude Include="materials\metal_material.hpp" />
     <ClInclude Include="materials\mirror_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
+    <ClInclude Include="materials\substrate_material.hpp" />
     <ClInclude Include="materials\uber_material.hpp" />
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp" />
     <ClInclude Include="rainbow\test_scenes\glass_bottle_scene.hpp" />
@@ -247,6 +250,7 @@
     <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp" />
     <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
+    <ClInclude Include="scatterings\reflection\fresnel_blend_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\microfacet_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\oren_nayar_reflection.hpp" />

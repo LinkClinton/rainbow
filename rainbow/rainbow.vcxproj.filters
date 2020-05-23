@@ -261,6 +261,12 @@
     <ClCompile Include="materials\uber_material.cpp">
       <Filter>materials</Filter>
     </ClCompile>
+    <ClCompile Include="materials\substrate_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\fresnel_blend_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -559,6 +565,12 @@
     </ClInclude>
     <ClInclude Include="materials\uber_material.hpp">
       <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\substrate_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\fresnel_blend_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
