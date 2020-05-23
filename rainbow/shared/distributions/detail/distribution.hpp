@@ -66,6 +66,14 @@ namespace rainbow {
 			return distribution_sample_t<1>(offset, value, pdf);
 		}
 
+		inline distribution_sample_t<1> distribution_t<1>::sample_discrete(const vector_t<1, real>& sample) const
+		{
+			const auto offset = find_interval(sample.x);
+			const auto pdf = (mIntegral > 0) ? mValues[offset] / (mIntegral * count()) : 0;
+			
+			return distribution_sample_t<1>(offset, 0, pdf);
+		}
+
 		inline real distribution_t<1>::integral() const noexcept
 		{
 			return mIntegral;

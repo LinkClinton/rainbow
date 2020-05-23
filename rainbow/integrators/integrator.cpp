@@ -48,16 +48,24 @@ std::tuple<std::optional<rainbow::surface_interaction>, rainbow::real> rainbow::
 	// we return nullptr and 0
 	if (!intersect_emitter && !is_environment) return { std::nullopt, static_cast<real>(0) };
 
-	const auto pdf = static_cast<real>(1) / scene->emitters().size();
+	const auto emitters_distribution = scene->emitters_distribution();
 	
 	// if the ray intersect a entity with emitter we will return the entity
 	// if not, we will find the environment emitter
-	if (intersect_emitter) return { emitter_interaction, pdf };
+	if (intersect_emitter) {
+		// if we have the emitters_distribution, the pdf should be the (power.luminance / total power.luminance).
+		const auto pdf = emitters_distribution == nullptr ? static_cast<real>(1) / scene->emitters().size() :
+			emitter_interaction->entity->power().luminance() / (emitters_distribution->integral() * emitters_distribution->count());
+
+		return { emitter_interaction, pdf };
+	}
 
 	const auto which = std::min(
 		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * scene->environments().size())),
 		scene->environments().size() - 1);
-
+	const auto pdf = emitters_distribution == nullptr ? static_cast<real>(1) / scene->emitters().size() :
+		scene->environments()[which]->power().luminance() / (emitters_distribution->integral() * emitters_distribution->count());
+	
 	return { surface_interaction(scene->environments()[which]), pdf };
 }
 
@@ -70,12 +78,19 @@ std::tuple<std::shared_ptr<const rainbow::entity>, rainbow::real> rainbow::integ
 
 	const auto& emitters = scene->emitters();
 
-	const auto which = std::min(
-		static_cast<size_t>(std::floor(samplers.sampler1d->next().x * emitters.size())),
-		emitters.size() - 1);
-	const auto pdf = static_cast<real>(1) / emitters.size();
+	// if the emitters_distribution is nullptr, we will sample it with unifrom way
+	if (scene->emitters_distribution() == nullptr) {
+		const auto which = std::min(
+			static_cast<size_t>(std::floor(samplers.sampler1d->next().x * emitters.size())),
+			emitters.size() - 1);
+		const auto pdf = static_cast<real>(1) / emitters.size();
 
-	return { emitters[which], pdf };
+		return { emitters[which], pdf };
+	}
+
+	const auto sample = scene->emitters_distribution()->sample_discrete(samplers.sampler1d->next());
+
+	return { emitters[sample.offset], sample.pdf };
 }
 
 rainbow::spectrum rainbow::integrators::uniform_sample_one_emitter(

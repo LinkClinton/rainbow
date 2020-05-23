@@ -47,6 +47,8 @@ namespace rainbow {
 
 			distribution_sample_t<1> sample(const vector_t<1, real>& sample) const;
 
+			distribution_sample_t<1> sample_discrete(const vector_t<1, real>& sample) const;
+			
 			real integral() const noexcept;
 
 			real value(size_t index) const noexcept;

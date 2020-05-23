@@ -15,7 +15,8 @@ namespace rainbow {
 				const std::shared_ptr<textures::texture2d<spectrum>>& specular,
 				const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
 				const std::shared_ptr<textures::texture2d<spectrum>>& opacity,
-				const std::shared_ptr<textures::texture2d<vector2>>& roughness,
+				const std::shared_ptr<textures::texture2d<real>>& roughness_u,
+				const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 				const std::shared_ptr<textures::texture2d<real>>& eta,
 				bool map_roughness_to_alpha = true);
 
@@ -28,7 +29,8 @@ namespace rainbow {
 			std::shared_ptr<textures::texture2d<spectrum>> mDiffuse;
 			std::shared_ptr<textures::texture2d<spectrum>> mOpacity;
 
-			std::shared_ptr<textures::texture2d<vector2>> mRoughness;
+			std::shared_ptr<textures::texture2d<real>> mRoughnessU;
+			std::shared_ptr<textures::texture2d<real>> mRoughnessV;
 			std::shared_ptr<textures::texture2d<real>> mEta;
 
 			bool mMapRoughnessToAlpha;

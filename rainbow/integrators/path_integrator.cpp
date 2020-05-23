@@ -47,17 +47,10 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		// because the specular ray we do not solve it at "uniform_sample_one_emitter".
 		if ((bounces == 0 || specular_bounce) && interaction->entity->has_component<emitter>())
 			L += beta * interaction->entity->evaluate<emitter>(interaction.value(), -ray.direction);
-		
-		// get the scattering functions from material which the ray intersect
-		// if the entity does not have material, we return default scattering functions(0 function)
-		const auto scattering_functions =
-			interaction->entity->has_component<material>() ?
-			interaction->entity->component<material>()->build_scattering_functions(interaction.value()) :
-			scattering_function_collection();
 
-		// when the scattering functions is empty, we can think it is a invisible entity
+		// when the material is nullptr, we can think it is a invisible entity
 		// we will continue spawn a ray without changing the direction
-		if (scattering_functions.count() == 0) {
+		if (!interaction->entity->has_component<material>()) {
 			// compute the new ray 
 			ray = interaction->spawn_ray(ray.direction);
 
@@ -67,6 +60,11 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 			continue;
 		}
 		
+		// get the scattering functions from material which the ray intersect
+		// if the entity does not have material, we return default scattering functions(0 function)
+		const auto scattering_functions = 
+			interaction->entity->component<material>()->build_scattering_functions(interaction.value());
+
 		// we will sample the emitters to compute the path contribution
 		// when the functions do not have any functions without specular we do not sample it
 		// because the f(wo, wi) of specular functions is 0, the result must be 0.

@@ -34,6 +34,8 @@ namespace rainbow {
 			
 			bool visible() const noexcept;
 
+			spectrum power() const noexcept;
+			
 			template <typename T>
 			spectrum evaluate(const interaction& interaction, const vector3& wi) const;
 			

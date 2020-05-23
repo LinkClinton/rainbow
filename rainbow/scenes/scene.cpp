@@ -15,6 +15,18 @@ void rainbow::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 	mEntities.push_back(entity);
 }
 
+void rainbow::scene::build_emitters_distribution()
+{
+	if (mEmitters.empty()) return;
+
+	std::vector<real> emitters_power;
+
+	for (const auto& emitter : mEmitters) 
+		emitters_power.push_back(emitter->power().luminance());
+
+	mEmittersDistribution = std::make_shared<distribution1d>(emitters_power);
+}
+
 void rainbow::scene::build_accelerator()
 {
 	std::vector<bounding_box> boxes;
@@ -69,4 +81,9 @@ const std::vector<std::shared_ptr<rainbow::scenes::entity>>& rainbow::scenes::sc
 const std::vector<std::shared_ptr<rainbow::entity>>& rainbow::scene::environments() const noexcept
 {
 	return mEnvironments;
+}
+
+std::shared_ptr<rainbow::distribution1d> rainbow::scene::emitters_distribution() const noexcept
+{
+	return mEmittersDistribution;
 }

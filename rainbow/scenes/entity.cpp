@@ -77,3 +77,8 @@ bool rainbow::entity::visible() const noexcept
 {
 	return has_component<shape>() && has_component<material>();
 }
+
+rainbow::spectrum rainbow::entity::power() const noexcept
+{
+	return mEmitter->power(mShape);
+}

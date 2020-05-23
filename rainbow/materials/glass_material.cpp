@@ -11,10 +11,12 @@
 rainbow::materials::glass_material::glass_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 	const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
-	const std::shared_ptr<textures::texture2d<vector2>>& roughness,
+	const std::shared_ptr<textures::texture2d<real>>& roughness_u,
+	const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 	const std::shared_ptr<textures::texture2d<real>>& eta,
 	bool map_roughness_to_alpha) :
-	mReflectance(reflectance), mTransmission(transmission), mRoughness(roughness), mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
+	mReflectance(reflectance), mTransmission(transmission), mRoughnessU(roughness_u), mRoughnessV(roughness_v),
+	mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
 
@@ -22,7 +24,8 @@ rainbow::scattering_function_collection rainbow::materials::glass_material::buil
 	const surface_interaction& interaction) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
-	const auto roughness = mRoughness->sample(interaction);
+	const auto roughness_u = mRoughnessU->sample(interaction);
+	const auto roughness_v = mRoughnessV->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
 	const auto transmission = mTransmission->sample(interaction);
 
@@ -30,12 +33,12 @@ rainbow::scattering_function_collection rainbow::materials::glass_material::buil
 	
 	if (reflectance.is_black() && transmission.is_black()) return functions;
 
-	const auto is_specular = roughness == vector2(0);
+	const auto is_specular = roughness_u == 0 && roughness_v == 0;
 
 	std::shared_ptr<microfacet_distribution> distribution =
 		is_specular ? nullptr : std::make_shared<trowbridge_reitz_distribution>(
-			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.x) : roughness.x,
-			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.y) : roughness.y,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
 			true
 			);
 	

@@ -16,11 +16,12 @@ rainbow::materials::uber_material::uber_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& specular,
 	const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
 	const std::shared_ptr<textures::texture2d<spectrum>>& opacity,
-	const std::shared_ptr<textures::texture2d<vector2>>& roughness,
+	const std::shared_ptr<textures::texture2d<real>>& roughness_u,
+	const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 	const std::shared_ptr<textures::texture2d<real>>& eta,
 	bool map_roughness_to_alpha) :
 	mTransmission(transmission), mReflectance(reflectance), mSpecular(specular), mDiffuse(diffuse),
-	mOpacity(opacity), mRoughness(roughness), mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
+	mOpacity(opacity), mRoughnessU(roughness_u), mRoughnessV(roughness_v), mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
 
@@ -29,7 +30,8 @@ rainbow::scattering_function_collection rainbow::materials::uber_material::build
 {
 	const auto eta = mEta->sample(interaction);
 	const auto opacity = mOpacity->sample(interaction);
-	const auto roughness = mRoughness->sample(interaction);
+	const auto roughness_u = mRoughnessU->sample(interaction);
+	const auto roughness_v = mRoughnessV->sample(interaction);
 	const auto reflectance = opacity * mReflectance->sample(interaction);
 	const auto transmission = opacity * mTransmission->sample(interaction);
 	const auto specular = opacity * mSpecular->sample(interaction);
@@ -47,8 +49,8 @@ rainbow::scattering_function_collection rainbow::materials::uber_material::build
 
 	if (!specular.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
-			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.x) : roughness.x,
-			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness.y) : roughness.y,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
 			true);
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
