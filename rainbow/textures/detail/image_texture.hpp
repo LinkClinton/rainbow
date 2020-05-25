@@ -33,6 +33,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		auto image_texture_t<2, T>::copy_to() const -> std::shared_ptr<texture_t<2, T>>
+		{
+			return std::make_shared<image_texture_t<2, T>>(this->mSize, this->mValues);
+		}
+
+		template <typename T>
 		T image_texture_t<2, T>::sample(const surface_interaction& interaction) const
 		{
 			return sample(interaction.uv);
@@ -69,6 +75,6 @@ namespace rainbow {
 
 			return lerp(v0, v1, dv);
 		}
-
+		
 	}
 }

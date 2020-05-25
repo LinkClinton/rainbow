@@ -20,6 +20,8 @@ namespace rainbow {
 			~image_texture_t() = default;
 
 			void multiply(const T& value) override;
+
+			auto copy_to() const -> std::shared_ptr<texture_t<2, T>> override;
 			
 			T sample(const surface_interaction& interaction) const override;
 

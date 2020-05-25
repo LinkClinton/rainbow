@@ -12,6 +12,8 @@ namespace rainbow {
 			explicit constant_texture_t(const T& value, const texture_size<Dimension>& size = texture_size<Dimension>(1));
 
 			void multiply(const T& value) override;
+
+			auto copy_to() const -> std::shared_ptr<texture_t<Dimension, T>> override;
 			
 			T sample(const surface_interaction& interaction) const override;
 

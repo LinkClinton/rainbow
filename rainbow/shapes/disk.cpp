@@ -92,7 +92,7 @@ rainbow::shapes::shape_sample rainbow::shapes::disk::sample(const vector2& sampl
 	const auto point = vector3(point_disk.x * mRadius, point_disk.y * mRadius, mHeight);
 
 	return shape_sample(
-		interaction(vector3(0, 0, 1), point, vector3(0)),
+		interaction(vector3(0, 0, mReverseOrientation ? -1 : 1), point, vector3(0)),
 		pdf()
 	);
 }
@@ -111,5 +111,5 @@ rainbow::real rainbow::shapes::disk::area(size_t index) const noexcept
 
 rainbow::real rainbow::shapes::disk::area() const noexcept
 {
-	return two_pi<real>() * mRadius;
+	return pi<real>() * mRadius * mRadius;
 }

@@ -52,6 +52,8 @@ namespace rainbow {
 			explicit texture_t(const vector_t<Dimension, size_t>& size);
 
 			virtual void multiply(const T& value) = 0;
+
+			virtual auto copy_to() const -> std::shared_ptr<texture_t<Dimension, T>> = 0;
 			
 			~texture_t() = default;
 		};
