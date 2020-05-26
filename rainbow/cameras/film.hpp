@@ -55,7 +55,8 @@ namespace rainbow {
 			explicit film(
 				const std::shared_ptr<filter>& filter,
 				const vector2i& resolution,
-				const bound2& crop_window);
+				const bound2& crop_window,
+				real scale = 1);
 
 			void write(const std::string& file_name) const noexcept;
 		
@@ -77,6 +78,8 @@ namespace rainbow {
 
 			vector2i mResolution;
 			bound2i mPixelsBound;
+
+			real mScale = 1;
 		};
 
 	}

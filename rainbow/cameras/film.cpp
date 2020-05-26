@@ -89,12 +89,12 @@ void rainbow::cameras::film_tile::add_sample(const vector2& position, const spec
 }
 
 rainbow::cameras::film::film(
-	const std::shared_ptr<filters::filter>& filter, 
+	const std::shared_ptr<filters::filter>& filter,
 	const vector2i& resolution,
-	const bound2& crop_window) :
-	mPixels(static_cast<size_t>(resolution.x) * static_cast<size_t>(resolution.y)),
-	mFilter(filter),
-	mResolution(resolution)
+	const bound2& crop_window,
+	real scale) :
+	mPixels(static_cast<size_t>(resolution.x)* static_cast<size_t>(resolution.y)),
+	mFilter(filter), mResolution(resolution), mScale(scale)
 {
 	mPixelsBound.min = vector2i(
 		std::ceil(mResolution.x * crop_window.min.x),
@@ -133,9 +133,9 @@ void rainbow::cameras::film::write(const std::string& file_name) const noexcept
 
 		if (spectrum.has_nan()) logs::warn("pixel [{0}, {1}] has nan.", x_position, y_position);
 		
-		colors[index * 4 + 0] = to_byte(spectrum.red());
-		colors[index * 4 + 1] = to_byte(spectrum.green());
-		colors[index * 4 + 2] = to_byte(spectrum.blue());
+		colors[index * 4 + 0] = to_byte(spectrum.red() * mScale);
+		colors[index * 4 + 1] = to_byte(spectrum.green() * mScale);
+		colors[index * 4 + 2] = to_byte(spectrum.blue() * mScale);
 		colors[index * 4 + 3] = 255;
 	}
 
