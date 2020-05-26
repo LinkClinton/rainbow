@@ -1,18 +1,10 @@
 #include "mesh.hpp"
 
 #include "../scatterings/scattering_function.hpp"
+
+#include "../shared/accelerators/bounding_volume_hierarchy.hpp"
 #include "../shared/sample_function.hpp"
 #include "../shared/logs/log.hpp"
-
-#ifdef __GLTF_LOADER__
-
-#define TINYGLTF_IMPLEMENTATION
-#define TINYGLTF_NO_INCLUDE_JSON
-
-#include <nlohmann/json.hpp>
-#include <tiny_gltf.h>
-
-#endif
 
 rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& positions,
@@ -20,16 +12,35 @@ rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& normals,
 	const std::vector<vector3>& uvs,
 	const std::vector<unsigned>& indices,
-	bool reverse_orientation) : shape(reverse_orientation, indices.size() / 3),
+	bool reverse_orientation) : shape(reverse_orientation),
 	mPositions(positions), mTangents(tangents), mNormals(normals), mUVs(uvs),
-	mIndices(indices), mArea(0)
+	mIndices(indices), mCount(indices.size() / 3), mArea(0)
 {
-	for (size_t index = 0; index < mCount; index++)
+	std::vector<accelerators::bounding_box<mesh_reference>> boxes;
+
+	mBoundingBox = bounding_box(transform(), 0);
+	
+	for (size_t index = 0; index < mCount; index++) {
 		mArea = mArea + area(index);
+
+		boxes.push_back(accelerators::bounding_box<mesh_reference>(
+			std::make_shared<mesh_reference>(this, index)));
+
+		if (index != 0) mBoundingBox.union_it(bounding_box(transform(), index));
+	}
+
+	mAccelerator = std::make_shared<bounding_volume_hierarchy<mesh_reference>>(boxes);
+}
+
+std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray, size_t index) const
+{
+	return intersect_with_triangle(ray, index);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray) const
 {
+	if (mAccelerator != nullptr) return mAccelerator->intersect(ray);
+	
 	std::optional<surface_interaction> nearest_interaction;
 
 	for (size_t index = 0; index < mCount; index++) {
@@ -39,11 +50,6 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(con
 	}
 	
 	return nearest_interaction;
-}
-
-std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray, size_t index) const
-{
-	return intersect_with_triangle(ray, index);
 }
 
 rainbow::bound3 rainbow::shapes::mesh::bounding_box(const transform& transform, size_t index) const
@@ -67,15 +73,7 @@ rainbow::bound3 rainbow::shapes::mesh::bounding_box(const transform& transform, 
 
 rainbow::bound3 rainbow::shapes::mesh::bounding_box(const transform& transform) const
 {
-	assert(mCount > 0);
-
-	// we will compute all bounding boxes of triangles and union them
-	auto bound = bounding_box(transform, 0);
-
-	for (size_t index = 1; index < mCount; index++)
-		bound.union_it(bounding_box(transform, index));
-
-	return bound;
+	return transform(mBoundingBox);
 }
 
 rainbow::shapes::shape_sample rainbow::shapes::mesh::sample(const vector2& sample) const
@@ -112,16 +110,16 @@ rainbow::shapes::shape_sample rainbow::shapes::mesh::sample(const vector2& sampl
 	);
 }
 
-rainbow::real rainbow::shapes::mesh::pdf() const
-{
-	return 1 / area();
-}
-
 rainbow::real rainbow::shapes::mesh::area(size_t index) const noexcept
 {
 	const auto points = positions(index);
 
 	return static_cast<real>(0.5) * length(math::cross(points[2] - points[0], points[2] - points[1]));
+}
+
+rainbow::real rainbow::shapes::mesh::pdf() const
+{
+	return 1 / area();
 }
 
 rainbow::real rainbow::shapes::mesh::area() const noexcept
@@ -178,6 +176,11 @@ bool rainbow::shapes::mesh::has_normal() const noexcept
 bool rainbow::shapes::mesh::has_uv() const noexcept
 {
 	return !mUVs.empty();
+}
+
+size_t rainbow::shapes::mesh::count() const noexcept
+{
+	return mCount;
 }
 
 std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real width, real height, real depth, bool reverse_orientation)
@@ -261,6 +264,26 @@ std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_quad(real w
 	};
 
 	return std::make_shared<mesh>(positions, tangents, normals, uvs, indices, reverse_orientation);
+}
+
+rainbow::mesh::mesh_reference::mesh_reference(mesh* const instance, size_t face) :
+	instance(instance), face(face)
+{
+}
+
+std::optional<rainbow::surface_interaction> rainbow::mesh::mesh_reference::intersect(const ray& ray) const
+{
+	return instance->intersect_with_triangle(ray, face);
+}
+
+rainbow::bound3 rainbow::mesh::mesh_reference::bounding_box() const
+{
+	return instance->bounding_box(transform(), face);
+}
+
+bool rainbow::mesh::mesh_reference::visible() const noexcept
+{
+	return true;
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_with_triangle(const ray& ray, size_t face) const
@@ -369,7 +392,6 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_wit
 		shading_space,
 		dp_du, dp_dv,
 		normal, point, -ray.direction,
-		uv,
-		face
+		uv
 	);
 }

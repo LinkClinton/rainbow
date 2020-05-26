@@ -26,10 +26,6 @@ namespace rainbow {
 
 			std::optional<surface_interaction> intersect(const ray& ray) const;
 
-			std::optional<surface_interaction> intersect(const ray& ray, size_t index) const;
-			
-			bound3 bounding_box(size_t index) const;
-
 			bound3 bounding_box() const;
 			
 			bool visible() const noexcept;

@@ -199,8 +199,6 @@
     <ClCompile Include="shapes\mesh.cpp" />
     <ClCompile Include="shapes\shape.cpp" />
     <ClCompile Include="shapes\sphere.cpp" />
-    <ClCompile Include="shared\accelerators\accelerator.cpp" />
-    <ClCompile Include="shared\accelerators\bounding_volume_hierarchy.cpp" />
     <ClCompile Include="shared\coordinate_system.cpp" />
     <ClCompile Include="shared\file_system.cpp" />
     <ClCompile Include="shared\interactions\interaction.cpp" />
@@ -272,6 +270,8 @@
     <ClInclude Include="shapes\sphere.hpp" />
     <ClInclude Include="shared\accelerators\accelerator.hpp" />
     <ClInclude Include="shared\accelerators\bounding_volume_hierarchy.hpp" />
+    <ClInclude Include="shared\accelerators\detail\accelerator.hpp" />
+    <ClInclude Include="shared\accelerators\detail\bounding_volume_hierarchy.hpp" />
     <ClInclude Include="shared\assert.hpp" />
     <ClInclude Include="shared\coordinate_system.hpp" />
     <ClInclude Include="shared\distributions\detail\distribution.hpp" />

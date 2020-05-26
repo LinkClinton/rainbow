@@ -94,6 +94,9 @@
     <Filter Include="textures\detail">
       <UniqueIdentifier>{81f6b170-f5aa-4db1-a52a-83b6b4ca1b32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\accelerators\detail">
+      <UniqueIdentifier>{5d49bb39-557b-4ba9-82cc-2a184e2dac73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameras\camera.cpp">
@@ -215,12 +218,6 @@
     </ClCompile>
     <ClCompile Include="shapes\sphere.cpp">
       <Filter>shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="shared\accelerators\accelerator.cpp">
-      <Filter>shared\accelerators</Filter>
-    </ClCompile>
-    <ClCompile Include="shared\accelerators\bounding_volume_hierarchy.cpp">
-      <Filter>shared\accelerators</Filter>
     </ClCompile>
     <ClCompile Include="shared\interactions\interaction.cpp">
       <Filter>shared\interactions</Filter>
@@ -577,6 +574,12 @@
     </ClInclude>
     <ClInclude Include="textures\detail\scale_texture.hpp">
       <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\detail\accelerator.hpp">
+      <Filter>shared\accelerators\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\detail\bounding_volume_hierarchy.hpp">
+      <Filter>shared\accelerators\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

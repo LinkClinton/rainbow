@@ -64,20 +64,6 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(con
 	);
 }
 
-std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(const ray& ray, size_t index) const
-{
-	assert(index < mCount);
-
-	return intersect(ray);
-}
-
-rainbow::bound3 rainbow::shapes::disk::bounding_box(const transform& transform, size_t index) const
-{
-	assert(index < mCount);
-	
-	return bounding_box(transform);
-}
-
 rainbow::bound3 rainbow::shapes::disk::bounding_box(const transform& transform) const
 {
 	return transform(bound3(
@@ -100,13 +86,6 @@ rainbow::shapes::shape_sample rainbow::shapes::disk::sample(const vector2& sampl
 rainbow::real rainbow::shapes::disk::pdf() const
 {
 	return 1 / area();
-}
-
-rainbow::real rainbow::shapes::disk::area(size_t index) const noexcept
-{
-	assert(index < mCount);
-	
-	return area();
 }
 
 rainbow::real rainbow::shapes::disk::area() const noexcept

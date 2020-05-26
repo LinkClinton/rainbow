@@ -43,7 +43,7 @@ namespace rainbow {
 			std::vector<std::shared_ptr<entity>> mEmitters;
 			std::vector<std::shared_ptr<entity>> mEnvironments;
 
-			std::shared_ptr<accelerator> mAccelerator;
+			std::shared_ptr<accelerator<entity>> mAccelerator;
 		};
 		
 	}

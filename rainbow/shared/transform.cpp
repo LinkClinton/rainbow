@@ -45,8 +45,7 @@ rainbow::surface_interaction rainbow::transform::operator()(const surface_intera
 		transform_normal(*this, interaction.normal),
 		transform_point(*this, interaction.point),
 		normalize(transform_vector(*this, interaction.wo)),
-		interaction.uv,
-		interaction.index
+		interaction.uv
 	);
 }
 

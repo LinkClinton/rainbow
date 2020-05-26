@@ -17,16 +17,15 @@ void rainbow::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 
 void rainbow::scene::build_accelerator()
 {
-	std::vector<bounding_box> boxes;
+	std::vector<bounding_box<entity>> boxes;
 
 	for (const auto& entity : mEntities) {
 		if (!entity->has_component<shape>()) continue;
 
-		for (size_t index = 0; index < entity->component<shape>()->count(); index++) 
-			boxes.push_back(bounding_box(entity, index));
+		boxes.push_back(bounding_box<class entity>(entity));
 	}
 	
-	mAccelerator = std::make_shared<bounding_volume_hierarchy>(boxes);
+	mAccelerator = std::make_shared<bounding_volume_hierarchy<entity>>(boxes);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::scenes::scene::intersect(const ray& ray) const

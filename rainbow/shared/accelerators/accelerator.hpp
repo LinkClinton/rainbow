@@ -11,16 +11,15 @@ namespace rainbow {
 	
 	namespace accelerators {
 
+		template <typename T>
 		struct bounding_box {
-			std::shared_ptr<const entity> entity = nullptr;
+			std::shared_ptr<const T> entity = nullptr;
 			
 			bound3 box = bound3();
 
-			size_t index = 0;
-
 			bounding_box() = default;
 
-			bounding_box(const std::shared_ptr<const scenes::entity>& entity, size_t index = 0);
+			bounding_box(const std::shared_ptr<const T>& entity);
 
 			bounding_box(const vector3& v0, const vector3& v1);
 
@@ -36,17 +35,20 @@ namespace rainbow {
 			
 			vector3 centroid() const noexcept;
 		};
-		
+
+		template <typename T>
 		class accelerator : public interfaces::noncopyable {
 		public:
-			explicit accelerator(const std::vector<bounding_box>& boxes);
+			explicit accelerator(const std::vector<bounding_box<T>>& boxes);
 
 			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
 
 			virtual std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const = 0;
 		protected:
-			std::vector<bounding_box> mBoundingBoxes;
+			std::vector<bounding_box<T>> mBoundingBoxes;
 		};
 		
 	}
 }
+
+#include "detail/accelerator.hpp"

@@ -33,15 +33,11 @@ namespace rainbow {
 		public:
 			shape() = default;
 
-			explicit shape(bool reverse_orientation, size_t count = 1);
+			explicit shape(bool reverse_orientation);
 			
 			~shape() = default;
 			
 			virtual std::optional<surface_interaction> intersect(const ray& ray) const = 0;
-
-			virtual std::optional<surface_interaction> intersect(const ray& ray, size_t index) const = 0;
-			
-			virtual bound3 bounding_box(const transform& transform, size_t index) const = 0;
 
 			virtual bound3 bounding_box(const transform& transform) const = 0;
 			
@@ -53,17 +49,11 @@ namespace rainbow {
 
 			virtual real pdf() const = 0;
 
-			virtual real area(size_t index) const noexcept = 0;
-			
 			virtual real area() const noexcept = 0;
 	
 			bool reverse_orientation() const noexcept;
-
-			size_t count() const noexcept;
 		protected:
 			bool mReverseOrientation = false;
-
-			size_t mCount = 1;
 		}; 
 		
 	}
