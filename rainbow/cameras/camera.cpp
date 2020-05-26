@@ -1,5 +1,10 @@
 #include "camera.hpp"
 
+rainbow::cameras::camera_sample::camera_sample(const vector2& position, const vector2& lens) :
+	position(position), lens(lens)
+{
+}
+
 rainbow::cameras::camera::camera(const std::shared_ptr<cameras::film>& film, const transform& transform) :
 	mFilm(film), mCameraToWorld(transform)
 {
@@ -15,8 +20,9 @@ rainbow::cameras::projective_camera::projective_camera(
 	const std::shared_ptr<cameras::film>& film, 
 	const transform& projective,
 	const transform& transform, 
-	const bound2& screen_window) :
-	camera(film, transform), mCameraToScreen(projective)
+	const bound2& screen_window,
+	real focus, real lens) :
+	camera(film, transform), mCameraToScreen(projective), mFocus(focus), mLens(lens)
 {
 	mScreenToRaster = scale(
 		vector3(

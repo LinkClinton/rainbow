@@ -18,14 +18,15 @@ namespace rainbow {
 				const std::shared_ptr<cameras::film>& film,
 				const bound2& screen_window,
 				const transform& projective,
-				const transform& transform);
+				const transform& transform,
+				real focus = 1e6, real lens = 0);
 			
 			explicit perspective_camera(
 				const std::shared_ptr<cameras::film>& film,
 				const transform& transform,
 				const real fov);
 			
-			ray generate_ray(const vector2& position) const noexcept override;
+			ray generate_ray(const camera_sample& sample) const noexcept override;
 		private:
 			static transform perspective(real fov, real width, real height, bool right_hand = true);
 		};

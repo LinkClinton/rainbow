@@ -572,5 +572,11 @@
     <ClInclude Include="scatterings\reflection\fresnel_blend_reflection.hpp">
       <Filter>scatterings\reflection</Filter>
     </ClInclude>
+    <ClInclude Include="textures\scale_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\scale_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
