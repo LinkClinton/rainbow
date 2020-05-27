@@ -7,6 +7,11 @@ rainbow::shapes::sphere::sphere(real radius, bool reverse_orientation) : shape(r
 {
 }
 
+std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray, size_t index) const
+{
+	return intersect(ray);
+}
+
 std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(const ray& ray) const
 {
 	// a = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z
@@ -76,6 +81,11 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::sphere::intersect(c
 		dp_du, dp_dv, normal, point_hit, -ray.direction,
 		vector2(u, v)
 	);
+}
+
+rainbow::bound3 rainbow::shapes::sphere::bounding_box(const transform& transform, size_t index) const
+{
+	return bounding_box(transform);
 }
 
 rainbow::bound3 rainbow::shapes::sphere::bounding_box(const transform& transform) const
@@ -193,7 +203,16 @@ rainbow::real rainbow::shapes::sphere::pdf() const
 	return 1 / area();
 }
 
+rainbow::real rainbow::shapes::sphere::area(size_t index) const noexcept
+{
+	return area();
+}
+
 rainbow::real rainbow::shapes::sphere::area() const noexcept
 {
 	return 4 * pi<real>() * mRadius * mRadius;
+}
+
+void rainbow::shapes::sphere::build_accelerator()
+{
 }

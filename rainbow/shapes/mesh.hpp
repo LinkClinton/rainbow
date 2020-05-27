@@ -25,11 +25,11 @@ namespace rainbow {
 
 			~mesh() = default;
 
-			std::optional<surface_interaction> intersect(const ray& ray, size_t index) const;
+			std::optional<surface_interaction> intersect(const ray& ray, size_t index) const override;
 			
 			std::optional<surface_interaction> intersect(const ray& ray) const override;
 
-			bound3 bounding_box(const transform& transform, size_t index) const;
+			bound3 bounding_box(const transform& transform, size_t index) const override;
 			
 			bound3 bounding_box(const transform& transform) const override;
 			
@@ -37,9 +37,11 @@ namespace rainbow {
 
 			real pdf() const override;
 
-			real area(size_t index) const noexcept;
+			real area(size_t index) const noexcept override;
 			
 			real area() const noexcept override;
+
+			void build_accelerator() override;
 			
 			std::array<vector3, 3> positions(size_t face) const noexcept;
 
@@ -54,8 +56,6 @@ namespace rainbow {
 			bool has_normal() const noexcept;
 			
 			bool has_uv() const noexcept;
-
-			size_t count() const noexcept;
 
 			static std::shared_ptr<mesh> create_box(real width, real height, real depth, bool reverse_orientation = false);
 
@@ -90,7 +90,6 @@ namespace rainbow {
 
 			bound3 mBoundingBox;
 			
-			size_t mCount;
 			real mArea;
 		};
 	}

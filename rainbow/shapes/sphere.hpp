@@ -14,8 +14,12 @@ namespace rainbow {
 
 			~sphere() = default;
 
+			std::optional<surface_interaction> intersect(const ray& ray, size_t index) const override;
+			
 			std::optional<surface_interaction> intersect(const ray& ray) const override;
 
+			bound3 bounding_box(const transform& transform, size_t index) const override;
+			
 			bound3 bounding_box(const transform& transform) const override;
 			
 			shape_sample sample(const interaction& reference, const vector2& sample) const override;
@@ -26,7 +30,11 @@ namespace rainbow {
 
 			real pdf() const override;
 
+			real area(size_t index) const noexcept override;
+			
 			real area() const noexcept override;
+
+			void build_accelerator() override;
 		private:
 			real mRadius;
 		};

@@ -12,24 +12,17 @@ rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& normals,
 	const std::vector<vector3>& uvs,
 	const std::vector<unsigned>& indices,
-	bool reverse_orientation) : shape(reverse_orientation),
+	bool reverse_orientation) : shape(reverse_orientation, indices.size() / 3),
 	mPositions(positions), mTangents(tangents), mNormals(normals), mUVs(uvs),
-	mIndices(indices), mCount(indices.size() / 3), mArea(0)
+	mIndices(indices), mArea(0)
 {
-	std::vector<accelerators::bounding_box<mesh_reference>> boxes;
-
 	mBoundingBox = bounding_box(transform(), 0);
 	
 	for (size_t index = 0; index < mCount; index++) {
 		mArea = mArea + area(index);
 
-		boxes.push_back(accelerators::bounding_box<mesh_reference>(
-			std::make_shared<mesh_reference>(this, index)));
-
 		if (index != 0) mBoundingBox.union_it(bounding_box(transform(), index));
 	}
-
-	mAccelerator = std::make_shared<bounding_volume_hierarchy<mesh_reference>>(boxes);
 }
 
 std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect(const ray& ray, size_t index) const
@@ -127,6 +120,21 @@ rainbow::real rainbow::shapes::mesh::area() const noexcept
 	return mArea;
 }
 
+void rainbow::mesh::build_accelerator()
+{
+	// we only need build it once
+	if (mAccelerator != nullptr) return;
+	
+	std::vector<accelerators::bounding_box<mesh_reference>> boxes;
+
+	for (size_t index = 0; index < mCount; index++) {
+		boxes.push_back(accelerators::bounding_box<mesh_reference>(
+			std::make_shared<mesh_reference>(this, index)));
+	}
+
+	mAccelerator = std::make_shared<bounding_volume_hierarchy<mesh_reference>>(boxes);
+}
+
 std::array<rainbow::vector3, 3> rainbow::shapes::mesh::positions(size_t face) const noexcept
 {
 	return {
@@ -176,11 +184,6 @@ bool rainbow::shapes::mesh::has_normal() const noexcept
 bool rainbow::shapes::mesh::has_uv() const noexcept
 {
 	return !mUVs.empty();
-}
-
-size_t rainbow::shapes::mesh::count() const noexcept
-{
-	return mCount;
 }
 
 std::shared_ptr<rainbow::shapes::mesh> rainbow::shapes::mesh::create_box(real width, real height, real depth, bool reverse_orientation)

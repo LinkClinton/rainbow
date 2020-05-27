@@ -7,6 +7,11 @@ rainbow::shapes::disk::disk(real radius, real height, bool reverse_orientation) 
 {
 }
 
+std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(const ray& ray, size_t index) const
+{
+	return intersect(ray);
+}
+
 std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(const ray& ray) const
 {
 	const auto inner_radius = static_cast<real>(0);
@@ -64,6 +69,11 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::disk::intersect(con
 	);
 }
 
+rainbow::bound3 rainbow::shapes::disk::bounding_box(const transform& transform, size_t index) const
+{
+	return bounding_box(transform);
+}
+
 rainbow::bound3 rainbow::shapes::disk::bounding_box(const transform& transform) const
 {
 	return transform(bound3(
@@ -88,7 +98,16 @@ rainbow::real rainbow::shapes::disk::pdf() const
 	return 1 / area();
 }
 
+rainbow::real rainbow::shapes::disk::area(size_t index) const noexcept
+{
+	return area();
+}
+
 rainbow::real rainbow::shapes::disk::area() const noexcept
 {
 	return pi<real>() * mRadius * mRadius;
+}
+
+void rainbow::shapes::disk::build_accelerator()
+{
 }
