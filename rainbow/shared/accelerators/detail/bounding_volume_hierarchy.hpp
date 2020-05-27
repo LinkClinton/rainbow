@@ -218,9 +218,9 @@ namespace rainbow {
 			const bounding_box<T>& centroid_box, const bounding_box<T>& union_box, size_t dimension, size_t begin, size_t end)
 		{
 			// split_equal_count will split boxes into two equal part
-			// // the first part has the (middle - begin) element that belongs the first (middle - begin) element in the order array
-			// // the second part has others elements.
-			// // notice : the order in first and second part is unknown.
+			// the first part has the (middle - begin) element that belongs the first (middle - begin) element in the order array
+			// the second part has others elements.
+			// notice : the order in first and second part is unknown.
 			const auto middle = (begin + end) >> 1;
 
 			std::nth_element(this->mBoundingBoxes.data() + begin, this->mBoundingBoxes.data() + middle,
@@ -231,6 +231,85 @@ namespace rainbow {
 				});
 
 			return middle;
+		}
+
+		template <typename T>
+		size_t bounding_volume_hierarchy<T>::split_surface_area_heuristic(const bounding_box<T>& centroid_box,
+			const bounding_box<T>& union_box, size_t dimension, size_t begin, size_t end)
+		{
+			if (end - begin <= 4) return split_equal_count(centroid_box, union_box, dimension, begin, end);
+
+			constexpr size_t buckets_count = 12;
+
+			std::vector<bucket_info> buckets(buckets_count);
+
+			for (auto index = begin; index < end; index++) {
+				auto location = static_cast<size_t>(
+					(this->mBoundingBoxes[index].centroid()[static_cast<int>(dimension)] - centroid_box.min()[static_cast<int>(dimension)]) /
+					(centroid_box.max()[static_cast<int>(dimension)] - centroid_box.min()[static_cast<int>(dimension)]) * buckets_count);
+				
+				if (location == buckets_count) location = location - 1;
+
+				buckets[location].box.union_it(this->mBoundingBoxes[index]);
+				buckets[location].count = buckets[location].count + 1;
+			}
+
+			auto min_cost_location = static_cast<size_t>(0);
+			auto min_cost = cost_surface_area_heuristic(buckets, union_box, 0);
+
+			for (size_t index = 1; index < buckets_count - 1; index++) {
+				const auto cost = cost_surface_area_heuristic(buckets, union_box, index);
+
+				if (min_cost > cost) min_cost = cost, min_cost_location = index;
+			}
+
+			const auto leaf_cost = end - begin;
+
+			if (min_cost < leaf_cost || max_elements_one_node < leaf_cost) {
+				auto middle = std::partition(this->mBoundingBoxes.data() + begin, this->mBoundingBoxes.data() + end,
+					[&](const bounding_box<T>& box)
+					{
+						auto location = static_cast<size_t>(
+							(box.centroid()[static_cast<int>(dimension)] - centroid_box.min()[static_cast<int>(dimension)]) /
+							(centroid_box.max()[static_cast<int>(dimension)] - centroid_box.min()[static_cast<int>(dimension)]) * buckets_count);
+
+						if (location == buckets_count) location = location - 1;
+
+						return location <= min_cost_location;
+					});
+
+				return middle - this->mBoundingBoxes.data();
+			}
+
+			// leaf node
+			return begin;
+		}
+
+		template <typename T>
+		real bounding_volume_hierarchy<T>::cost_surface_area_heuristic(const std::vector<bucket_info>& infos,
+			const bounding_box<T>& union_box, size_t location)
+		{
+			assert(location >= 0 && location < infos.size());
+
+			constexpr auto travel_cost = static_cast<real>(0.125);
+			constexpr auto test_cost = static_cast<real>(1);
+
+			bucket_info info0;
+			bucket_info info1;
+
+			for (size_t index = 0; index <= location; index++) {
+				info0.box.union_it(infos[index].box);
+
+				info0.count = info0.count + infos[index].count;
+			}
+
+			for (size_t index = location + 1; index < infos.size(); index++) {
+				info1.box.union_it(infos[index].box);
+
+				info1.count = info1.count + infos[index].count;
+			}
+
+			return travel_cost + test_cost * (info0.count * info0.box.area() + info1.count * info1.box.area()) / union_box.area();
 		}
 
 	}

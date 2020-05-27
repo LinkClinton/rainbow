@@ -53,6 +53,14 @@ namespace rainbow {
 
 			std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const override;
 		private:
+			struct bucket_info {
+				size_t count = 0;
+
+				bounding_box<T> box;
+
+				bucket_info() = default;
+			};
+			
 			bounding_volume_hierarchy_node<T>* recursive_build(size_t begin, size_t end);
 
 			size_t split(const bounding_box<T>& centroid_box, const bounding_box<T>& union_box, 
@@ -60,9 +68,17 @@ namespace rainbow {
 
 			size_t split_equal_count(const bounding_box<T>& centroid_box, const bounding_box<T>& union_box,
 				size_t dimension, size_t begin, size_t end);
+
+			size_t split_surface_area_heuristic(const bounding_box<T>& centroid_box, const bounding_box<T>& union_box,
+				size_t dimension, size_t begin, size_t end);
+
+			real cost_surface_area_heuristic(const std::vector<bucket_info>& infos, const bounding_box<T>& union_box,
+				size_t location);
 			
 			bounding_volume_hierarchy_allocator<T> mAllocator;
 			bounding_volume_hierarchy_node<T>* mRoot;
+
+			constexpr static inline size_t max_elements_one_node = 1;
 		};
 		
 	}

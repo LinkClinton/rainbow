@@ -24,8 +24,8 @@ namespace rainbow {
 		template <typename T>
 		bounding_box<T>::bounding_box(const bounding_box& box0, const bounding_box& box1)
 		{
-			box.min = min(box0.box.min, box1.box.min);
-			box.max = max(box0.box.max, box1.box.max);
+			box.min = math::min(box0.box.min, box1.box.min);
+			box.max = math::max(box0.box.max, box1.box.max);
 		}
 
 		template <typename T>
@@ -45,8 +45,8 @@ namespace rainbow {
 				// if the direction of ray is negative, the near will greater than far, we need swap them.
 				if (near > far) std::swap(near, far);
 
-				t0 = max(t0, near);
-				t1 = min(t1, far);
+				t0 = math::max(t0, near);
+				t1 = math::min(t1, far);
 
 				if (t0 > t1) return false;
 			}
@@ -57,15 +57,15 @@ namespace rainbow {
 		template <typename T>
 		void bounding_box<T>::union_it(const bounding_box& box) noexcept
 		{
-			this->box.min = min(this->box.min, box.box.min);
-			this->box.max = max(this->box.max, box.box.max);
+			this->box.min = math::min(this->box.min, box.box.min);
+			this->box.max = math::max(this->box.max, box.box.max);
 		}
 
 		template <typename T>
 		void bounding_box<T>::union_it(const vector3& point) noexcept
 		{
-			box.min = min(box.min, point);
-			box.max = max(box.max, point);
+			box.min = math::min(box.min, point);
+			box.max = math::max(box.max, point);
 		}
 
 		template <typename T>
@@ -82,6 +82,26 @@ namespace rainbow {
 		vector3 bounding_box<T>::centroid() const noexcept
 		{
 			return (box.min + box.max) * static_cast<real>(0.5);
+		}
+
+		template <typename T>
+		vector3 bounding_box<T>::max() const noexcept
+		{
+			return box.max;
+		}
+
+		template <typename T>
+		vector3 bounding_box<T>::min() const noexcept
+		{
+			return box.min;
+		}
+
+		template <typename T>
+		real bounding_box<T>::area() const noexcept
+		{
+			const auto v = math::abs(box.max - box.min);
+
+			return 2 * (v.x * v.y + v.x * v.z + v.y * v.z);
 		}
 
 		template <typename T>

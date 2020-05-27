@@ -34,6 +34,12 @@ namespace rainbow {
 			size_t max_dimension() const noexcept;
 			
 			vector3 centroid() const noexcept;
+
+			vector3 max() const noexcept;
+
+			vector3 min() const noexcept;
+			
+			real area() const noexcept;
 		};
 
 		template <typename T>
