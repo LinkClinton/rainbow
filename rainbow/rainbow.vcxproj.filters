@@ -264,6 +264,9 @@
     <ClCompile Include="scatterings\reflection\fresnel_blend_reflection.cpp">
       <Filter>scatterings\reflection</Filter>
     </ClCompile>
+    <ClCompile Include="materials\translucent_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -580,6 +583,9 @@
     </ClInclude>
     <ClInclude Include="shared\accelerators\detail\bounding_volume_hierarchy.hpp">
       <Filter>shared\accelerators\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\translucent_material.hpp">
+      <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
