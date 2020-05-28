@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../shared/accelerators/accelerator.hpp"
+#include "../textures/texture.hpp"
 
 #include "shape.hpp"
 
@@ -10,12 +11,22 @@
 namespace rainbow {
 
 	using namespace accelerators;
+	using namespace textures;
 	
 	namespace shapes {
 		
 		class mesh final : public shape {
 		public:
 			explicit mesh(
+				const std::vector<vector3>& positions,
+				const std::vector<vector3>& tangents,
+				const std::vector<vector3>& normals,
+				const std::vector<vector3>& uvs,
+				const std::vector<unsigned>& indices,
+				bool reverse_orientation = false);
+
+			explicit mesh(
+				const std::shared_ptr<texture2d<real>>& mask,
 				const std::vector<vector3>& positions,
 				const std::vector<vector3>& tangents,
 				const std::vector<vector3>& normals,
@@ -80,7 +91,8 @@ namespace rainbow {
 			std::optional<surface_interaction> intersect_with_triangle(const ray& ray, size_t face) const;
 		private:
 			std::shared_ptr<accelerator<mesh_reference>> mAccelerator;
-
+			std::shared_ptr<texture2d<real>> mMask;
+			
 			std::vector<vector3> mPositions;
 			std::vector<vector3> mTangents;
 			std::vector<vector3> mNormals;

@@ -12,12 +12,23 @@ rainbow::shapes::mesh::mesh(
 	const std::vector<vector3>& normals,
 	const std::vector<vector3>& uvs,
 	const std::vector<unsigned>& indices,
+	bool reverse_orientation) : mesh(nullptr, positions, tangents, normals, uvs, indices, reverse_orientation)
+{
+}
+
+rainbow::mesh::mesh(
+	const std::shared_ptr<texture2d<real>>& mask,
+	const std::vector<vector3>& positions,
+	const std::vector<vector3>& tangents, 
+	const std::vector<vector3>& normals, 
+	const std::vector<vector3>& uvs,
+	const std::vector<unsigned>& indices,
 	bool reverse_orientation) : shape(reverse_orientation, indices.size() / 3),
-	mPositions(positions), mTangents(tangents), mNormals(normals), mUVs(uvs),
-	mIndices(indices), mArea(0)
+	mMask(mask), mPositions(positions), mTangents(tangents), mNormals(normals),
+	mUVs(uvs), mIndices(indices), mArea(0)
 {
 	mBoundingBox = bounding_box(transform(), 0);
-	
+
 	for (size_t index = 0; index < mCount; index++) {
 		mArea = mArea + area(index);
 
@@ -319,6 +330,10 @@ std::optional<rainbow::surface_interaction> rainbow::shapes::mesh::intersect_wit
 	const auto uv = uvs[0] * b0 + uvs[1] * b1 + uvs[2] * b2;
 	const auto normal = reverse_orientation() ? -normalize(math::cross(e1, e2)) : normalize(math::cross(e1, e2));
 
+	// if the mask is not nullptr and the value of mask is 0, it means the ray can pass these point
+	// so we do not return the surface_interaction
+	if (mMask != nullptr && mMask->sample(uv) == 0) return std::nullopt;
+	
 	const auto duv02 = uvs[0] - uvs[2];
 	const auto duv12 = uvs[1] - uvs[2];
 	const auto dp02 = positions[0] - positions[2];
