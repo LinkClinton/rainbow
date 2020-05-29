@@ -20,8 +20,9 @@ namespace rainbow {
 
 		enum class emitter_type : uint32 {
 			delta_position = 1 << 0,
-			environment = 1 << 1,
-			surface = 1 << 2,
+			delta_direction = 1 << 1,
+			environment = 1 << 2,
+			surface = 1 << 3,
 		};
 
 		emitter_type operator&(const emitter_type& lhs, const emitter_type& rhs);

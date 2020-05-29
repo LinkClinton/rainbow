@@ -157,6 +157,7 @@
     <ClCompile Include="cameras\camera.cpp" />
     <ClCompile Include="cameras\film.cpp" />
     <ClCompile Include="cameras\perspective_camera.cpp" />
+    <ClCompile Include="emitters\directional_light.cpp" />
     <ClCompile Include="emitters\emitter.cpp" />
     <ClCompile Include="emitters\environment_light.cpp" />
     <ClCompile Include="emitters\point_light.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="cameras\camera.hpp" />
     <ClInclude Include="cameras\film.hpp" />
     <ClInclude Include="cameras\perspective_camera.hpp" />
+    <ClInclude Include="emitters\directional_light.hpp" />
     <ClInclude Include="emitters\emitter.hpp" />
     <ClInclude Include="emitters\environment_light.hpp" />
     <ClInclude Include="emitters\point_light.hpp" />

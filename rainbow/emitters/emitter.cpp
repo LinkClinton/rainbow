@@ -27,7 +27,7 @@ rainbow::emitters::emitter_sample rainbow::emitters::emitter_sample::transform(c
 
 bool rainbow::emitters::is_delta_emitter(const emitter_type& type)
 {
-	return has(type, emitter_type::delta_position);
+	return has(type, emitter_type::delta_position) | has(type, emitter_type::delta_direction);
 }
 
 bool rainbow::emitters::is_environment_emitter(const emitter_type& type)
