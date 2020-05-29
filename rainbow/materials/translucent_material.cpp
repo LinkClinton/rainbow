@@ -62,3 +62,46 @@ rainbow::scattering_function_collection rainbow::materials::translucent_material
 	
 	return functions;
 }
+
+rainbow::scattering_function_collection rainbow::materials::translucent_material::build_scattering_functions(
+	const surface_interaction& interaction, const spectrum& scale) const noexcept
+{
+	const auto transmission = mTransmission->sample(interaction);
+	const auto reflectance = mReflectance->sample(interaction);
+	const auto specular = mSpecular->sample(interaction) * scale;
+	const auto diffuse = mDiffuse->sample(interaction) * scale;
+	const auto roughness = mRoughness->sample(interaction);
+	const auto eta = static_cast<real>(1.5);
+
+	scattering_function_collection functions(eta);
+
+	if (reflectance.is_black() && transmission.is_black()) return functions;
+
+	if (!diffuse.is_black()) {
+		if (!reflectance.is_black())
+			functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
+		if (!transmission.is_black())
+			functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
+	}
+
+	if (!specular.is_black()) {
+
+		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness,
+			true);
+
+		if (!reflectance.is_black()) {
+			const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
+
+			functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * reflectance));
+		}
+
+		if (!transmission.is_black()) {
+			functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
+				static_cast<real>(1), eta));
+		}
+	}
+
+	return functions;
+}

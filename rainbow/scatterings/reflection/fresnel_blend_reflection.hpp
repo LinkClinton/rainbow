@@ -12,7 +12,8 @@ namespace rainbow {
 			explicit fresnel_blend_reflection(
 				const std::shared_ptr<microfacet_distribution>& distribution,
 				const spectrum& reflectance_specular,
-				const spectrum& reflectance_diffuse);
+				const spectrum& reflectance_diffuse,
+				const spectrum& scale = spectrum(1));
 
 			spectrum evaluate(const vector3& wo, const vector3& wi) const override;
 
@@ -28,6 +29,7 @@ namespace rainbow {
 			
 			spectrum mReflectanceSpecular;
 			spectrum mReflectanceDiffuse;
+			spectrum mScale;
 		};
 		
 	}

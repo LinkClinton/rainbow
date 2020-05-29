@@ -7,6 +7,15 @@ rainbow::scatterings::scattering_function_collection::scattering_function_collec
 {
 }
 
+rainbow::scatterings::scattering_function_collection::scattering_function_collection(
+	const scattering_function_collection& functions0, const scattering_function_collection& functions1)
+{
+	for (const auto& function : functions0.mScatteringFunctions)
+		mScatteringFunctions.push_back(function);
+	for (const auto& function : functions1.mScatteringFunctions)
+		mScatteringFunctions.push_back(function);
+}
+
 rainbow::scatterings::scattering_function_collection::scattering_function_collection(real eta) : mEta(eta)
 {
 }

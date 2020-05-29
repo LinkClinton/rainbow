@@ -15,6 +15,9 @@ namespace rainbow {
 
 			scattering_function_collection build_scattering_functions(
 				const surface_interaction& interaction) const noexcept override;
+
+			scattering_function_collection build_scattering_functions(
+				const surface_interaction& interaction, const spectrum& scale) const noexcept override;
 		private:
 			std::shared_ptr<textures::texture2d<spectrum>> mReflectance;
 		};

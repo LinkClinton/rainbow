@@ -23,7 +23,7 @@ rainbow::vector3 rainbow::interactions::offset_ray_origin(const interaction& int
 {
 	// to avoid the ray intersect the surface that old ray intersect, we need offset the origin of the ray
 	// the offset_scale is the value that we offset
-	static const auto offset_scale = static_cast<real>(1e-4);
+	const auto offset_scale = ray_epsilon * (1 + max_component(abs(interaction.point)));
 
 	// get the direction we offset
 	auto offset = offset_scale * interaction.normal;

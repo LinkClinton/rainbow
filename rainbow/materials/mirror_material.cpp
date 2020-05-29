@@ -26,3 +26,20 @@ rainbow::scattering_function_collection rainbow::materials::mirror_material::bui
 
 	return functions;
 }
+
+scattering_function_collection rainbow::materials::mirror_material::build_scattering_functions(
+	const surface_interaction& interaction, const spectrum& scale) const noexcept
+{
+	scattering_function_collection functions;
+
+	const auto reflectance = mReflectance->sample(interaction) * scale;
+
+	if (reflectance.is_black()) return functions;
+
+	functions.add_scattering_function(std::make_shared<specular_reflection>(
+		std::make_shared<fresnel_effect_nop>(),
+		reflectance
+		));
+
+	return functions;
+}

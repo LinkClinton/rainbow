@@ -51,9 +51,20 @@ namespace rainbow {
 		}
 
 		template <size_t L, typename T>
-		vector_t<L, T> abs(const vector_t<L, T>& v0, const vector_t<L, T>& v1)
+		T max_component(const vector_t<L, T>& v)
 		{
-			return glm::abs(v0, v1);
+			auto max_value = v[0];
+
+			for (typename vector_t<L, T>::length_type index = 1; index < L; ++index)
+				if (max_value < v[index]) max_value = v[index];
+
+			return max_value;
+		}
+		
+		template <size_t L, typename T>
+		vector_t<L, T> abs(const vector_t<L, T>& v)
+		{
+			return glm::abs(v);
 		}
 
 		template <size_t L, typename T>

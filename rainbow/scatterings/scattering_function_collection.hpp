@@ -23,6 +23,10 @@ namespace rainbow {
 			explicit scattering_function_collection(
 				const std::vector<std::shared_ptr<scattering_function>>& functions, real eta);
 
+			explicit scattering_function_collection(
+				const scattering_function_collection& functions0,
+				const scattering_function_collection& functions1);
+			
 			~scattering_function_collection() = default;
 
 			void add_scattering_function(const std::shared_ptr<scattering_function>& function);

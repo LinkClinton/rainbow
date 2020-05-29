@@ -68,3 +68,47 @@ rainbow::scattering_function_collection rainbow::materials::uber_material::build
 
 	return functions;
 }
+
+rainbow::scattering_function_collection rainbow::materials::uber_material::build_scattering_functions(
+	const surface_interaction& interaction, const spectrum& scale) const noexcept
+{
+	const auto eta = mEta->sample(interaction);
+	const auto opacity = mOpacity->sample(interaction);
+	const auto roughness_u = mRoughnessU->sample(interaction);
+	const auto roughness_v = mRoughnessV->sample(interaction);
+	const auto reflectance = opacity * mReflectance->sample(interaction);
+	const auto transmission = opacity * mTransmission->sample(interaction);
+	const auto specular = opacity * mSpecular->sample(interaction);
+	const auto diffuse = opacity * mDiffuse->sample(interaction);
+
+	scattering_function_collection functions(eta);
+
+	const auto invert = clamp(spectrum(1) - opacity);
+
+	if (!invert.is_black())
+		functions.add_scattering_function(std::make_shared<specular_transmission>(invert * scale, static_cast<real>(1), static_cast<real>(1)));
+
+	if (!diffuse.is_black())
+		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * scale));
+
+	if (!specular.is_black()) {
+		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
+			true);
+		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
+
+		functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * scale));
+	}
+
+	if (!reflectance.is_black()) {
+		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
+
+		functions.add_scattering_function(std::make_shared<specular_reflection>(fresnel, reflectance * scale));
+	}
+
+	if (!transmission.is_black())
+		functions.add_scattering_function(std::make_shared<specular_transmission>(transmission * scale, static_cast<real>(1), eta));
+
+	return functions;
+}

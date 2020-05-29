@@ -29,3 +29,21 @@ rainbow::scattering_function_collection rainbow::materials::matte_material::buil
 
 	return functions;
 }
+
+scattering_function_collection rainbow::materials::matte_material::build_scattering_functions(
+	const surface_interaction& interaction, const spectrum& scale) const noexcept
+{
+	scattering_function_collection functions;
+
+	const auto diffuse = mDiffuse->sample(interaction) * scale;
+	const auto sigma = clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));
+
+	if (diffuse.is_black()) return functions;
+
+	if (sigma == 0)
+		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
+	else
+		functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
+
+	return functions;
+}

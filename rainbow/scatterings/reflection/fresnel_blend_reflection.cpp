@@ -5,8 +5,9 @@
 rainbow::scatterings::fresnel_blend_reflection::fresnel_blend_reflection(
 	const std::shared_ptr<microfacet_distribution>& distribution, 
 	const spectrum& reflectance_specular,
-	const spectrum& reflectance_diffuse) : reflection_function(scattering_type::glossy, spectrum(1)),
-	mDistribution(distribution), mReflectanceSpecular(reflectance_specular), mReflectanceDiffuse(reflectance_diffuse)
+	const spectrum& reflectance_diffuse,
+	const spectrum& scale) : reflection_function(scattering_type::glossy, spectrum(1)),
+	mDistribution(distribution), mReflectanceSpecular(reflectance_specular), mReflectanceDiffuse(reflectance_diffuse), mScale(scale)
 {
 	// this function model two layers
 	// the top layer is glossy layer, the bottom layer is diffuse layer
@@ -40,7 +41,7 @@ rainbow::spectrum rainbow::scatterings::fresnel_blend_reflection::evaluate(const
 	const auto specular = fresnel * distribution /
 		(4 * abs(dot(wi, wh)) * max(abs(cos_theta(wi)), abs(cos_theta(wo))));
 
-	return specular + diffuse;
+	return mScale * (specular + diffuse);
 }
 
 rainbow::scatterings::scattering_sample rainbow::scatterings::fresnel_blend_reflection::sample(

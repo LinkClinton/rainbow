@@ -19,6 +19,9 @@ namespace rainbow {
 
 			virtual scattering_function_collection build_scattering_functions(
 				const surface_interaction& interaction) const noexcept = 0;
+
+			virtual scattering_function_collection build_scattering_functions(
+				const surface_interaction& interaction, const spectrum& scale) const noexcept = 0;
 		};
 		
 	}

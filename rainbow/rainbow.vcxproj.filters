@@ -270,6 +270,9 @@
     <ClCompile Include="emitters\directional_light.cpp">
       <Filter>emitters</Filter>
     </ClCompile>
+    <ClCompile Include="materials\mixture_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -592,6 +595,9 @@
     </ClInclude>
     <ClInclude Include="emitters\directional_light.hpp">
       <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\mixture_material.hpp">
+      <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
