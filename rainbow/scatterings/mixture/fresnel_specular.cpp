@@ -28,10 +28,9 @@ rainbow::scatterings::scattering_sample rainbow::scatterings::fresnel_specular::
 	if (sample.x < fresnel) {
 		const auto wi = vector3(-wo.x, -wo.y, wo.z);
 
-		// normal dot wi = abs(cos_theta(wi))
 		return scattering_sample(
 			scattering_type::reflection | scattering_type::specular,
-			mReflectance * fresnel * abs(cos_theta(wi)), wi, fresnel);
+			mReflectance * fresnel / abs(cos_theta(wi)), wi, fresnel);
 	}
 
 	// specular transmission
