@@ -183,6 +183,7 @@
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
+    <ClCompile Include="scatterings\mixture\fresnel_specular.cpp" />
     <ClCompile Include="scatterings\reflection\fresnel_blend_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\microfacet_reflection.cpp" />
@@ -254,6 +255,7 @@
     <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp" />
     <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
+    <ClInclude Include="scatterings\mixture\fresnel_specular.hpp" />
     <ClInclude Include="scatterings\reflection\fresnel_blend_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\microfacet_reflection.hpp" />

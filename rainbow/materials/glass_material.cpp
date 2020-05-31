@@ -8,6 +8,8 @@
 #include "../scatterings/transmission/microfacet_transmission.hpp"
 #include "../scatterings/transmission/specular_transmission.hpp"
 
+#include "../scatterings/mixture/fresnel_specular.hpp"
+
 rainbow::materials::glass_material::glass_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 	const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
@@ -41,21 +43,19 @@ rainbow::scattering_function_collection rainbow::materials::glass_material::buil
 			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
 			true
 			);
+
+	if (is_specular) {
+		functions.add_scattering_function(std::make_shared<fresnel_specular>(transmission, reflectance, static_cast<real>(1), eta));
+	}
 	
-	if (!reflectance.is_black()) {
+	if (!reflectance.is_black() && !is_specular) {
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
-		if (is_specular)
-			functions.add_scattering_function(std::make_shared<specular_reflection>(fresnel, reflectance));
-		else
-			functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, reflectance));
+		functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, reflectance));
 	}
 
-	if (!transmission.is_black()) {
-		if (is_specular)
-			functions.add_scattering_function(std::make_shared<specular_transmission>(transmission, static_cast<real>(1), eta));
-		else
-			functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
+	if (!transmission.is_black() && !is_specular) {
+		functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
 	}
 
 	return functions;

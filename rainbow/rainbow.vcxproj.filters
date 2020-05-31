@@ -97,6 +97,9 @@
     <Filter Include="shared\accelerators\detail">
       <UniqueIdentifier>{5d49bb39-557b-4ba9-82cc-2a184e2dac73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scatterings\mixture">
+      <UniqueIdentifier>{84fbe95d-9bc6-4cd1-8ef4-bd682388290c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameras\camera.cpp">
@@ -272,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="materials\mixture_material.cpp">
       <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\mixture\fresnel_specular.cpp">
+      <Filter>scatterings\mixture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -598,6 +604,9 @@
     </ClInclude>
     <ClInclude Include="materials\mixture_material.hpp">
       <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\mixture\fresnel_specular.hpp">
+      <Filter>scatterings\mixture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
