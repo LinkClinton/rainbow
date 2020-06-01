@@ -25,13 +25,13 @@ namespace rainbow {
 		template <size_t Dimension, typename T>
 		auto scale_texture_t<Dimension, T>::copy_to() const -> std::shared_ptr<texture_t<Dimension, T>>
 		{
-			return std::make_shared<scale_texture_t<Dimension, T>>(mScale, mBase);
+			return std::make_shared<scale_texture_t<Dimension, T>>(mScale->copy_to(), mBase->copy_to());
 		}
 
 		template <size_t Dimension, typename T>
 		T scale_texture_t<Dimension, T>::sample(const surface_interaction& interaction) const
 		{
-			return mBase->sample(interaction) * mScale->sample(interaction);
+			return sample(interaction.uv);
 		}
 
 		template <size_t Dimension, typename T>

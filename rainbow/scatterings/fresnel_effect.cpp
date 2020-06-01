@@ -78,7 +78,10 @@ rainbow::scatterings::fresnel_effect_conductor::fresnel_effect_conductor(const s
 
 rainbow::spectrum rainbow::scatterings::fresnel_effect_conductor::evaluate(real cos_theta_i) const
 {
-	return fresnel_reflect_conductor(cos_theta_i, mEtaI, mEtaO, mK);
+	// in this version(in fact, the surface normal should indicate the space of eta_i).
+	// for conductor, we think the space wo and wi(only support reflection) in the space of eta_i
+	// so the normal of conductor can not indicate the space of eta_i or eta_o
+	return fresnel_reflect_conductor(abs(cos_theta_i), mEtaI, mEtaO, mK);
 }
 
 rainbow::spectrum rainbow::scatterings::fresnel_effect_nop::evaluate(real cos_theta_i) const

@@ -608,5 +608,11 @@
     <ClInclude Include="scatterings\mixture\fresnel_specular.hpp">
       <Filter>scatterings\mixture</Filter>
     </ClInclude>
+    <ClInclude Include="textures\mixture_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\mixture_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
