@@ -29,8 +29,8 @@ rainbow::materials::surface_properties rainbow::materials::subsurface_material::
 	const auto reflectance = mReflectance->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
-	const auto sigma_a = mSigmaA->sample(interaction);
-	const auto sigma_s = mSigmaS->sample(interaction);
+	const auto sigma_a = mSigmaA->sample(interaction) * mScale;
+	const auto sigma_s = mSigmaS->sample(interaction) * mScale;
 	const auto eta = mEta->sample(interaction);
 
 	surface_properties properties;

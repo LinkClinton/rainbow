@@ -163,9 +163,7 @@ rainbow::vector3 rainbow::transform_point(const transform& transform, const vect
 {
 	const auto v = transform.matrix() * vector4(point, 1);
 
-	if (v.w == 1) return v;
-
-	return v / v.w;
+	return v;
 }
 
 rainbow::vector3 rainbow::transform_vector(const transform& transform, const vector3& vector)

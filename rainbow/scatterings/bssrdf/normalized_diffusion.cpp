@@ -369,7 +369,7 @@ rainbow::spectrum rainbow::normalized_diffusion::evaluate_reflectance_profile(re
 		exp(-spectrum(distance) / mD) + 
 		exp(-spectrum(distance) / (mD * 3)));
 
-	return value / (mD * pi<real>() * 8 * distance);
+	return value / (mD * pi<real>() * 8);
 }
 
 rainbow::real rainbow::normalized_diffusion::sample_reflectance_profile(size_t channel, real sample)

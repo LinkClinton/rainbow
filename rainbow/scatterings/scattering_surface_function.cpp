@@ -83,7 +83,7 @@ rainbow::scattering_surface_sample rainbow::separable_bidirectional_scattering_s
 	// if the r we sampled greater than max_r, we just stop sampling
 	const auto max_r = sample_reflectance_profile(channel, static_cast<real>(0.999));
 
-	if (r > max_r) return {};
+	if (r >= max_r) return {};
 
 	// l is the length the line has direction projective.z intersect with max_r sphere
 	// it indicate the length of ray we need trace to find the wi
@@ -108,7 +108,7 @@ rainbow::scattering_surface_sample rainbow::separable_bidirectional_scattering_s
 		const auto ray = base.spawn_ray_to(target);
 
 		if (ray.direction == vector3(0)) break;
-		
+
 		const auto interaction = scene->intersect(ray);
 
 		if (!interaction.has_value()) break;
