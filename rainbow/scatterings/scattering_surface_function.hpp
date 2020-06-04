@@ -1,5 +1,7 @@
 #pragma once
 
+#include "scattering_function_collection.hpp"
+
 #include "../materials/material.hpp"
 #include "../scenes/scene.hpp"
 
@@ -11,13 +13,15 @@ namespace rainbow {
 	namespace scatterings {
 
 		struct scattering_surface_sample {
-			surface_interaction interaction = surface_interaction();
+			scattering_function_collection functions;
+			surface_interaction interaction;
 			spectrum value = 0;
 			real pdf = 0;
 
 			scattering_surface_sample() = default;
 
 			scattering_surface_sample(
+				const scattering_function_collection& functions,
 				const surface_interaction& interaction,
 				const spectrum& value,
 				real pdf);

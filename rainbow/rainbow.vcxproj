@@ -177,6 +177,7 @@
     <ClCompile Include="materials\mixture_material.cpp" />
     <ClCompile Include="materials\plastic_material.cpp" />
     <ClCompile Include="materials\substrate_material.cpp" />
+    <ClCompile Include="materials\subsurface_material.cpp" />
     <ClCompile Include="materials\translucent_material.cpp" />
     <ClCompile Include="materials\uber_material.cpp" />
     <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="scatterings\reflection\microfacet_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\oren_nayar_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\reflection_function.cpp" />
+    <ClCompile Include="scatterings\reflection\separable_bssrdf_reflection.cpp" />
     <ClCompile Include="scatterings\reflection\specular_reflection.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
@@ -240,6 +242,7 @@
     <ClInclude Include="materials\mixture_material.hpp" />
     <ClInclude Include="materials\plastic_material.hpp" />
     <ClInclude Include="materials\substrate_material.hpp" />
+    <ClInclude Include="materials\subsurface_material.hpp" />
     <ClInclude Include="materials\translucent_material.hpp" />
     <ClInclude Include="materials\uber_material.hpp" />
     <ClInclude Include="rainbow\test_scenes\environment_light_scene.hpp" />
@@ -262,6 +265,7 @@
     <ClInclude Include="scatterings\reflection\microfacet_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\oren_nayar_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\reflection_function.hpp" />
+    <ClInclude Include="scatterings\reflection\separable_bssrdf_reflection.hpp" />
     <ClInclude Include="scatterings\reflection\specular_reflection.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />
     <ClInclude Include="scatterings\scattering_function_collection.hpp" />

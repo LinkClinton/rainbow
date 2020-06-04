@@ -44,6 +44,9 @@ namespace rainbow {
 
 		template <size_t L, typename T>
 		T max_component(const vector_t<L, T>& v);
+
+		template <size_t L, typename T>
+		bool has_nan(const vector_t<L, T>& v);
 		
 		template <size_t L, typename T>
 		vector_t<L, T> abs(const vector_t<L, T>& v);

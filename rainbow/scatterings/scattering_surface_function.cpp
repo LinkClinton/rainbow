@@ -1,5 +1,7 @@
 #include "scattering_surface_function.hpp"
 
+#include "reflection/separable_bssrdf_reflection.hpp"
+
 namespace rainbow::scatterings {
 
 	inline std::tuple<coordinate_system, size_t, real> sample_axis_and_channel(const coordinate_system& system, real sample)
@@ -40,9 +42,11 @@ namespace rainbow::scatterings {
 	}
 }
 
-rainbow::scattering_surface_sample::scattering_surface_sample(const surface_interaction& interaction,
+rainbow::scattering_surface_sample::scattering_surface_sample(
+	const scattering_function_collection& functions,
+	const surface_interaction& interaction,
 	const spectrum& value, real pdf) :
-	interaction(interaction), value(value), pdf(pdf)
+	functions(functions), interaction(interaction), value(value), pdf(pdf)
 {
 }
 
@@ -125,8 +129,17 @@ rainbow::scattering_surface_sample rainbow::separable_bidirectional_scattering_s
 		static_cast<size_t>(0), interactions.size() - 1);
 
 	const auto distance = math::distance(mInteraction.point, interactions[which].point);
+
+	scattering_function_collection functions;
+
+	functions.add_scattering_function(std::make_shared<separable_bssrdf_reflection>(mEta));
+
+	// modify the wo to shading_space.z
+	// it will be used to find a wi in separable_bssrdf_reflection::sample() 
+	interactions[which].wo = interactions[which].shading_space.z();
 	
 	return scattering_surface_sample(
+		functions,
 		interactions[which],
 		evaluate_reflectance_profile(distance),
 		pdf(interactions[which]) / interactions.size()

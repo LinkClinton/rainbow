@@ -60,7 +60,16 @@ namespace rainbow {
 
 			return max_value;
 		}
-		
+
+		template <size_t L, typename T>
+		bool has_nan(const vector_t<L, T>& v)
+		{
+			for (typename vector_t<L, T>::length_type index = 0; index < L; ++index)
+				if (glm::isnan(v[index])) return true;
+
+			return false;
+		}
+
 		template <size_t L, typename T>
 		vector_t<L, T> abs(const vector_t<L, T>& v)
 		{

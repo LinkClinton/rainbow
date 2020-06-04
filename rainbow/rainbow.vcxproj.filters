@@ -285,6 +285,12 @@
     <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp">
       <Filter>scatterings\bssrdf</Filter>
     </ClCompile>
+    <ClCompile Include="scatterings\reflection\separable_bssrdf_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\subsurface_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -622,6 +628,12 @@
     </ClInclude>
     <ClInclude Include="scatterings\bssrdf\normalized_diffusion.hpp">
       <Filter>scatterings\bssrdf</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\separable_bssrdf_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\subsurface_material.hpp">
+      <Filter>materials</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
