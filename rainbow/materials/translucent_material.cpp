@@ -20,7 +20,7 @@ rainbow::materials::translucent_material::translucent_material(
 {
 }
 
-rainbow::scattering_function_collection rainbow::materials::translucent_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::translucent_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
 	const auto transmission = mTransmission->sample(interaction);
@@ -30,15 +30,17 @@ rainbow::scattering_function_collection rainbow::materials::translucent_material
 	const auto roughness = mRoughness->sample(interaction);
 	const auto eta = static_cast<real>(1.5);
 
-	scattering_function_collection functions(eta);
+	surface_properties properties;
 
-	if (reflectance.is_black() && transmission.is_black()) return functions;
+	properties.functions = scattering_function_collection(eta);
+	
+	if (reflectance.is_black() && transmission.is_black()) return properties;
 
 	if (!diffuse.is_black()) {
 		if (!reflectance.is_black())
-			functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
 		if (!transmission.is_black())
-			functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
 	}
 
 	if (!specular.is_black()) {
@@ -51,19 +53,19 @@ rainbow::scattering_function_collection rainbow::materials::translucent_material
 		if (!reflectance.is_black()) {
 			const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
-			functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * reflectance));
+			properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * reflectance));
 		}
 
 		if (!transmission.is_black()) {
-			functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission, 
+			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
 				static_cast<real>(1), eta));
 		}
 	}
-	
-	return functions;
+
+	return properties;
 }
 
-rainbow::scattering_function_collection rainbow::materials::translucent_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::translucent_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
 	const auto transmission = mTransmission->sample(interaction);
@@ -73,15 +75,17 @@ rainbow::scattering_function_collection rainbow::materials::translucent_material
 	const auto roughness = mRoughness->sample(interaction);
 	const auto eta = static_cast<real>(1.5);
 
-	scattering_function_collection functions(eta);
+	surface_properties properties;
 
-	if (reflectance.is_black() && transmission.is_black()) return functions;
+	properties.functions = scattering_function_collection(eta);
+	
+	if (reflectance.is_black() && transmission.is_black()) return properties;
 
 	if (!diffuse.is_black()) {
 		if (!reflectance.is_black())
-			functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
 		if (!transmission.is_black())
-			functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
 	}
 
 	if (!specular.is_black()) {
@@ -94,14 +98,14 @@ rainbow::scattering_function_collection rainbow::materials::translucent_material
 		if (!reflectance.is_black()) {
 			const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
-			functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * reflectance));
+			properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular * reflectance));
 		}
 
 		if (!transmission.is_black()) {
-			functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
+			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
 				static_cast<real>(1), eta));
 		}
 	}
 
-	return functions;
+	return properties;
 }

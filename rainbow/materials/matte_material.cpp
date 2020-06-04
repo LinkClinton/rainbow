@@ -12,38 +12,38 @@ rainbow::materials::matte_material::matte_material(
 {
 }
 
-rainbow::scattering_function_collection rainbow::materials::matte_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::matte_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
-	scattering_function_collection functions;
-
 	const auto diffuse = mDiffuse->sample(interaction);
 	const auto sigma = clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));
 
-	if (diffuse.is_black()) return functions;
+	surface_properties properties;
+	
+	if (diffuse.is_black()) return properties;
 
 	if (sigma == 0)
-		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
+		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
 	else
-		functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
+		properties.functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
 
-	return functions;
+	return properties;
 }
 
-scattering_function_collection rainbow::materials::matte_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::matte_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
-	scattering_function_collection functions;
-
 	const auto diffuse = mDiffuse->sample(interaction) * scale;
 	const auto sigma = clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));
 
-	if (diffuse.is_black()) return functions;
+	surface_properties properties;
+	
+	if (diffuse.is_black()) return properties;
 
 	if (sigma == 0)
-		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
+		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
 	else
-		functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
+		properties.functions.add_scattering_function(std::make_shared<oren_nayar_reflection>(diffuse, sigma));
 
-	return functions;
+	return properties;
 }

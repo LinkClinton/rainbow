@@ -10,26 +10,35 @@ rainbow::materials::mixture_material::mixture_material(const std::shared_ptr<tex
 {
 }
 
-rainbow::scattering_function_collection rainbow::materials::mixture_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::mixture_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
 	const auto alpha0 = mAlpha->sample(interaction);
 	const auto alpha1 = clamp(spectrum(1) - alpha0);
 
-	const auto functions0 = mMaterials[0]->build_scattering_functions(interaction, alpha0);
-	const auto functions1 = mMaterials[1]->build_scattering_functions(interaction, alpha1);
+	surface_properties properties;
 
-	return scattering_function_collection(functions0, functions1);
+	// mixture material is not support bssrdf
+	const auto functions0 = mMaterials[0]->build_surface_properties(interaction, alpha0).functions;
+	const auto functions1 = mMaterials[1]->build_surface_properties(interaction, alpha1).functions;
+
+	properties.functions = scattering_function_collection(functions0, functions1);
+
+	return properties;
 }
 
-rainbow::scattering_function_collection rainbow::materials::mixture_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::mixture_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
 	const auto alpha0 = mAlpha->sample(interaction);
 	const auto alpha1 = clamp(spectrum(1) - alpha0);
 
-	const auto functions0 = mMaterials[0]->build_scattering_functions(interaction, alpha0 * scale);
-	const auto functions1 = mMaterials[1]->build_scattering_functions(interaction, alpha1 * scale);
+	surface_properties properties;
+	
+	const auto functions0 = mMaterials[0]->build_surface_properties(interaction, alpha0 * scale).functions;
+	const auto functions1 = mMaterials[1]->build_surface_properties(interaction, alpha1 * scale).functions;
 
-	return scattering_function_collection(functions0, functions1);
+	properties.functions = scattering_function_collection(functions0, functions1);
+
+	return properties;
 }

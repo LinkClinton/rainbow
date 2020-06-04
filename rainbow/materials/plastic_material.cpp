@@ -27,8 +27,7 @@ rainbow::materials::plastic_material::plastic_material(
 {
 }
 
-
-rainbow::scattering_function_collection rainbow::materials::plastic_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::plastic_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction);
@@ -36,25 +35,27 @@ rainbow::scattering_function_collection rainbow::materials::plastic_material::bu
 	const auto roughness = mRoughness->sample(interaction);
 	const auto eta = mEta->sample(interaction);
 
-	scattering_function_collection functions(eta);
+	surface_properties properties;
+	
+	properties.functions = scattering_function_collection(eta);
 	
 	if (!diffuse.is_black())
-		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
+		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
 
 	if (!specular.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
-			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness, 
+			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness,
 			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness) : roughness,
 			true);
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
-		functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular));
+		properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular));
 	}
 
-	return functions;
+	return properties;
 }
 
-rainbow::scattering_function_collection rainbow::materials::plastic_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::plastic_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction) * scale;
@@ -62,10 +63,12 @@ rainbow::scattering_function_collection rainbow::materials::plastic_material::bu
 	const auto roughness = mRoughness->sample(interaction);
 	const auto eta = mEta->sample(interaction);
 
-	scattering_function_collection functions(eta);
+	surface_properties properties;
 
+	properties.functions = scattering_function_collection(eta);
+	
 	if (!diffuse.is_black())
-		functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
+		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
 
 	if (!specular.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
@@ -74,8 +77,8 @@ rainbow::scattering_function_collection rainbow::materials::plastic_material::bu
 			true);
 		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
 
-		functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular));
+		properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, specular));
 	}
 
-	return functions;
+	return properties;
 }

@@ -13,6 +13,8 @@ namespace rainbow {
 		struct coefficient_spectrum {
 			using type = coefficient_spectrum<NumSpectrumSamples>;
 
+			static inline size_t num_samples = NumSpectrumSamples;
+			
 			std::array<real, NumSpectrumSamples> coefficient = {};
 
 			coefficient_spectrum() = default;
@@ -38,7 +40,12 @@ namespace rainbow {
 
 			type& operator/=(const coefficient_spectrum<NumSpectrumSamples>& right);
 			type operator/(const coefficient_spectrum<NumSpectrumSamples>& right) const;
+			
+			type operator-() const noexcept;
 
+			real operator[](size_t index) const ;
+			real& operator[](size_t index) ;
+			
 			bool operator==(const coefficient_spectrum<NumSpectrumSamples>& right) const noexcept;
 			bool operator!=(const coefficient_spectrum<NumSpectrumSamples>& right) const noexcept;
 
@@ -63,6 +70,9 @@ namespace rainbow {
 			const coefficient_spectrum<NumSpectrumSamples>& value,
 			const coefficient_spectrum<NumSpectrumSamples>& min = coefficient_spectrum<NumSpectrumSamples>(0),
 			const coefficient_spectrum<NumSpectrumSamples>& max = coefficient_spectrum<NumSpectrumSamples>(1));
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> exp(const coefficient_spectrum<NumSpectrumSamples>& value);
 	}
 }
 

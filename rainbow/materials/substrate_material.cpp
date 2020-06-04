@@ -13,29 +13,29 @@ rainbow::materials::substrate_material::substrate_material(
 {
 }
 
-rainbow::scattering_function_collection rainbow::materials::substrate_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::substrate_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction);
 	const auto diffuse = mDiffuse->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
-	
-	scattering_function_collection functions;
 
+	surface_properties properties;
+	
 	if (!specular.is_black() || !diffuse.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
 			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
 			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
 			true);
-		
-		functions.add_scattering_function(std::make_shared<fresnel_blend_reflection>(distribution, specular, diffuse));
+
+		properties.functions.add_scattering_function(std::make_shared<fresnel_blend_reflection>(distribution, specular, diffuse));
 	}
 
-	return functions;
+	return properties;
 }
 
-rainbow::scattering_function_collection rainbow::materials::substrate_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::substrate_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction);
@@ -43,7 +43,7 @@ rainbow::scattering_function_collection rainbow::materials::substrate_material::
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
 
-	scattering_function_collection functions;
+	surface_properties properties;
 
 	if (!specular.is_black() || !diffuse.is_black()) {
 		const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
@@ -51,8 +51,8 @@ rainbow::scattering_function_collection rainbow::materials::substrate_material::
 			mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
 			true);
 
-		functions.add_scattering_function(std::make_shared<fresnel_blend_reflection>(distribution, specular, diffuse, scale));
+		properties.functions.add_scattering_function(std::make_shared<fresnel_blend_reflection>(distribution, specular, diffuse, scale));
 	}
 
-	return functions;
+	return properties;
 }

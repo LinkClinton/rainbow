@@ -43,13 +43,15 @@ rainbow::spectrum rainbow::integrators::direct_integrator::trace(
 	if (interaction->entity->has_component<emitter>()) 
 		L += interaction->entity->evaluate<emitter>(interaction.value(), -ray.direction);
 
-	// get the scattering functions from material which the ray intersect
-	// if the entity does not have material, we return default scattering functions(0 function)
-	const auto scattering_functions =
+	// get the surface properties from material which the ray intersect
+	// if the entity does not have material, we return default surface properties(0 functions)
+	const auto surface_properties =
 		interaction->entity->has_component<material>() ?
-		interaction->entity->component<material>()->build_scattering_functions(interaction.value()) :
-		scattering_function_collection();
-
+		interaction->entity->component<material>()->build_surface_properties(interaction.value()) :
+		materials::surface_properties();
+	
+	const auto& scattering_functions = surface_properties.functions;
+	
 	// when the scattering functions is empty, we can think it is a invisible entity
 	// we will continue spawn a ray without changing the direction
 	if (scattering_functions.count() == 0)

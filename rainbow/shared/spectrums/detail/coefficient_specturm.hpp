@@ -146,6 +146,29 @@ namespace rainbow {
 		}
 
 		template <size_t NumSpectrumSamples>
+		typename coefficient_spectrum<NumSpectrumSamples>::type coefficient_spectrum<NumSpectrumSamples>::operator-() const noexcept
+		{
+			coefficient_spectrum<NumSpectrumSamples> ret;
+
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				ret.coefficient[index] = -coefficient[index];
+
+			return ret;
+		}
+
+		template <size_t NumSpectrumSamples>
+		real coefficient_spectrum<NumSpectrumSamples>::operator[](size_t index) const
+		{
+			return coefficient[index];
+		}
+
+		template <size_t NumSpectrumSamples>
+		real& coefficient_spectrum<NumSpectrumSamples>::operator[](size_t index)
+		{
+			return coefficient[index];
+		}
+
+		template <size_t NumSpectrumSamples>
 		bool coefficient_spectrum<NumSpectrumSamples>::operator==(
 			const coefficient_spectrum<NumSpectrumSamples>& right) const noexcept
 		{
@@ -239,6 +262,17 @@ namespace rainbow {
 			
 			for (size_t index = 0; index < NumSpectrumSamples; index++)
 				ret.coefficient[index] = math::clamp(value.coefficient[index], min.coefficient[index], max.coefficient[index]);
+
+			return ret;
+		}
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> exp(const coefficient_spectrum<NumSpectrumSamples>& value)
+		{
+			coefficient_spectrum<NumSpectrumSamples> ret;
+
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				ret.coefficient[index] = math::exp(value.coefficient[index]);
 
 			return ret;
 		}

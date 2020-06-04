@@ -51,6 +51,12 @@ namespace rainbow {
 		}
 
 		template <typename T>
+		T lerp(const T& s, const T& t, const T& x)
+		{
+			return s * (1 - x) + t * x;
+		}
+
+		template <typename T>
 		T floor(const T& value)
 		{
 			return glm::floor(value);

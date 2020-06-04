@@ -2,6 +2,8 @@
 
 #include "math/math.hpp"
 
+#include <vector>
+
 namespace rainbow {
 
 	using namespace math;
@@ -22,4 +24,5 @@ namespace rainbow {
 	
 	real cosine_sample_hemisphere_pdf(real cos_theta);
 
+	real sample_from_inv_cdf_table(const std::vector<real>& inv_cdf, real sample);
 }

@@ -169,7 +169,6 @@
     <ClCompile Include="integrators\integrator.cpp" />
     <ClCompile Include="integrators\path_integrator.cpp" />
     <ClCompile Include="integrators\sampler_integrator.cpp" />
-    <ClCompile Include="integrators\whitted_integrator.cpp" />
     <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="materials\matte_material.cpp" />
@@ -180,6 +179,7 @@
     <ClCompile Include="materials\substrate_material.cpp" />
     <ClCompile Include="materials\translucent_material.cpp" />
     <ClCompile Include="materials\uber_material.cpp" />
+    <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
     <ClCompile Include="scatterings\fresnel_effect.cpp" />
@@ -192,6 +192,7 @@
     <ClCompile Include="scatterings\reflection\specular_reflection.cpp" />
     <ClCompile Include="scatterings\scattering_function.cpp" />
     <ClCompile Include="scatterings\scattering_function_collection.cpp" />
+    <ClCompile Include="scatterings\scattering_surface_function.cpp" />
     <ClCompile Include="scatterings\transmission\lambertian_transmission.cpp" />
     <ClCompile Include="scatterings\transmission\microfacet_transmission.cpp" />
     <ClCompile Include="scatterings\transmission\specular_transmission.cpp" />
@@ -230,7 +231,6 @@
     <ClInclude Include="integrators\integrator.hpp" />
     <ClInclude Include="integrators\path_integrator.hpp" />
     <ClInclude Include="integrators\sampler_integrator.hpp" />
-    <ClInclude Include="integrators\whitted_integrator.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="materials\glass_material.hpp" />
     <ClInclude Include="materials\material.hpp" />
@@ -252,6 +252,7 @@
     <ClInclude Include="samplers\random_sampler.hpp" />
     <ClInclude Include="samplers\samplers.hpp" />
     <ClInclude Include="samplers\stratified_sampler.hpp" />
+    <ClInclude Include="scatterings\bssrdf\normalized_diffusion.hpp" />
     <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp" />
     <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp" />
     <ClInclude Include="scatterings\fresnel_effect.hpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="scatterings\reflection\specular_reflection.hpp" />
     <ClInclude Include="scatterings\scattering_function.hpp" />
     <ClInclude Include="scatterings\scattering_function_collection.hpp" />
+    <ClInclude Include="scatterings\scattering_surface_function.hpp" />
     <ClInclude Include="scatterings\transmission\lambertian_transmission.hpp" />
     <ClInclude Include="scatterings\transmission\microfacet_transmission.hpp" />
     <ClInclude Include="scatterings\transmission\specular_transmission.hpp" />

@@ -60,10 +60,13 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 			continue;
 		}
 		
-		// get the scattering functions from material which the ray intersect
-		// if the entity does not have material, we return default scattering functions(0 function)
-		const auto scattering_functions = 
-			interaction->entity->component<material>()->build_scattering_functions(interaction.value());
+		// get the surface properties from material which the ray intersect
+		// if the entity does not have material, we return default surface properties(0 functions)
+		const auto surface_properties =
+			interaction->entity->component<material>()->build_surface_properties(interaction.value());
+
+		// get the scattering functions from surface properties
+		const auto& scattering_functions = surface_properties.functions;
 
 		// we will sample the emitters to compute the path contribution
 		// when the functions do not have any functions without specular we do not sample it

@@ -13,10 +13,10 @@ namespace rainbow {
 			explicit mirror_material(
 				const std::shared_ptr<textures::texture2d<spectrum>>& reflectance);
 
-			scattering_function_collection build_scattering_functions(
+			surface_properties build_surface_properties(
 				const surface_interaction& interaction) const noexcept override;
 
-			scattering_function_collection build_scattering_functions(
+			surface_properties build_surface_properties(
 				const surface_interaction& interaction, const spectrum& scale) const noexcept override;
 		private:
 			std::shared_ptr<textures::texture2d<spectrum>> mReflectance;

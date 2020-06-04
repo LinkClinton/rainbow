@@ -57,6 +57,9 @@ namespace rainbow {
 		T clamp(const T& value, const T& min_limit, const T& max_limit);
 
 		template <typename T>
+		T lerp(const T& s, const T& t, const T& x);
+		
+		template <typename T>
 		T floor(const T& value);
 
 		template <typename T>

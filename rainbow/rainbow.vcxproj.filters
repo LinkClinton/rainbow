@@ -100,6 +100,9 @@
     <Filter Include="scatterings\mixture">
       <UniqueIdentifier>{84fbe95d-9bc6-4cd1-8ef4-bd682388290c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scatterings\bssrdf">
+      <UniqueIdentifier>{4e931ba4-cacf-4bc1-becd-d5c2817a7c5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameras\camera.cpp">
@@ -139,9 +142,6 @@
       <Filter>integrators</Filter>
     </ClCompile>
     <ClCompile Include="integrators\sampler_integrator.cpp">
-      <Filter>integrators</Filter>
-    </ClCompile>
-    <ClCompile Include="integrators\whitted_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
     <ClCompile Include="materials\glass_material.cpp">
@@ -279,6 +279,12 @@
     <ClCompile Include="scatterings\mixture\fresnel_specular.cpp">
       <Filter>scatterings\mixture</Filter>
     </ClCompile>
+    <ClCompile Include="scatterings\scattering_surface_function.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp">
+      <Filter>scatterings\bssrdf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameras\camera.hpp">
@@ -318,9 +324,6 @@
       <Filter>integrators</Filter>
     </ClInclude>
     <ClInclude Include="integrators\sampler_integrator.hpp">
-      <Filter>integrators</Filter>
-    </ClInclude>
-    <ClInclude Include="integrators\whitted_integrator.hpp">
       <Filter>integrators</Filter>
     </ClInclude>
     <ClInclude Include="interfaces\noncopyable.hpp">
@@ -613,6 +616,12 @@
     </ClInclude>
     <ClInclude Include="textures\detail\mixture_texture.hpp">
       <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_surface_function.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\bssrdf\normalized_diffusion.hpp">
+      <Filter>scatterings\bssrdf</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

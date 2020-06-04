@@ -14,13 +14,15 @@ rainbow::materials::metal_material::metal_material(
 {
 }
 
-rainbow::scattering_function_collection rainbow::materials::metal_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::metal_material::build_surface_properties(
 	const surface_interaction& interaction) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto k = mK->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
+
+	surface_properties properties;
 	
 	const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
 		mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
@@ -29,14 +31,12 @@ rainbow::scattering_function_collection rainbow::materials::metal_material::buil
 
 	const auto fresnel = std::make_shared<fresnel_effect_conductor>(static_cast<real>(1), eta, k);
 
-	scattering_function_collection functions;
+	properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, spectrum(1)));
 
-	functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, spectrum(1)));
-
-	return functions;
+	return properties;
 }
 
-rainbow::scattering_function_collection rainbow::materials::metal_material::build_scattering_functions(
+rainbow::materials::surface_properties rainbow::materials::metal_material::build_surface_properties(
 	const surface_interaction& interaction, const spectrum& scale) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
@@ -44,6 +44,8 @@ rainbow::scattering_function_collection rainbow::materials::metal_material::buil
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
 
+	surface_properties properties;
+	
 	const auto distribution = std::make_shared<trowbridge_reitz_distribution>(
 		mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_u) : roughness_u,
 		mMapRoughnessToAlpha ? trowbridge_reitz_distribution::roughness_to_alpha(roughness_v) : roughness_v,
@@ -51,9 +53,7 @@ rainbow::scattering_function_collection rainbow::materials::metal_material::buil
 
 	const auto fresnel = std::make_shared<fresnel_effect_conductor>(static_cast<real>(1), eta, k);
 
-	scattering_function_collection functions;
+	properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, scale));
 
-	functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, scale));
-
-	return functions;
+	return properties;
 }

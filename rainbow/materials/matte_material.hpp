@@ -18,10 +18,10 @@ namespace rainbow {
 
 			~matte_material() = default;
 
-			scattering_function_collection build_scattering_functions(
+			surface_properties build_surface_properties(
 				const surface_interaction& interaction) const noexcept override;
 
-			scattering_function_collection build_scattering_functions(
+			surface_properties build_surface_properties(
 				const surface_interaction& interaction, const spectrum& scale) const noexcept override;
 		private:
 			std::shared_ptr<texture2d<spectrum>> mDiffuse;

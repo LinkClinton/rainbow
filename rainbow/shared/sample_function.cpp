@@ -75,3 +75,16 @@ rainbow::real rainbow::cosine_sample_hemisphere_pdf(real cos_theta)
 {
 	return cos_theta * one_over_pi<real>();
 }
+
+rainbow::real rainbow::sample_from_inv_cdf_table(const std::vector<real>& inv_cdf, real sample)
+{
+	assert(inv_cdf.size() >= 2);
+
+	const auto size = inv_cdf.size() - 1;
+	const auto which = clamp(
+		static_cast<size_t>(sample * size), static_cast<size_t>(0), size - 1);
+
+	const auto t = sample * size - which;
+
+	return lerp(inv_cdf[which], inv_cdf[which + 1], t);
+}
