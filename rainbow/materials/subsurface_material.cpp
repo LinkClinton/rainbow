@@ -10,15 +10,15 @@
 rainbow::materials::subsurface_material::subsurface_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
 	const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
-	const std::shared_ptr<textures::texture2d<spectrum>>& sigma_a,
-	const std::shared_ptr<textures::texture2d<spectrum>>& sigma_s,
+	const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
+	const std::shared_ptr<textures::texture2d<spectrum>>& dmfp,
 	const std::shared_ptr<textures::texture2d<real>>& roughness_u,
 	const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 	const std::shared_ptr<textures::texture2d<real>>& eta,
-	real scale, bool map_roughness_to_alpha) :
-	mTransmission(transmission), mReflectance(reflectance),
-	mSigmaA(sigma_a), mSigmaS(sigma_s), mRoughnessU(roughness_u), mRoughnessV(roughness_v),
-	mEta(eta), mScale(scale), mMapRoughnessToAlpha(map_roughness_to_alpha)
+	bool map_roughness_to_alpha) :
+	mTransmission(transmission), mReflectance(reflectance), mDiffuse(diffuse), mDMFP(dmfp),
+	mRoughnessU(roughness_u), mRoughnessV(roughness_v),
+	mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
 }
 
@@ -27,10 +27,10 @@ rainbow::materials::surface_properties rainbow::materials::subsurface_material::
 {
 	const auto transmission = mTransmission->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
+	const auto diffuse = mDiffuse->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
-	const auto sigma_a = mSigmaA->sample(interaction) * mScale;
-	const auto sigma_s = mSigmaS->sample(interaction) * mScale;
+	const auto dmfp = mDMFP->sample(interaction);
 	const auto eta = mEta->sample(interaction);
 
 	surface_properties properties;
@@ -62,11 +62,7 @@ rainbow::materials::surface_properties rainbow::materials::subsurface_material::
 		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
 	}
 
-	const auto sigma_t = sigma_a + sigma_s;
-	const auto d = (sigma_t + sigma_a) / (sigma_t * sigma_t * 3);
-	const auto sigma_tr = sqrt(sigma_a / d);
-	
-	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, reflectance, spectrum(1) / sigma_tr, eta);
+	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, diffuse, dmfp, eta);
 
 	return properties;
 }

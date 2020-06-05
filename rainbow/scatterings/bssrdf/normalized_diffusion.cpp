@@ -365,11 +365,13 @@ rainbow::normalized_diffusion::normalized_diffusion(const surface_interaction& i
 
 rainbow::spectrum rainbow::normalized_diffusion::evaluate_reflectance_profile(real distance)
 {
+    if (distance < static_cast<real>(1e-6)) distance = static_cast<real>(1e-6);
+	
 	const auto value = mA * (
 		exp(-spectrum(distance) / mD) + 
 		exp(-spectrum(distance) / (mD * 3)));
 
-	return value / (mD * pi<real>() * 8);
+	return value / (mD * pi<real>() * 8 * distance);
 }
 
 rainbow::real rainbow::normalized_diffusion::sample_reflectance_profile(size_t channel, real sample)
@@ -381,10 +383,12 @@ rainbow::real rainbow::normalized_diffusion::sample_reflectance_profile(size_t c
 
 rainbow::real rainbow::normalized_diffusion::pdf_reflectance_profile(size_t channel, real distance)
 {
+    if (distance < static_cast<real>(1e-6)) distance = static_cast<real>(1e-6);
+	
 	// cdf = 1 - 1 / 4 * e ^ (-r / d) - 3 / 4 * e ^ (-r / (3 * d))
 	// pdf = 1 / 4 * e ^ (-r / d) / d + 1 / 4 * e ^ (-r / (3 * d)) / d
 	// pdf = 1 / 4 / d * (e ^ (-r / d) + e ^ (-r / (3 * d)))
-    distance = distance / mD[channel];
+    const auto r = distance / mD[channel];
 
-    return static_cast<real>(0.25) * (exp(-distance) + exp(-distance / 3)) / mD[channel];
+    return static_cast<real>(0.25) * (exp(-r) + exp(-r / 3)) / (mD[channel] * two_pi<real>() * distance);
 }

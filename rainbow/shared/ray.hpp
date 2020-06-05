@@ -7,6 +7,7 @@ namespace rainbow {
 	using namespace math;
 
 	constexpr auto ray_epsilon = std::numeric_limits<real>::epsilon() / 2 * 1500;
+	constexpr auto shadow_epsilon = ray_epsilon * 10;
 	
 	struct ray {
 		vector3 direction;

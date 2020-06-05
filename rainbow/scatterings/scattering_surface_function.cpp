@@ -160,7 +160,7 @@ rainbow::real rainbow::separable_bidirectional_scattering_surface_distribution_f
 	};
 
 	const real channel_pdf = static_cast<real>(1) / spectrum::num_samples;
-	const real axis_pdf[] = { 0.5, 0.25, 0.25 };
+	const real axis_pdf[] = { 0.25, 0.25, 0.50 };
 
 	real pdf = 0;
 
