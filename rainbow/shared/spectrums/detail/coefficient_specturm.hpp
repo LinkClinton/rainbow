@@ -277,5 +277,16 @@ namespace rainbow {
 			return ret;
 		}
 
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> abs(const coefficient_spectrum<NumSpectrumSamples>& value)
+		{
+			coefficient_spectrum<NumSpectrumSamples> ret;
+
+			for (size_t index = 0; index < NumSpectrumSamples; index++)
+				ret.coefficient[index] = math::abs(value.coefficient[index]);
+
+			return ret;
+		}
+
 	}
 }

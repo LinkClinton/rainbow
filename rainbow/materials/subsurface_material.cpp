@@ -11,12 +11,12 @@ rainbow::materials::subsurface_material::subsurface_material(
 	const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
 	const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 	const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
-	const std::shared_ptr<textures::texture2d<spectrum>>& dmfp,
+	const std::shared_ptr<textures::texture2d<spectrum>>& mfp,
 	const std::shared_ptr<textures::texture2d<real>>& roughness_u,
 	const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 	const std::shared_ptr<textures::texture2d<real>>& eta,
 	bool map_roughness_to_alpha) :
-	mTransmission(transmission), mReflectance(reflectance), mDiffuse(diffuse), mDMFP(dmfp),
+	mTransmission(transmission), mReflectance(reflectance), mDiffuse(diffuse), mMFP(mfp),
 	mRoughnessU(roughness_u), mRoughnessV(roughness_v),
 	mEta(eta), mMapRoughnessToAlpha(map_roughness_to_alpha)
 {
@@ -30,7 +30,7 @@ rainbow::materials::surface_properties rainbow::materials::subsurface_material::
 	const auto diffuse = mDiffuse->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
 	const auto roughness_v = mRoughnessV->sample(interaction);
-	const auto dmfp = mDMFP->sample(interaction);
+	const auto mfp = mMFP->sample(interaction);
 	const auto eta = mEta->sample(interaction);
 
 	surface_properties properties;
@@ -62,7 +62,7 @@ rainbow::materials::surface_properties rainbow::materials::subsurface_material::
 		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
 	}
 
-	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, diffuse, dmfp, eta);
+	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, diffuse, mfp, eta);
 
 	return properties;
 }

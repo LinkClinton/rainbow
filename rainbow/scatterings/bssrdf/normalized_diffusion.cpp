@@ -357,9 +357,19 @@ rainbow::normalized_diffusion::normalized_diffusion(const surface_interaction& i
 	const spectrum& L, real eta) : separable_bidirectional_scattering_surface_distribution_function(interaction, eta),
 	mA(A), mL(L)
 {
-	const auto t = A - static_cast<real>(0.33);
+    const auto t = abs(A - spectrum(static_cast<real>(0.8)));
 
-	mS = ((t * t) * (t * t)) * 100 + 3.5;
+    mS = spectrum(static_cast<real>(1.85)) - A + t * t * t * 7;
+	
+    /*const auto t = A - spectrum(0.8);
+
+    mS = spectrum(1.9) - A + t * t * 3.5;*/
+
+	// s for dmfp
+    /*const auto t = A - static_cast<real>(0.33);
+
+    mS = ((t * t) * (t * t)) * 100 + 3.5;*/
+	
 	mD = mL / mS;
 }
 

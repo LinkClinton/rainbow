@@ -13,7 +13,7 @@ namespace rainbow {
 				const std::shared_ptr<textures::texture2d<spectrum>>& transmission,
 				const std::shared_ptr<textures::texture2d<spectrum>>& reflectance,
 				const std::shared_ptr<textures::texture2d<spectrum>>& diffuse,
-				const std::shared_ptr<textures::texture2d<spectrum>>& dmfp,
+				const std::shared_ptr<textures::texture2d<spectrum>>& mfp,
 				const std::shared_ptr<textures::texture2d<real>>& roughness_u,
 				const std::shared_ptr<textures::texture2d<real>>& roughness_v,
 				const std::shared_ptr<textures::texture2d<real>>& eta,
@@ -30,7 +30,7 @@ namespace rainbow {
 			std::shared_ptr<textures::texture2d<spectrum>> mTransmission;
 			std::shared_ptr<textures::texture2d<spectrum>> mReflectance;
 			std::shared_ptr<textures::texture2d<spectrum>> mDiffuse;
-			std::shared_ptr<textures::texture2d<spectrum>> mDMFP;
+			std::shared_ptr<textures::texture2d<spectrum>> mMFP;
 			std::shared_ptr<textures::texture2d<real>> mRoughnessU;
 			std::shared_ptr<textures::texture2d<real>> mRoughnessV;
 			std::shared_ptr<textures::texture2d<real>> mEta;

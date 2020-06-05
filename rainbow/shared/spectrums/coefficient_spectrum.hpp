@@ -73,6 +73,9 @@ namespace rainbow {
 
 		template <size_t NumSpectrumSamples>
 		coefficient_spectrum<NumSpectrumSamples> exp(const coefficient_spectrum<NumSpectrumSamples>& value);
+
+		template <size_t NumSpectrumSamples>
+		coefficient_spectrum<NumSpectrumSamples> abs(const coefficient_spectrum<NumSpectrumSamples>& value);
 	}
 }
 
