@@ -1,6 +1,5 @@
 #include "path_integrator.hpp"
 
-#include "../scatterings/scattering_surface_function.hpp"
 #include "../shared/logs/log.hpp"
 
 rainbow::integrators::path_integrator::path_integrator(
@@ -94,25 +93,10 @@ rainbow::spectrum rainbow::integrators::path_integrator::trace(
 		
 		ray = interaction->spawn_ray(scattering_sample.wi);
 
+		// if the bssrdf is not empty and the ray pass the surface of entity, we will sample the bssrdf
 		if (surface_properties.bssrdf != nullptr && has(scattering_sample.type, scattering_type::transmission)) {
-
-			const auto sample = surface_properties.bssrdf->sample(scene, vector3(samplers.sampler1d->next(), samplers.sampler2d->next()));
-
-			if (sample.value.is_black() || sample.pdf == 0) break;
-
-			beta = beta * sample.value / sample.pdf;
-
-			L += beta * uniform_sample_one_emitter(scene, samplers, sample.interaction, sample.functions);
-
-			const auto function_sample = sample.functions.sample(sample.interaction, samplers.sampler2d->next());
-
-			if (function_sample.value.is_black() || function_sample.pdf == 0) break;
-			
-			beta = beta * function_sample.value * abs(dot(function_sample.wi, sample.interaction.shading_space.z())) / function_sample.pdf;
-
-			specular_bounce = has(function_sample.type, scattering_type::specular);
-
-			ray = sample.interaction.spawn_ray(function_sample.wi);
+			if (!sample_scattering_surface_function(scene, samplers, surface_properties, ray, beta, L, specular_bounce))
+				break;
 		}
 		
 		const auto max_component = (beta * eta).max_component();

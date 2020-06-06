@@ -1,5 +1,6 @@
 #include "integrator.hpp"
 
+#include "../scatterings/scattering_surface_function.hpp"
 #include "../shared/logs/log.hpp"
 
 rainbow::integrators::integrator_debug_info::integrator_debug_info(const vector2i& pixel, size_t sample) :
@@ -169,6 +170,45 @@ rainbow::spectrum rainbow::integrators::uniform_sample_one_emitter(
 	}
 
 	return L;
+}
+
+bool rainbow::integrators::sample_scattering_surface_function(
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+	const surface_properties& properties, ray& ray, 
+	spectrum& beta, spectrum& L, bool& specular)
+{
+	// we sample the bssrdf to get the interaction of wi and pi
+	// it sample the S_p(r) of bssrdf(the part of po and pi)
+	// the first part of bssrdf was sampled by the integrator main loop
+	// the last part of bssrdf will be sampled after we sampled S_p(r)
+	const auto scattering_sample = properties.bssrdf->sample(scene, vector3(samplers.sampler1d->next(), samplers.sampler2d->next()));
+
+	// if we sample bssrdf failed, we just return false to indicate the path is ended.
+	// because the ray can not passed the area 
+	if (scattering_sample.value.is_black() || scattering_sample.pdf == 0) return false;
+
+	// account beta value
+	beta = beta * scattering_sample.value / scattering_sample.pdf;
+
+	// uniform sample one emitter
+	L += beta * uniform_sample_one_emitter(scene, samplers, scattering_sample.interaction, scattering_sample.functions);
+
+	// sample the special scattering functions to find the wi
+	// this function will process the part S_w(wi)(the second fresnel part of bssrdf) of bssrdf
+	const auto function_sample = scattering_sample.functions.sample(scattering_sample.interaction, samplers.sampler2d->next());
+
+	// if we sample bssrdf failed, we just return false to indicate the path is ended. 
+	if (function_sample.value.is_black() || function_sample.pdf == 0) return false;
+
+	// account beta value
+	beta = beta * function_sample.value * abs(dot(function_sample.wi, scattering_sample.interaction.shading_space.z())) / function_sample.pdf;
+
+	specular = has(function_sample.type, scattering_type::specular);
+
+	// create a new ray to trace
+	ray = scattering_sample.interaction.spawn_ray(function_sample.wi);
+
+	return true;
 }
 
 rainbow::real rainbow::integrators::power_heuristic(real f_pdf, real g_pdf)
