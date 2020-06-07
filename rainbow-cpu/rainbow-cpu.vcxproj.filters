@@ -1,0 +1,522 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="shared">
+      <UniqueIdentifier>{959cdb76-9ef3-41fa-b16a-d7197e657264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\spectrums">
+      <UniqueIdentifier>{a3311ed4-8a57-481b-8fe9-c8b4f52d4bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\spectrums\detail">
+      <UniqueIdentifier>{e85db48b-bec3-4fcb-a65d-d5f4c52b4313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\interactions">
+      <UniqueIdentifier>{7f01eba4-e154-4a46-bd06-1537a05f4bb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\distributions">
+      <UniqueIdentifier>{19f0239e-459e-442b-a173-2f24a65da9d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\distributions\detail">
+      <UniqueIdentifier>{2ed581a8-40bd-4c5d-a14c-9cbc4abef6c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\accelerators">
+      <UniqueIdentifier>{99d63063-4f9d-4b96-a9b0-5f2df7f425f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\accelerators\detail">
+      <UniqueIdentifier>{0cc9502b-6a04-4616-bd6f-9dd8e08829d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="textures">
+      <UniqueIdentifier>{35ce7947-5d8a-4aea-bd8d-1c5091772fa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="textures\detail">
+      <UniqueIdentifier>{267f77b4-e682-4e30-96c5-b4aed5594456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shapes">
+      <UniqueIdentifier>{39a38a8f-53aa-4b4a-b6a6-ce55e211f4d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interfaces">
+      <UniqueIdentifier>{6ee13a4b-9531-4a2d-921e-8b4a280c1073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="filters">
+      <UniqueIdentifier>{8dd5576a-9ad6-465b-9a91-789854d2a3a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplers">
+      <UniqueIdentifier>{249e666b-aa40-4b38-b3d8-dfb336649a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="samplers\detail">
+      <UniqueIdentifier>{8520849f-1733-4c3a-b24c-05f9774c74f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings">
+      <UniqueIdentifier>{fe3ff3d5-b682-44e6-8d4e-1a106312042f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="emitters">
+      <UniqueIdentifier>{51b84cde-7ace-4128-99b3-4983ea1e2f30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="materials">
+      <UniqueIdentifier>{a7c7d02a-b9e4-460a-837f-dff4d2cf0f46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\bssrdf">
+      <UniqueIdentifier>{8f6e3d55-1dd7-4b5f-ba7f-e136183f09a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\reflection">
+      <UniqueIdentifier>{905f4733-ea75-42b7-8f88-35ac8740ab73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\distribution">
+      <UniqueIdentifier>{d8e09866-af92-48cb-a4c7-f00cc67483be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\mixture">
+      <UniqueIdentifier>{13529f2f-7903-44e8-ad2e-871ba220606a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scatterings\transmission">
+      <UniqueIdentifier>{4133f164-6c25-4aac-a725-bd924e404556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cameras">
+      <UniqueIdentifier>{fff005e5-6ac5-4751-aa2a-f31657534026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="integrators">
+      <UniqueIdentifier>{ba978ef3-0018-4988-9b96-80571cd02a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scenes">
+      <UniqueIdentifier>{6096db2f-7d75-49a6-9f4a-e658836bca13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scenes\detail">
+      <UniqueIdentifier>{8aac9bf8-a5ec-40df-94ce-97771b7b3618}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="shared\coordinate_system.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\random_generator.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\ray.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\transform.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\spectrums\color_spectrum.cpp">
+      <Filter>shared\spectrums</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\interactions\interaction.cpp">
+      <Filter>shared\interactions</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\interactions\surface_interaction.cpp">
+      <Filter>shared\interactions</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\disk.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\mesh.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\shape.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="shapes\sphere.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\box_filter.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\filters.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
+    <ClCompile Include="filters\gaussian_filter.cpp">
+      <Filter>filters</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\fresnel_effect.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\scattering_function.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\scattering_function_collection.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\scattering_surface_function.cpp">
+      <Filter>scatterings</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\entity.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="scenes\scene.cpp">
+      <Filter>scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\directional_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\emitter.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\environment_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\point_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="emitters\surface_light.cpp">
+      <Filter>emitters</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp">
+      <Filter>scatterings\bssrdf</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\separable_bssrdf_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\reflection_function.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\fresnel_blend_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\lambertian_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\microfacet_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\oren_nayar_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\reflection\specular_reflection.cpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\mixture\fresnel_specular.cpp">
+      <Filter>scatterings\mixture</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\lambertian_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\microfacet_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\specular_transmission.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="scatterings\transmission\transmission_function.cpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClCompile>
+    <ClCompile Include="cameras\camera.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="cameras\film.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="cameras\perspective_camera.cpp">
+      <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\glass_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\matte_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\metal_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\mirror_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\mixture_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\plastic_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\substrate_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\subsurface_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\translucent_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="materials\uber_material.cpp">
+      <Filter>materials</Filter>
+    </ClCompile>
+    <ClCompile Include="integrators\direct_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="integrators\integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="integrators\path_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="integrators\sampler_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shared\coordinate_system.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\random_generator.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\ray.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\transform.hpp">
+      <Filter>shared</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\cie_samples.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\color_spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\spectrum.hpp">
+      <Filter>shared\spectrums</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\spectrums\detail\coefficient_specturm.hpp">
+      <Filter>shared\spectrums\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\interactions\interaction.hpp">
+      <Filter>shared\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\interactions\surface_interaction.hpp">
+      <Filter>shared\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\distributions\distribution.hpp">
+      <Filter>shared\distributions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\distributions\detail\distribution.hpp">
+      <Filter>shared\distributions\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\accelerator.hpp">
+      <Filter>shared\accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\bounding_volume_hierarchy.hpp">
+      <Filter>shared\accelerators</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\detail\accelerator.hpp">
+      <Filter>shared\accelerators\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\accelerators\detail\bounding_volume_hierarchy.hpp">
+      <Filter>shared\accelerators\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\constant_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\image_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\mixture_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\scale_texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\texture.hpp">
+      <Filter>textures</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\constant_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\image_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\mixture_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\scale_texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="textures\detail\texture.hpp">
+      <Filter>textures\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\disk.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\mesh.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\shape.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\sphere.hpp">
+      <Filter>shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="interfaces\noncopyable.hpp">
+      <Filter>interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\box_filter.hpp">
+      <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\filters.hpp">
+      <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="filters\gaussian_filter.hpp">
+      <Filter>filters</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\random_sampler.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\samplers.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\stratified_sampler.hpp">
+      <Filter>samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\random_sampler.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\samplers.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="samplers\detail\stratified_sampler.hpp">
+      <Filter>samplers\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\fresnel_effect.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_function.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_function_collection.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\scattering_surface_function.hpp">
+      <Filter>scatterings</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\entity.hpp">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\scene.hpp">
+      <Filter>scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes\detail\entity.hpp">
+      <Filter>scenes\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\directional_light.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\emitter.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\environment_light.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\point_light.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="emitters\surface_light.hpp">
+      <Filter>emitters</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\bssrdf\normalized_diffusion.hpp">
+      <Filter>scatterings\bssrdf</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\separable_bssrdf_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\reflection_function.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\distribution\microfacet_distribution.hpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\distribution\trowbridge_reitz_distribution.hpp">
+      <Filter>scatterings\distribution</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\fresnel_blend_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\lambertian_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\microfacet_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\oren_nayar_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\reflection\specular_reflection.hpp">
+      <Filter>scatterings\reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\mixture\fresnel_specular.hpp">
+      <Filter>scatterings\mixture</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\lambertian_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\microfacet_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\specular_transmission.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="scatterings\transmission\transmission_function.hpp">
+      <Filter>scatterings\transmission</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\camera.hpp">
+      <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\film.hpp">
+      <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="cameras\perspective_camera.hpp">
+      <Filter>cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\glass_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\matte_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\metal_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\mirror_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\mixture_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\plastic_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\substrate_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\subsurface_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\translucent_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="materials\uber_material.hpp">
+      <Filter>materials</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\direct_integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\path_integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\sampler_integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

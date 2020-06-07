@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="logs">
+      <UniqueIdentifier>{66f35475-c544-493d-a070-89ee45858379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logs\detail">
+      <UniqueIdentifier>{70212777-c8a3-48a8-9967-a7023ea3b362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{9b20975c-0762-4bad-8d7a-ca3fcb7ed523}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\detail">
+      <UniqueIdentifier>{6eb4b14b-074a-42b8-a8a3-828247fe3eea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="math\bound.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\math.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\matrix4x4.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector1.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector2.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector3.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\vector4.hpp">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\bound.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\math.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\matrix4x4.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\vector.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\vector1.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\vector2.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\vector3.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="math\detail\vector4.hpp">
+      <Filter>math\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="logs\log.hpp">
+      <Filter>logs</Filter>
+    </ClInclude>
+    <ClInclude Include="logs\detail\log.hpp">
+      <Filter>logs\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="assert.hpp" />
+    <ClInclude Include="file_system.hpp" />
+    <ClInclude Include="sample_function.hpp" />
+    <ClInclude Include="utilities.hpp" />
+    <ClInclude Include="shading_function.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="file_system.cpp" />
+    <ClCompile Include="sample_function.cpp" />
+    <ClCompile Include="utilities.cpp" />
+    <ClCompile Include="shading_function.cpp" />
+  </ItemGroup>
+</Project>
