@@ -25,4 +25,6 @@ namespace rainbow::core {
 	real cosine_sample_hemisphere_pdf(real cos_theta);
 
 	real sample_from_inv_cdf_table(const std::vector<real>& inv_cdf, real sample);
+
+	size_t uniform_sample_one_from_range(size_t begin, size_t end, real sample);
 }

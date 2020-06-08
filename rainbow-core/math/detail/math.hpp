@@ -115,43 +115,49 @@ namespace rainbow::core::math {
 	}
 
 	template <typename T>
-	T one_minus_epsilon()
+	constexpr T one_minus_epsilon()
 	{
 		return static_cast<real>(1) - std::numeric_limits<real>::epsilon();
 	}
 
 	template <typename T>
-	T one_over_two_pi()
+	constexpr T one_over_four_pi()
+	{
+		return static_cast<real>(0.07957747154594766788);
+	}
+
+	template <typename T>
+	constexpr T one_over_two_pi()
 	{
 		return glm::one_over_two_pi<T>();
 	}
 
 	template <typename T>
-	T one_over_pi()
+	constexpr T one_over_pi()
 	{
 		return glm::one_over_pi<T>();
 	}
 
 	template <typename T>
-	T quarter_pi()
+	constexpr T quarter_pi()
 	{
 		return glm::quarter_pi<T>();
 	}
 
 	template <typename T>
-	T half_pi()
+	constexpr T half_pi()
 	{
 		return glm::half_pi<T>();
 	}
 
 	template <typename T>
-	T two_pi()
+	constexpr T two_pi()
 	{
 		return glm::two_pi<T>();
 	}
 
 	template <typename T>
-	T pi()
+	constexpr T pi()
 	{
 		return glm::pi<T>();
 	}

@@ -43,3 +43,10 @@ rainbow::core::real rainbow::core::inverse_gamma_correct(real value)
 	return pow((value + 0.055f) * 1.f / 1.055f, static_cast<real>(2.4f));
 }
 
+rainbow::core::real rainbow::core::henyey_greenstein_phase_function(real cos_theta, real g)
+{
+	const auto denominator = 1 + g * g + 2 * g * cos_theta;
+	
+	return math::one_over_four_pi<real>() * (1 - g * g) / (denominator * math::sqrt(denominator));
+}
+

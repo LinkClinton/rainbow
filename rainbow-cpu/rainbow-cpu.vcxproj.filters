@@ -82,6 +82,12 @@
     <Filter Include="scenes\detail">
       <UniqueIdentifier>{8aac9bf8-a5ec-40df-94ce-97771b7b3618}</UniqueIdentifier>
     </Filter>
+    <Filter Include="media">
+      <UniqueIdentifier>{05cb2d56-3121-4f82-9dc1-9e1c62f40ba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shared\phases">
+      <UniqueIdentifier>{0d6236b6-28e6-4f4e-9c06-1cd22eaba666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="shared\coordinate_system.cpp">
@@ -257,6 +263,21 @@
     </ClCompile>
     <ClCompile Include="integrators\sampler_integrator.cpp">
       <Filter>integrators</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\phases\phase_function.cpp">
+      <Filter>shared\phases</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\phases\henyey_greenstein.cpp">
+      <Filter>shared\phases</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\interactions\medium_interaction.cpp">
+      <Filter>shared\interactions</Filter>
+    </ClCompile>
+    <ClCompile Include="media\medium.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="media\homogeneous_medium.cpp">
+      <Filter>media</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -517,6 +538,21 @@
     </ClInclude>
     <ClInclude Include="integrators\sampler_integrator.hpp">
       <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="media\medium.hpp">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\interactions\medium_interaction.hpp">
+      <Filter>shared\interactions</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\phases\phase_function.hpp">
+      <Filter>shared\phases</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\phases\henyey_greenstein.hpp">
+      <Filter>shared\phases</Filter>
+    </ClInclude>
+    <ClInclude Include="media\homogeneous_medium.hpp">
+      <Filter>media</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

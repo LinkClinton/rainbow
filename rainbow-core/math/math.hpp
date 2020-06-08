@@ -88,25 +88,28 @@ namespace rainbow::core::math {
 	T exp(const T& x);
 
 	template <typename T>
-	T one_minus_epsilon();
+	constexpr T one_minus_epsilon();
 
 	template <typename T>
-	T one_over_two_pi();
+	constexpr T one_over_four_pi();
+	
+	template <typename T>
+	constexpr T one_over_two_pi();
 
 	template <typename T>
-	T one_over_pi();
+	constexpr T one_over_pi();
 
 	template <typename T>
-	T quarter_pi();
+	constexpr T quarter_pi();
 
 	template <typename T>
-	T half_pi();
+	constexpr T half_pi();
 
 	template <typename T>
-	T two_pi();
+	constexpr T two_pi();
 
 	template <typename T>
-	T pi();
+	constexpr T pi();
 }
 
 #include "detail/math.hpp"

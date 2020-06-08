@@ -45,6 +45,8 @@
     <ClCompile Include="materials\subsurface_material.cpp" />
     <ClCompile Include="materials\translucent_material.cpp" />
     <ClCompile Include="materials\uber_material.cpp" />
+    <ClCompile Include="media\homogeneous_medium.cpp" />
+    <ClCompile Include="media\medium.cpp" />
     <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp" />
     <ClCompile Include="scatterings\distribution\microfacet_distribution.cpp" />
     <ClCompile Include="scatterings\distribution\trowbridge_reitz_distribution.cpp" />
@@ -72,7 +74,10 @@
     <ClCompile Include="shapes\sphere.cpp" />
     <ClCompile Include="shared\coordinate_system.cpp" />
     <ClCompile Include="shared\interactions\interaction.cpp" />
+    <ClCompile Include="shared\interactions\medium_interaction.cpp" />
     <ClCompile Include="shared\interactions\surface_interaction.cpp" />
+    <ClCompile Include="shared\phases\henyey_greenstein.cpp" />
+    <ClCompile Include="shared\phases\phase_function.cpp" />
     <ClCompile Include="shared\random_generator.cpp" />
     <ClCompile Include="shared\ray.cpp" />
     <ClCompile Include="shared\spectrums\color_spectrum.cpp" />
@@ -106,6 +111,8 @@
     <ClInclude Include="materials\subsurface_material.hpp" />
     <ClInclude Include="materials\translucent_material.hpp" />
     <ClInclude Include="materials\uber_material.hpp" />
+    <ClInclude Include="media\homogeneous_medium.hpp" />
+    <ClInclude Include="media\medium.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
     <ClInclude Include="samplers\detail\samplers.hpp" />
     <ClInclude Include="samplers\detail\stratified_sampler.hpp" />
@@ -146,7 +153,10 @@
     <ClInclude Include="shared\distributions\detail\distribution.hpp" />
     <ClInclude Include="shared\distributions\distribution.hpp" />
     <ClInclude Include="shared\interactions\interaction.hpp" />
+    <ClInclude Include="shared\interactions\medium_interaction.hpp" />
     <ClInclude Include="shared\interactions\surface_interaction.hpp" />
+    <ClInclude Include="shared\phases\henyey_greenstein.hpp" />
+    <ClInclude Include="shared\phases\phase_function.hpp" />
     <ClInclude Include="shared\random_generator.hpp" />
     <ClInclude Include="shared\ray.hpp" />
     <ClInclude Include="shared\spectrums\cie_samples.hpp" />

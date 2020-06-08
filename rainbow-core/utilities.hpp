@@ -14,4 +14,6 @@ namespace rainbow::core {
 	real gamma_correct(real value);
 
 	real inverse_gamma_correct(real value);
+
+	real henyey_greenstein_phase_function(real cos_theta, real g);
 }

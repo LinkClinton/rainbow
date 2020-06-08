@@ -88,3 +88,11 @@ rainbow::core::real rainbow::core::sample_from_inv_cdf_table(const std::vector<r
 
 	return lerp(inv_cdf[which], inv_cdf[which + 1], t);
 }
+
+size_t rainbow::core::uniform_sample_one_from_range(size_t begin, size_t end, real sample)
+{
+	const auto size = end - begin;
+
+	return clamp(static_cast<size_t>(sample * size), static_cast<size_t>(0), size - 1) + begin;
+}
+
