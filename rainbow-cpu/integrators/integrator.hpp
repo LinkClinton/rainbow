@@ -38,6 +38,23 @@ namespace rainbow::cpus::integrators {
 		void reset() const noexcept;
 	};
 
+	struct path_tracing_info {
+		spectrum value = spectrum(0);
+		spectrum beta = spectrum(1);
+
+		bool specular = false;
+		
+		real eta = 1;
+
+		ray ray;
+
+		path_tracing_info() = default;
+
+		path_tracing_info(
+			const spectrum& value, const spectrum& beta,
+			const shared::ray& ray, real eta, bool specular);
+	};
+
 	class integrator : public interfaces::noncopyable {
 	public:
 		integrator() = default;
@@ -55,19 +72,33 @@ namespace rainbow::cpus::integrators {
 
 	std::tuple<std::optional<surface_interaction>, real> find_emitter(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const surface_interaction& interaction, const vector3& wi);
+		const interaction& interaction, const vector3& wi);
 
 	std::tuple<std::shared_ptr<const entity>, real> uniform_sample_one_emitter(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers);
 
 	spectrum uniform_sample_one_emitter(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const surface_interaction& interaction,
-		const scattering_function_collection& functions);
+		const surface_interaction& interaction, const scattering_function_collection& functions, 
+		bool media);
+
+	spectrum uniform_sample_one_emitter(
+		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+		const medium_interaction& interaction);
 
 	bool sample_scattering_surface_function(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const surface_properties& properties, ray& ray, spectrum& beta, spectrum& L, bool& specular);
+		const surface_properties& properties, path_tracing_info& tracing_info, bool media);
 
+	bool sample_surface_interaction(
+		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+		const std::optional<surface_interaction>& interaction, 
+		path_tracing_info& tracing_info, size_t& bounces, bool media);
+
+	bool sample_medium_interaction(
+		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+		const std::optional<medium_interaction>& interaction,
+		path_tracing_info& tracing_info, size_t& bounces);
+	
 	real power_heuristic(real f_pdf, real g_pdf);
 }

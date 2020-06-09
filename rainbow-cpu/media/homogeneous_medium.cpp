@@ -10,13 +10,13 @@ rainbow::cpus::media::homogeneous_medium::homogeneous_medium(const spectrum& sig
 }
 
 rainbow::cpus::shared::spectrums::spectrum rainbow::cpus::media::homogeneous_medium::evaluate(
-	const std::shared_ptr<sampler1d>& sampler, const ray& ray)
+	const std::shared_ptr<sampler1d>& sampler, const ray& ray) const
 {
 	return exp(-mSigmaT * min(ray.length, std::numeric_limits<real>::max()));
 }
 
 rainbow::cpus::media::medium_sample rainbow::cpus::media::homogeneous_medium::sample(
-	const std::shared_ptr<sampler1d>& sampler, const ray& ray)
+	const std::shared_ptr<sampler1d>& sampler, const ray& ray) const
 {
 	// sample the channel and find the t of sample point
 	// if the t greater than ray.length, means we sample the surface at ray.end_point

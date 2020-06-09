@@ -279,6 +279,9 @@
     <ClCompile Include="media\homogeneous_medium.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="integrators\volume_path_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\coordinate_system.hpp">
@@ -553,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="media\homogeneous_medium.hpp">
       <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\volume_path_integrator.hpp">
+      <Filter>integrators</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

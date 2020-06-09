@@ -18,3 +18,10 @@ rainbow::core::math::vector3 rainbow::cpus::shared::ray::end_point() const
 {
 	return origin + direction * length;
 }
+
+rainbow::cpus::shared::ray rainbow::cpus::shared::ray::reverse() const
+{
+	assert(length != std::numeric_limits<real>::max());
+	
+	return ray(-direction, origin + direction * length, length);
+}

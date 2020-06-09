@@ -6,6 +6,7 @@
 
 #include "../shared/interactions/medium_interaction.hpp"
 #include "../shared/spectrums/spectrum.hpp"
+#include "../shared/transform.hpp"
 #include "../shared/ray.hpp"
 
 #include <optional>
@@ -27,6 +28,8 @@ namespace rainbow::cpus::media {
 		medium_sample(
 			const std::optional<medium_interaction>& interaction,
 			const spectrum& value);
+
+		static medium_sample transform(const transform& transform, const medium_sample& sample);
 	};
 	
 	class medium : public interfaces::noncopyable {
@@ -35,9 +38,28 @@ namespace rainbow::cpus::media {
 
 		~medium() = default;
 
-		virtual spectrum evaluate(const std::shared_ptr<sampler1d>& sampler, const ray& ray) = 0;
+		virtual spectrum evaluate(const std::shared_ptr<sampler1d>& sampler, const ray& ray) const = 0;
 
-		virtual medium_sample sample(const std::shared_ptr<sampler1d>& sampler, const ray& ray) = 0;
+		virtual medium_sample sample(const std::shared_ptr<sampler1d>& sampler, const ray& ray) const = 0;
 	};
-	
+
+	class media final : public interfaces::noncopyable {
+	public:
+		using sample_type = medium_sample;
+	public:
+		explicit media(const std::shared_ptr<medium>& outside, const std::shared_ptr<medium>& inside);
+
+		explicit media(const std::shared_ptr<medium>& two_side);
+
+		~media() = default;
+		
+		std::shared_ptr<medium> outside() const noexcept;
+
+		std::shared_ptr<medium> inside() const noexcept;
+
+		bool different_sides() const noexcept;
+	private:
+		std::shared_ptr<medium> mOutside;
+		std::shared_ptr<medium> mInSide;
+	};
 }

@@ -27,6 +27,10 @@ namespace rainbow::cpus::shared::interactions {
 
 		surface_interaction(
 			const std::shared_ptr<const scenes::entity>& entity,
+			const vector3& point);
+
+		surface_interaction(
+			const std::shared_ptr<const scenes::entity>& entity,
 			const vector3& dp_du, const vector3& dp_dv,
 			const vector3& normal, const vector3& point,
 			const vector3& wo, const vector2& uv);

@@ -34,6 +34,7 @@
     <ClCompile Include="integrators\integrator.cpp" />
     <ClCompile Include="integrators\path_integrator.cpp" />
     <ClCompile Include="integrators\sampler_integrator.cpp" />
+    <ClCompile Include="integrators\volume_path_integrator.cpp" />
     <ClCompile Include="materials\glass_material.cpp" />
     <ClCompile Include="materials\material.cpp" />
     <ClCompile Include="materials\matte_material.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="integrators\integrator.hpp" />
     <ClInclude Include="integrators\path_integrator.hpp" />
     <ClInclude Include="integrators\sampler_integrator.hpp" />
+    <ClInclude Include="integrators\volume_path_integrator.hpp" />
     <ClInclude Include="interfaces\noncopyable.hpp" />
     <ClInclude Include="materials\glass_material.hpp" />
     <ClInclude Include="materials\material.hpp" />

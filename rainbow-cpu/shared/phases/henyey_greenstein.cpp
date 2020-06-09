@@ -14,8 +14,8 @@ rainbow::core::real rainbow::cpus::shared::phases::henyey_greenstein::evaluate(c
 	return henyey_greenstein_phase_function(dot(wo, wi), mG);
 }
 
-rainbow::cpus::shared::phases::phase_sample rainbow::cpus::shared::phases::henyey_greenstein::sample(const vector3& wo,
-	const vector2& sample) const
+rainbow::cpus::shared::phases::phase_sample rainbow::cpus::shared::phases::henyey_greenstein::sample(
+	const interaction& interaction, const vector2& sample) const
 {
 	// for phase function, we sample theta and phi and use them to build sphere direction
 	real cos_theta;
@@ -37,9 +37,9 @@ rainbow::cpus::shared::phases::phase_sample rainbow::cpus::shared::phases::henye
 	const auto phi = two_pi<real>() * sample.y;
 	const auto wi = spherical_direction(sin_theta, cos_theta, phi);
 
-	auto system = coordinate_system(wo);
+	auto system = coordinate_system(interaction.wo);
 
-	system.z() = -wo;
+	system.z() = -interaction.wo;
 
 	return phase_sample(
 		local_to_world(system, wi),

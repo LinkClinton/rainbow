@@ -23,6 +23,8 @@ namespace rainbow::cpus::shared {
 		vector3 begin_point() const;
 
 		vector3 end_point() const;
+
+		ray reverse() const;
 	};
 	
 }

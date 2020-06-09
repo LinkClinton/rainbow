@@ -102,6 +102,36 @@ std::optional<surface_interaction> rainbow::cpus::scenes::scene::intersect_with_
 	return nearest_interaction;
 }
 
+spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler, 
+	const interaction& from, const interaction& to) const
+{
+	spectrum L = 1;
+	
+	auto beam_ray = from.spawn_ray_to(to.point);
+	auto interaction = intersect(beam_ray);
+
+	// when the interaction is std::nullopt, means the ray can not intersect anything
+	// we think the ray is in the vacuum, so we do not need compute the beam of this part
+	while (interaction.has_value()) {
+
+		// if the interaction has media, we will evaluate the value
+		// entity->evaluate<media> input a interaction on entity and the beam ray start on it
+		// so we need reverse the beam ray to get the right beam
+		if (interaction->entity->has_component<media>())
+			L *= interaction->entity->evaluate<media>(sampler, interaction.value(), beam_ray.reverse());
+
+		// if the entity is visible, we stop tracing the beam
+		if (interaction->entity->visible()) return L;
+
+		// now start a new beam(it is the part of beam we want, we do not change the direction)
+		beam_ray = interaction->spawn_ray_to(to.point);
+
+		interaction = intersect(beam_ray);
+	}
+
+	return L;
+}
+
 const std::vector<std::shared_ptr<entity>>& rainbow::cpus::scenes::scene::entities() const noexcept
 {
 	return mEntities;

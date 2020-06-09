@@ -5,6 +5,10 @@ rainbow::cpus::shared::interactions::interaction::interaction(const vector3& nor
 {
 }
 
+rainbow::cpus::shared::interactions::interaction::interaction(const vector3& point) : point(point)
+{
+}
+
 rainbow::cpus::shared::ray rainbow::cpus::shared::interactions::interaction::spawn_ray(const vector3& direction) const noexcept
 {
 	return ray(direction, offset_ray_origin(*this, direction));

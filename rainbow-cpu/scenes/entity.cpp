@@ -6,9 +6,10 @@ using namespace rainbow::cpus::shared::spectrums;
 rainbow::cpus::scenes::entity::entity(
 	const std::shared_ptr<material>& material, 
 	const std::shared_ptr<emitter>& emitter,
-	const std::shared_ptr<shape>& shape, 
+	const std::shared_ptr<shape>& shape,
+	const std::shared_ptr<media>& media,
 	const transform& transform) :
-	mMaterial(material), mEmitter(emitter), mShape(shape),
+	mMaterial(material), mEmitter(emitter), mShape(shape), mMedia(media),
 	mLocalToWorld(transform), mWorldToLocal(transform.inverse())
 {
 }

@@ -29,6 +29,8 @@ namespace rainbow::cpus::scenes {
 
 		std::optional<surface_interaction> intersect_with_shadow_ray(const ray& ray) const;
 
+		spectrum evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler, const interaction& from, const interaction& to) const;
+		
 		const std::vector<std::shared_ptr<entity>>& entities() const noexcept;
 
 		const std::vector<std::shared_ptr<entity>>& emitters() const noexcept;

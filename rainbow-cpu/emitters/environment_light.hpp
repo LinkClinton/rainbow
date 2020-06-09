@@ -28,6 +28,8 @@ namespace rainbow::cpus::emitters {
 		real pdf(const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const override;
 
 		spectrum power(const std::shared_ptr<shape>& shape) const override;
+
+		real radius() const noexcept;
 	private:
 		std::shared_ptr<texture2d<spectrum>> mEnvironmentMap;
 		std::shared_ptr<distribution2d> mDistribution;

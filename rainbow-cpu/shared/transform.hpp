@@ -3,6 +3,7 @@
 #include "../../rainbow-core/math/math.hpp"
 
 #include "interactions/surface_interaction.hpp"
+#include "interactions/medium_interaction.hpp"
 
 #include "ray.hpp"
 
@@ -25,6 +26,8 @@ namespace rainbow::cpus::shared {
 		bool operator!=(const transform& right) const;
 		
 		surface_interaction operator()(const surface_interaction& interaction) const;
+
+		medium_interaction operator()(const medium_interaction& interaction) const;
 		
 		coordinate_system operator()(const coordinate_system& system) const;
 

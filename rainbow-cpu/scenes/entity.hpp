@@ -5,19 +5,24 @@
 #include "../materials/material.hpp"
 #include "../emitters/emitter.hpp"
 #include "../shapes/shape.hpp"
+#include "../media/medium.hpp"
 
 namespace rainbow::cpus::scenes {
 
+	using namespace samplers;
 	using namespace materials;
 	using namespace emitters;
 	using namespace shapes;
 
+	using media::media;
+	
 	class entity final : public interfaces::noncopyable, public std::enable_shared_from_this<entity> {
 	public:
 		explicit entity(
 			const std::shared_ptr<material>& material,
 			const std::shared_ptr<emitter>& emitter,
 			const std::shared_ptr<shape>& shape,
+			const std::shared_ptr<media>& media,
 			const transform& transform);
 
 		~entity() = default;
@@ -35,8 +40,14 @@ namespace rainbow::cpus::scenes {
 		spectrum power() const noexcept;
 
 		template <typename T>
+		spectrum evaluate(const std::shared_ptr<sampler1d>& sampler, const interaction& interaction, const ray& ray) const;
+		
+		template <typename T>
 		spectrum evaluate(const interaction& interaction, const vector3& wi) const;
 
+		template <typename T>
+		typename T::sample_type sample(const std::shared_ptr<sampler1d>& sampler, const interaction& interaction, const ray& ray) const;
+		
 		template <typename T>
 		typename T::sample_type sample(const interaction& reference, const vector2& sample) const;
 
@@ -58,6 +69,7 @@ namespace rainbow::cpus::scenes {
 		std::shared_ptr<material> mMaterial;
 		std::shared_ptr<emitter> mEmitter;
 		std::shared_ptr<shape> mShape;
+		std::shared_ptr<media> mMedia;
 
 		transform mLocalToWorld, mWorldToLocal;
 	};

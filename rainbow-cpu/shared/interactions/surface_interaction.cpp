@@ -11,6 +11,12 @@ rainbow::cpus::shared::interactions::surface_interaction::surface_interaction(co
 }
 
 rainbow::cpus::shared::interactions::surface_interaction::surface_interaction(
+	const std::shared_ptr<const scenes::entity>& entity, const vector3& point) :
+	interaction(point), entity(entity), dp_du(0), dp_dv(0), uv(0)
+{
+}
+
+rainbow::cpus::shared::interactions::surface_interaction::surface_interaction(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const vector3& dp_du, const vector3& dp_dv,
 	const vector3& normal, const vector3& point, 

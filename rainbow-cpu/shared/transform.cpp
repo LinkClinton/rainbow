@@ -49,6 +49,16 @@ rainbow::cpus::shared::surface_interaction rainbow::cpus::shared::transform::ope
 	);
 }
 
+rainbow::cpus::shared::medium_interaction rainbow::cpus::shared::transform::operator()(
+	const medium_interaction& interaction) const
+{
+	return medium_interaction(
+		interaction.function,
+		transform_point(*this, interaction.point),
+		normalize(transform_vector(*this, interaction.wo))
+	);
+}
+
 rainbow::cpus::shared::coordinate_system rainbow::cpus::shared::transform::operator()(const coordinate_system& system) const
 {
 	auto shading_space_x = transform_vector(*this, system.x());

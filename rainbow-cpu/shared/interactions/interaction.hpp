@@ -16,6 +16,8 @@ namespace rainbow::cpus::shared::interactions {
 
 		interaction(const vector3& normal, const vector3& point, const vector3& wo);
 
+		interaction(const vector3& point);
+		
 		ray spawn_ray(const vector3& direction) const noexcept;
 
 		ray spawn_ray_to(const vector3& point) const noexcept;

@@ -133,8 +133,8 @@ namespace rainbow::cpus::shared::distributions {
 
 	inline real distribution_t<2>::pdf(const vector_t<2, real>& point) const
 	{
-		const auto x = clamp(static_cast<size_t>(point.x * mWidth), static_cast<size_t>(0), mWidth - 1);
-		const auto y = clamp(static_cast<size_t>(point.y * mHeight), static_cast<size_t>(0), mHeight - 1);
+		const auto x = math::clamp(static_cast<size_t>(point.x * mWidth), static_cast<size_t>(0), mWidth - 1);
+		const auto y = math::clamp(static_cast<size_t>(point.y * mHeight), static_cast<size_t>(0), mHeight - 1);
 
 		return mCDFs[y]->value(x) / mMDFs->integral();
 	}

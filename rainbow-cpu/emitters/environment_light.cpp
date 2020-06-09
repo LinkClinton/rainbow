@@ -101,3 +101,8 @@ spectrum rainbow::cpus::emitters::environment_light::power(const std::shared_ptr
 {
 	return mIntensity * mRadius * mRadius * pi<real>() * mEnvironmentMap->sample(vector2(0.5));
 }
+
+real rainbow::cpus::emitters::environment_light::radius() const noexcept
+{
+	return mRadius;
+}

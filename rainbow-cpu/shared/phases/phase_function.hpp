@@ -1,11 +1,13 @@
 #pragma once
 
-#include "../../interfaces/noncopyable.hpp"
-
 #include "../../../rainbow-core/math/math.hpp"
+
+#include "../../interfaces/noncopyable.hpp"
+#include "../interactions/interaction.hpp"
 
 namespace rainbow::cpus::shared::phases {
 
+	using namespace interactions;
 	using namespace core::math;
 	using namespace core;
 
@@ -27,7 +29,7 @@ namespace rainbow::cpus::shared::phases {
 
 		virtual real evaluate(const vector3& wo, const vector3& wi) const = 0;
 
-		virtual phase_sample sample(const vector3& wo, const vector2& sample) const = 0;
+		virtual phase_sample sample(const interaction& interaction, const vector2& sample) const = 0;
 	};
 	
 }

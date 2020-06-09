@@ -10,7 +10,7 @@ namespace rainbow::cpus::shared::phases {
 
 		real evaluate(const vector3& wo, const vector3& wi) const override;
 
-		phase_sample sample(const vector3& wo, const vector2& sample) const override;
+		phase_sample sample(const interaction& interaction, const vector2& sample) const override;
 	private:
 		real mG;
 	};
