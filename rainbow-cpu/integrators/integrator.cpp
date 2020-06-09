@@ -326,7 +326,7 @@ bool rainbow::cpus::integrators::sample_scattering_surface_function(
 bool rainbow::cpus::integrators::sample_surface_interaction(
 	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
 	const std::optional<surface_interaction>& interaction, 
-	path_tracing_info& tracing_info, size_t& bounces, bool media)
+	path_tracing_info& tracing_info, int& bounces, bool media)
 {
 	// if we do not find the shape that the ray intersect we can end this tracing
 	if (!interaction.has_value()) {
@@ -402,7 +402,7 @@ bool rainbow::cpus::integrators::sample_surface_interaction(
 bool rainbow::cpus::integrators::sample_medium_interaction(
 	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
 	const std::optional<medium_interaction>& interaction,
-	path_tracing_info& tracing_info, size_t& bounces)
+	path_tracing_info& tracing_info, int& bounces)
 {
 	tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, interaction.value());
 

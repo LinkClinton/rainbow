@@ -26,7 +26,7 @@ spectrum rainbow::cpus::integrators::path_integrator::trace(
 	tracing_info.beta = 1;
 	tracing_info.eta = 1;
 	
-	for (auto bounces = depth + 1; bounces < mMaxDepth; bounces++) {
+	for (auto bounces = static_cast<int>(depth); bounces < mMaxDepth; bounces++) {
 		const auto interaction = scene->intersect(tracing_info.ray);
 
 		if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, false))

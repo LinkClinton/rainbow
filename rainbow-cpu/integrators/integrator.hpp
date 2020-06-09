@@ -93,12 +93,12 @@ namespace rainbow::cpus::integrators {
 	bool sample_surface_interaction(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 		const std::optional<surface_interaction>& interaction, 
-		path_tracing_info& tracing_info, size_t& bounces, bool media);
+		path_tracing_info& tracing_info, int& bounces, bool media);
 
 	bool sample_medium_interaction(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 		const std::optional<medium_interaction>& interaction,
-		path_tracing_info& tracing_info, size_t& bounces);
+		path_tracing_info& tracing_info, int& bounces);
 	
 	real power_heuristic(real f_pdf, real g_pdf);
 }

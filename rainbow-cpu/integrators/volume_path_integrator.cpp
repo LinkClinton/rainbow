@@ -24,7 +24,7 @@ rainbow::cpus::shared::spectrum rainbow::cpus::integrators::volume_path_integrat
 	tracing_info.beta = 1;
 	tracing_info.eta = 1;
 
-	auto bounces = depth + 1;
+	auto bounces = static_cast<int>(depth);
 	
 	auto medium_interaction = scene->intersect(tracing_info.ray);
 
