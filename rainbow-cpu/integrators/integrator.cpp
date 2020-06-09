@@ -51,8 +51,9 @@ std::tuple<std::optional<surface_interaction>, rainbow::core::real> rainbow::cpu
 {
 	// give the direction of incident ray(wi), we need find the emitter it from
 	// first, we spawn ray from surface interaction
+	// because the area light should have material, we can use intersect_with_shadow_ray to ignore the medium shape
 	const auto emitter_ray = interaction.spawn_ray(wi);
-	const auto emitter_interaction = scene->intersect(emitter_ray);
+	const auto emitter_interaction = scene->intersect_with_shadow_ray(emitter_ray);
 
 	const auto intersect_emitter = (emitter_interaction.has_value() && emitter_interaction->entity->has_component<emitter>());
 	const auto is_environment = (!scene->environments().empty() && !emitter_interaction.has_value());

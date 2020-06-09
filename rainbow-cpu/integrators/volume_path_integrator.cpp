@@ -1,5 +1,7 @@
 #include "volume_path_integrator.hpp"
 
+#include "../../rainbow-core/logs/log.hpp"
+
 rainbow::cpus::integrators::volume_path_integrator::volume_path_integrator(
 	const std::shared_ptr<sampler2d>& sampler2d,
 	const std::shared_ptr<sampler1d>& sampler1d, 
@@ -22,27 +24,61 @@ rainbow::cpus::shared::spectrum rainbow::cpus::integrators::volume_path_integrat
 	tracing_info.beta = 1;
 	tracing_info.eta = 1;
 
-	for (auto bounces = depth; bounces < mMaxDepth; bounces++) {
-		const auto interaction = scene->intersect(tracing_info.ray);
+	auto bounces = depth + 1;
+	
+	auto medium_interaction = scene->intersect(tracing_info.ray);
 
-		// if the ray does not intersect anything or the entity the ray intersect does not have media
-		// we need sample the surface interaction
-		if (!interaction.has_value() || !interaction->entity->has_component<cpus::media::media>()) {
-			if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, true))
-				break;
+	// for the first interaction, the origin medium is unknown, so we need the medium of interaction to sample
+	// if the first interaction has not media or no first interaction, we just sample the surface_interaction
+	// (it will solve the no first interaction situation)
+	if (!medium_interaction.has_value() || !medium_interaction->entity->has_component<cpus::media::media>()) {
+		
+		if (!sample_surface_interaction(scene, samplers, medium_interaction, tracing_info, bounces, true))
+			return tracing_info.value;
+	} else {
+		// now, sample the medium from camera to first interaction
+		// because the medium_interaction is end point of beam, we do not need reverse the wo of medium_interaction
+		// the dot(medium_interaction.normal, medium_interaction.wo) decide which medium we will use(outside or inside)
+		const auto medium_sample = medium_interaction->entity->sample<cpus::media::media>(samplers.sampler1d,
+			medium_interaction.value(), tracing_info.ray);
+
+		// account the beta value
+		tracing_info.beta *= medium_sample.value;
+
+		if (tracing_info.beta.is_black()) return tracing_info.value;
+
+		// if the medium_sample.interaction != std::nullopt, means we will sample the medium
+		// otherwise, we will sample the surface interaction
+		if (medium_sample.interaction.has_value()) {
+			if (!sample_medium_interaction(scene, samplers, medium_sample.interaction, tracing_info, bounces))
+				return tracing_info.value;
 		}
 		else {
-			// sample the medium, if the medium_sample.interaction is not std::nullopt
-			// we will sample the medium_interaction, otherwise we will sample the surface interaction
-			const auto medium_sample = interaction->entity->sample<cpus::media::media>(samplers.sampler1d,
-				interaction.value(), tracing_info.ray.reverse());
+			if (!sample_surface_interaction(scene, samplers, medium_interaction, tracing_info, bounces, true))
+				return tracing_info.value;
+		}
+	}
 
-			// account the beam value to beta
+	// reverse the direction of wo, because we will use it as start point of beam not end point of beam in next time
+	medium_interaction->wo = -medium_interaction->wo;
+
+	// now start the path tracing, the bounces should be the bounces + 1
+	for (bounces = bounces + 1; bounces < mMaxDepth; bounces++) {
+		const auto interaction = scene->intersect(tracing_info.ray);
+
+		// the medium_interaction keep the medium ray in
+		// if there is no media in medium_interaction->entity, we just sample the surface interaction
+		// otherwise, we will sample the medium to find which type interaction wi need sample
+		if (medium_interaction->entity->has_component<cpus::media::media>()) {
+			// sample the medium, the medium_interaction.wo had reverse
+			// because the interaction is the start point of beam, not the end point of beam
+			const auto medium_sample = medium_interaction->entity->sample<cpus::media::media>(samplers.sampler1d,
+				medium_interaction.value(), tracing_info.ray);
+
 			tracing_info.beta *= medium_sample.value;
 
 			if (tracing_info.beta.is_black()) break;
 
-			// sample the medium if the medium_sample.interaction is not std::nullopt
 			if (medium_sample.interaction.has_value()) {
 				if (!sample_medium_interaction(scene, samplers, medium_sample.interaction, tracing_info, bounces))
 					break;
@@ -50,9 +86,23 @@ rainbow::cpus::shared::spectrum rainbow::cpus::integrators::volume_path_integrat
 			else {
 				if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, true))
 					break;
+
+				// if we had sampled the surface interaction, the medium information had changed.
+				// so we should update the medium_interaction and do not forget to reverse the wo of medium_interaction
+				medium_interaction = interaction;
+				medium_interaction->wo = -medium_interaction->wo;
 			}
 		}
-		
+		else {
+			if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, true))
+				break;
+
+			// if we had sampled the surface interaction, the medium information had changed.
+			// so we should update the medium_interaction and do not forget to reverse the wo of medium_interaction
+			medium_interaction = interaction;
+			medium_interaction->wo = -medium_interaction->wo;
+		}
+
 		const auto max_component = (tracing_info.beta * tracing_info.eta).max_component();
 
 		if (max_component < mThreshold && bounces > 3) {

@@ -15,9 +15,9 @@ namespace rainbow::cpus::scenes {
 	inline media::sample_type entity::sample<media>(const std::shared_ptr<sampler1d>& sampler, const interaction& interaction, const ray& ray) const
 	{
 		// the normal of surface indicate the outside medium, the ray's origin should be interaction.point
-		// so if the interaction.normal dot ray.direction > 0, means the ray is on the outside space
+		// so if the interaction.normal dot interaction.wo > 0, means the ray is on the outside space
 		// otherwise, the ray is on the inside space
-		const auto medium = (dot(interaction.normal, ray.direction) > 0) ? mMedia->outside() : mMedia->inside();
+		const auto medium = (dot(interaction.normal, interaction.wo) > 0) ? mMedia->outside() : mMedia->inside();
 
 		// if the medium is nullptr, means it is vacuum.
 		// we can not sample the medium interaction with vacuum medium
@@ -77,9 +77,9 @@ namespace rainbow::cpus::scenes {
 	inline spectrum entity::evaluate<media>(const std::shared_ptr<sampler1d>& sampler, const interaction& interaction, const ray& ray) const
 	{
 		// the normal of surface indicate the outside medium, the ray's origin should be interaction.point
-		// so if the interaction.normal dot ray.direction > 0, means the ray is on the outside space
+		// so if the interaction.normal dot interaction.wo > 0, means the ray is on the outside space
 		// otherwise, the ray is on the inside space
-		const auto medium = (dot(interaction.normal, ray.direction) > 0) ? mMedia->outside() : mMedia->inside();
+		const auto medium = (dot(interaction.normal, interaction.wo) > 0) ? mMedia->outside() : mMedia->inside();
 
 		// if the medium is nullptr, means it is vacuum.
 		// we just return 1 for beam

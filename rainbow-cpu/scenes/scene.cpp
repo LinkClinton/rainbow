@@ -110,15 +110,13 @@ spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler,
 	auto beam_ray = from.spawn_ray_to(to.point);
 	auto interaction = intersect(beam_ray);
 
+	// first, account the beam from origin to first intersect point
+	if (interaction.has_value() && interaction->entity->has_component<media>())
+		L *= interaction->entity->evaluate<media>(sampler, interaction.value(), beam_ray);
+
 	// when the interaction is std::nullopt, means the ray can not intersect anything
 	// we think the ray is in the vacuum, so we do not need compute the beam of this part
 	while (interaction.has_value()) {
-
-		// if the interaction has media, we will evaluate the value
-		// entity->evaluate<media> input a interaction on entity and the beam ray start on it
-		// so we need reverse the beam ray to get the right beam
-		if (interaction->entity->has_component<media>())
-			L *= interaction->entity->evaluate<media>(sampler, interaction.value(), beam_ray.reverse());
 
 		// if the entity is visible, we stop tracing the beam
 		if (interaction->entity->visible()) return L;
@@ -126,7 +124,15 @@ spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler,
 		// now start a new beam(it is the part of beam we want, we do not change the direction)
 		beam_ray = interaction->spawn_ray_to(to.point);
 
-		interaction = intersect(beam_ray);
+		const auto new_interaction = intersect(beam_ray);
+
+		// account the beam from last interaction to new_interaction
+		// we will use the medium the last interaction indicate
+		if (interaction->entity->has_component<media>())
+			L *= interaction->entity->evaluate<media>(sampler,
+				shared::interaction(interaction->normal, interaction->point, -interaction->wo), beam_ray);
+
+		interaction = new_interaction;
 	}
 
 	return L;
