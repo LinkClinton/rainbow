@@ -413,6 +413,7 @@ bool rainbow::cpus::integrators::sample_medium_interaction(
 	// sample the phase function, find the new ray to tracing
 	const auto phase_sample = interaction->function->sample(interaction.value(), samplers.sampler2d->next());
 
+	// because the pdf of phase_function is the value of it, so we do not need update the beta
 	tracing_info.specular = false;
 	tracing_info.ray = interaction->spawn_ray(phase_sample.wi);
 

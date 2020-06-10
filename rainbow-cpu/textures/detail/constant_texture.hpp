@@ -29,10 +29,8 @@ namespace rainbow::cpus::textures {
 	}
 
 	template <size_t Dimension, typename T>
-	T constant_texture_t<Dimension, T>::sample(const vector2& point) const
+	T constant_texture_t<Dimension, T>::sample(const vector_t<Dimension, real>& point) const
 	{
-		static_assert(Dimension == 2, "The Dimension should be 2!");
-
 		return mValue;
 	}
 

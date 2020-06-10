@@ -17,7 +17,7 @@ namespace rainbow::cpus::textures {
 
 		T sample(const surface_interaction& interaction) const override;
 
-		T sample(const vector2& point) const override;
+		T sample(const vector_t<Dimension, real>& point) const override;
 	private:
 		std::shared_ptr<texture_t<Dimension, T>> mScale;
 		std::shared_ptr<texture_t<Dimension, T>> mBase;
@@ -25,7 +25,9 @@ namespace rainbow::cpus::textures {
 
 	template <typename T>
 	using scale_texture2d = scale_texture_t<2, T>;
-	
+
+	template <typename T>
+	using scale_texture3d = scale_texture_t<3, T>;
 }
 
 #include "detail/scale_texture.hpp"

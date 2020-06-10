@@ -4,6 +4,8 @@
 
 #include "interaction.hpp"
 
+#include <memory>
+
 namespace rainbow::cpus::scenes {
 	class entity;
 }

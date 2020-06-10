@@ -15,14 +15,16 @@ namespace rainbow::cpus::textures {
 
 		T sample(const surface_interaction& interaction) const override;
 
-		T sample(const vector2& point) const override;
+		T sample(const vector_t<Dimension, real>& point) const override;
 	private:
 		T mValue;
 	};
 
 	template <typename T>
 	using constant_texture2d = constant_texture_t<2, T>;
-	
+
+	template <typename T>
+	using constant_texture3d = constant_texture_t<3, T>;
 }
 
 #include "detail/constant_texture.hpp"

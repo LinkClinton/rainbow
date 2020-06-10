@@ -3,6 +3,8 @@
 #include "../distribution/microfacet_distribution.hpp"
 #include "reflection_function.hpp"
 
+#include <memory>
+
 namespace rainbow::cpus::scatterings {
 
 	class fresnel_blend_reflection final : public reflection_function {

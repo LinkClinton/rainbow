@@ -22,6 +22,7 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::homogeneous_medium::sa
 	// if the t greater than ray.length, means we sample the surface at ray.end_point
 	// otherwise, we sample the particle of medium at t-position
 	// t = -ln(1 - sample) / sigma_t
+	// and the pdf of it is sigma_t * e^(-sigma_t * t)
 	const auto channel = uniform_sample_one_from_range(0, spectrum::num_samples, sampler->next().x);
 	const auto t = min(-log(1 - sampler->next().x) / mSigmaT[channel], ray.length);
 
@@ -30,7 +31,7 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::homogeneous_medium::sa
 	// the pdf of sampled surface is e^(-sigma_t[i] * ray.length) / n
 	// the pdf of sampled medium is sigma_t[i] * e^(-sigma_t[i] * t) / n
 	// because t = min(ray.length, real_t),
-	// e^(-sigma_t[i] * ray.length) = e^(-sigma_t[i] * t) = value of transmission beam from ray.origin to sampled point
+	// e^(-sigma_t[i] * ray.length) = e^(-sigma_t[i] * t) = value of beam from ray.origin to sampled point
 	// density = value when we sampled surface, density = sigma_t * value when we sampled medium
 	const auto value = exp(-mSigmaT * min(t, std::numeric_limits<real>::max()));
 	const auto density = sampled_medium ? (mSigmaT * value) : value;

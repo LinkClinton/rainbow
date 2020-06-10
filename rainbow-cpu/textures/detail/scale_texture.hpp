@@ -33,7 +33,7 @@ namespace rainbow::cpus::textures {
 	}
 
 	template <size_t Dimension, typename T>
-	T scale_texture_t<Dimension, T>::sample(const vector2& point) const
+	T scale_texture_t<Dimension, T>::sample(const vector_t<Dimension, real>& point) const
 	{
 		return mBase->sample(point) * mScale->sample(point);
 	}
