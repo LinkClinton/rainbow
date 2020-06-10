@@ -18,63 +18,26 @@ rainbow::cpus::shared::spectrum rainbow::cpus::integrators::volume_path_integrat
 {
 	path_tracing_info tracing_info;
 
+	// tracing_info.medium is used to tracing the medium, the default value of medium is empty.
+	// when the ray intersect a entity has media, we will update the medium by the normal and ray direction
+	tracing_info.medium = medium_info();
 	tracing_info.specular = false;
 	tracing_info.ray = first_ray;
 	tracing_info.value = 0;
 	tracing_info.beta = 1;
 	tracing_info.eta = 1;
 
-	auto bounces = static_cast<int>(depth);
-	
-	auto medium_interaction = scene->intersect(tracing_info.ray);
-
-	// for the first interaction, the origin medium is unknown, so we need the medium of interaction to sample
-	// if the first interaction has not media or no first interaction, we just sample the surface_interaction
-	// (it will solve the no first interaction situation)
-	if (!medium_interaction.has_value() || !medium_interaction->entity->has_component<cpus::media::media>()) {
-		
-		if (!sample_surface_interaction(scene, samplers, medium_interaction, tracing_info, bounces, true))
-			return tracing_info.value;
-	} else {
-		// now, sample the medium from camera to first interaction
-		// because the medium_interaction is end point of beam, we do not need reverse the wo of medium_interaction
-		// the dot(medium_interaction.normal, medium_interaction.wo) decide which medium we will use(outside or inside)
-		const auto medium_sample = medium_interaction->entity->sample<cpus::media::media>(samplers.sampler1d,
-			medium_interaction.value(), tracing_info.ray);
-
-		// account the beta value
-		tracing_info.beta *= medium_sample.value;
-
-		if (tracing_info.beta.is_black()) return tracing_info.value;
-
-		// if the medium_sample.interaction != std::nullopt, means we will sample the medium
-		// otherwise, we will sample the surface interaction
-		if (medium_sample.interaction.has_value()) {
-			if (!sample_medium_interaction(scene, samplers, medium_sample.interaction, tracing_info, bounces))
-				return tracing_info.value;
-		}
-		else {
-			if (!sample_surface_interaction(scene, samplers, medium_interaction, tracing_info, bounces, true))
-				return tracing_info.value;
-		}
-	}
-
-	// reverse the direction of wo, because we will use it as start point of beam not end point of beam in next time
-	medium_interaction->wo = -medium_interaction->wo;
-
-	// now start the path tracing, the bounces should be the bounces + 1
-	for (bounces = bounces + 1; bounces < mMaxDepth; bounces++) {
+	for (auto bounces = static_cast<int>(depth); bounces < mMaxDepth; bounces++) {
 		const auto interaction = scene->intersect(tracing_info.ray);
 
-		// the medium_interaction keep the medium ray in
-		// if there is no media in medium_interaction->entity, we just sample the surface interaction
-		// otherwise, we will sample the medium to find which type interaction wi need sample
-		if (medium_interaction->entity->has_component<cpus::media::media>()) {
-			// sample the medium, the medium_interaction.wo had reverse
-			// because the interaction is the start point of beam, not the end point of beam
-			const auto medium_sample = medium_interaction->entity->sample<cpus::media::media>(samplers.sampler1d,
-				medium_interaction.value(), tracing_info.ray);
+		// if current medium is not empty, we will sample the medium to decide which interaction we will sample next time
+		// if the medium_sample.interaction is std::nullopt, means we will sample the surface_interaction
+		// otherwise, we will sample the medium_interaction(in fact, sample the particle in the medium)
+		if (tracing_info.medium.has()) {
+			// to sample the medium we need provide the beam of ray passed
+			const auto medium_sample = tracing_info.medium.sample(samplers.sampler1d, tracing_info.ray);
 
+			// account the beta value
 			tracing_info.beta *= medium_sample.value;
 
 			if (tracing_info.beta.is_black()) break;
@@ -87,22 +50,20 @@ rainbow::cpus::shared::spectrum rainbow::cpus::integrators::volume_path_integrat
 				if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, true))
 					break;
 
-				// if we had sampled the surface interaction, the medium information had changed.
-				// so we should update the medium_interaction and do not forget to reverse the wo of medium_interaction
-				medium_interaction = interaction;
-				medium_interaction->wo = -medium_interaction->wo;
+				// update the medium property when interaction->entity has media
+				// if interaction->normal dot ray.direction > 0, the medium we tracing should be outside of entity
+				// otherwise the medium should be inside
+				if (interaction->entity->has_component<cpus::media::media>())
+					tracing_info.medium = medium_info(interaction->entity, interaction->normal, tracing_info.ray.direction);
 			}
-		}
-		else {
+		} else {
 			if (!sample_surface_interaction(scene, samplers, interaction, tracing_info, bounces, true))
 				break;
 
-			// if we had sampled the surface interaction, the medium information had changed.
-			// so we should update the medium_interaction and do not forget to reverse the wo of medium_interaction
-			medium_interaction = interaction;
-			medium_interaction->wo = -medium_interaction->wo;
+			if (interaction->entity->has_component<cpus::media::media>())
+				tracing_info.medium = medium_info(interaction->entity, interaction->normal, tracing_info.ray.direction);
 		}
-
+		
 		const auto max_component = (tracing_info.beta * tracing_info.eta).max_component();
 
 		if (max_component < mThreshold && bounces > 3) {

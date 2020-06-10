@@ -8,7 +8,7 @@ rainbow::cpus::scenes::entity::entity(
 	const std::shared_ptr<emitter>& emitter,
 	const std::shared_ptr<shape>& shape,
 	const std::shared_ptr<media>& media,
-	const transform& transform) :
+	const shared::transform& transform) :
 	mMaterial(material), mEmitter(emitter), mShape(shape), mMedia(media),
 	mLocalToWorld(transform), mWorldToLocal(transform.inverse())
 {
@@ -84,4 +84,9 @@ bool rainbow::cpus::scenes::entity::visible() const noexcept
 spectrum rainbow::cpus::scenes::entity::power() const noexcept
 {
 	return mEmitter->power(mShape);
+}
+
+transform entity::transform() const noexcept
+{
+	return mLocalToWorld;
 }

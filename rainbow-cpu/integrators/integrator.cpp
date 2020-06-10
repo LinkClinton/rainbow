@@ -35,8 +35,9 @@ void rainbow::cpus::integrators::sampler_group::reset() const noexcept
 
 rainbow::cpus::integrators::path_tracing_info::path_tracing_info(
 	const spectrum& value, const spectrum& beta,
-	const shared::ray& ray, real eta, bool specular) :
-	value(value), beta(beta), specular(specular), eta(eta), ray(ray)
+	const medium_info& medium, const shared::ray& ray, 
+	real eta, bool specular) :
+	value(value), beta(beta), specular(specular), eta(eta), medium(medium), ray(ray)
 {
 }
 
@@ -99,7 +100,8 @@ std::tuple<std::shared_ptr<const entity>, rainbow::core::real> rainbow::cpus::in
 
 spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
-	const surface_interaction& interaction, const scattering_function_collection& functions,
+	const path_tracing_info& tracing_info, const surface_interaction& interaction, 
+	const scattering_function_collection& functions,
 	bool media)
 {
 	// this function do multiple important sampling
@@ -141,7 +143,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					if (media) function_value *= scene->evaluate_media_beam(samplers.sampler1d,
-						interaction, shared::interaction(emitter_sample.position));
+						{ tracing_info.medium, interaction }, shared::interaction(emitter_sample.position));
 					
 					// if the emitter is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
@@ -178,7 +180,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					if (media) function_sample.value *= scene->evaluate_media_beam(samplers.sampler1d,
-						interaction, emitter_interaction.value());
+						{ tracing_info.medium, interaction }, emitter_interaction.value());
 					
 					// if the bsdf is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
@@ -199,8 +201,8 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 }
 
 spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
-	const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
-	const medium_interaction& interaction)
+	const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+	const path_tracing_info& tracing_info, const medium_interaction& interaction)
 {
 	spectrum L = 0;
 
@@ -230,7 +232,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					const auto beam = scene->evaluate_media_beam(samplers.sampler1d,
-						interaction, shared::interaction(emitter_sample.position));
+						{ tracing_info.medium, interaction }, shared::interaction(emitter_sample.position));
 					
 					// if the emitter is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
@@ -266,7 +268,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 					
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					const auto beam = scene->evaluate_media_beam(samplers.sampler1d,
-						interaction, emitter_interaction.value());
+						{ tracing_info.medium, interaction }, emitter_interaction.value());
 
 					// if the bsdf is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
@@ -303,7 +305,8 @@ bool rainbow::cpus::integrators::sample_scattering_surface_function(
 	tracing_info.beta *= scattering_sample.value / scattering_sample.pdf;
 
 	// uniform sample one emitter
-	tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, scattering_sample.interaction, scattering_sample.functions, media);
+	tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, tracing_info,
+		scattering_sample.interaction, scattering_sample.functions, media);
 
 	// sample the special scattering functions to find the wi
 	// this function will process the part S_w(wi)(the second fresnel part of bssrdf) of bssrdf
@@ -371,7 +374,8 @@ bool rainbow::cpus::integrators::sample_surface_interaction(
 	// when the functions do not have any functions without specular we do not sample it
 	// because the f(wo, wi) of specular functions is 0, the result must be 0.
 	if (scattering_functions.count(scattering_type::all ^ scattering_type::specular) != 0)
-		tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, interaction.value(), scattering_functions, media);
+		tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(
+			scene, samplers, tracing_info, interaction.value(), scattering_functions, media);
 
 	const auto scattering_sample = scattering_functions.sample(interaction.value(), samplers.sampler2d->next());
 
@@ -404,7 +408,7 @@ bool rainbow::cpus::integrators::sample_medium_interaction(
 	const std::optional<medium_interaction>& interaction,
 	path_tracing_info& tracing_info, int& bounces)
 {
-	tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, interaction.value());
+	tracing_info.value += tracing_info.beta * uniform_sample_one_emitter(scene, samplers, tracing_info, interaction.value());
 
 	// sample the phase function, find the new ray to tracing
 	const auto phase_sample = interaction->function->sample(interaction.value(), samplers.sampler2d->next());

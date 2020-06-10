@@ -41,18 +41,18 @@ namespace rainbow::cpus::integrators {
 	struct path_tracing_info {
 		spectrum value = spectrum(0);
 		spectrum beta = spectrum(1);
-
 		bool specular = false;
-		
 		real eta = 1;
 
+		medium_info medium;
 		ray ray;
 
 		path_tracing_info() = default;
 
 		path_tracing_info(
 			const spectrum& value, const spectrum& beta,
-			const shared::ray& ray, real eta, bool specular);
+			const medium_info& medium, const shared::ray& ray, 
+			real eta, bool specular);
 	};
 
 	class integrator : public interfaces::noncopyable {
@@ -78,13 +78,13 @@ namespace rainbow::cpus::integrators {
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers);
 
 	spectrum uniform_sample_one_emitter(
-		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const surface_interaction& interaction, const scattering_function_collection& functions, 
-		bool media);
+		const std::shared_ptr<scene>& scene, const sampler_group& samplers, 
+		const path_tracing_info& tracing_info, const surface_interaction& interaction, 
+		const scattering_function_collection& functions, bool media);
 
 	spectrum uniform_sample_one_emitter(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const medium_interaction& interaction);
+		const path_tracing_info& tracing_info, const medium_interaction& interaction);
 
 	bool sample_scattering_surface_function(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,

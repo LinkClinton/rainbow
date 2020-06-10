@@ -18,6 +18,8 @@ namespace rainbow::cpus::media {
 	using namespace spectrums;
 	using namespace shared;
 
+	class medium;
+	
 	struct medium_sample {
 		std::optional<medium_interaction> interaction = std::nullopt;
 		
@@ -30,6 +32,30 @@ namespace rainbow::cpus::media {
 			const spectrum& value);
 
 		static medium_sample transform(const transform& transform, const medium_sample& sample);
+	};
+
+	struct medium_info {
+		std::shared_ptr<const entity> entity;
+		std::shared_ptr<const medium> medium;
+
+		transform local_to_world;
+		transform world_to_local;
+		
+		medium_info() = default;
+
+		medium_info(
+			const std::shared_ptr<const scenes::entity>& entity,
+			const std::shared_ptr<const media::medium>& medium);
+
+		medium_info(
+			const std::shared_ptr<const scenes::entity>& entity,
+			const vector3& normal, const vector3& wi);
+
+		spectrum evaluate(const std::shared_ptr<sampler1d>& sampler, const ray& ray) const;
+
+		medium_sample sample(const std::shared_ptr<sampler1d>& sampler, const ray& ray) const;
+
+		bool has() const noexcept;
 	};
 	
 	class medium : public interfaces::noncopyable {

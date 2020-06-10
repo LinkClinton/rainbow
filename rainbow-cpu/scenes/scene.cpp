@@ -102,38 +102,38 @@ std::optional<surface_interaction> rainbow::cpus::scenes::scene::intersect_with_
 	return nearest_interaction;
 }
 
-spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler, 
-	const interaction& from, const interaction& to) const
+spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler,
+	const std::tuple<medium_info, interaction>& from, const interaction& to) const
 {
 	spectrum L = 1;
-	
-	auto beam_ray = from.spawn_ray_to(to.point);
+
+	// medium means the medium current beam_ray passed
+	// beam_ray is a part of ray from from_point to to_point without medium changed
+	// interaction is the end point of beam_ray
+	auto medium = std::get<0>(from);
+	auto beam_ray = std::get<1>(from).spawn_ray_to(to.point);
 	auto interaction = intersect(beam_ray);
 
-	// first, account the beam from origin to first intersect point
-	if (interaction.has_value() && interaction->entity->has_component<media>())
-		L *= interaction->entity->evaluate<media>(sampler, interaction.value(), beam_ray);
-
-	// when the interaction is std::nullopt, means the ray can not intersect anything
-	// we think the ray is in the vacuum, so we do not need compute the beam of this part
+	// if the interaction is std::nullopt, means the ray can not intersect anything
+	// so we can stop the tracing of beam
 	while (interaction.has_value()) {
+		// evaluate the value of beam 
+		L *= medium.evaluate(sampler, beam_ray);
 
-		// if the entity is visible, we stop tracing the beam
+		// if the entity is visible, the ray is occluded, we can stop the tracing
 		if (interaction->entity->visible()) return L;
 
-		// now start a new beam(it is the part of beam we want, we do not change the direction)
+		// spawn the new ray
 		beam_ray = interaction->spawn_ray_to(to.point);
 
-		const auto new_interaction = intersect(beam_ray);
-
-		// account the beam from last interaction to new_interaction
-		// we will use the medium the last interaction indicate
+		// if the interaction->entity has media, we need update the medium of new ray
 		if (interaction->entity->has_component<media>())
-			L *= interaction->entity->evaluate<media>(sampler,
-				shared::interaction(interaction->normal, interaction->point, -interaction->wo), beam_ray);
-
-		interaction = new_interaction;
+			medium = medium_info(interaction->entity, interaction->normal, beam_ray.direction);
+		
+		interaction = intersect(beam_ray);
 	}
+
+	L *= medium.evaluate(sampler, beam_ray);
 
 	return L;
 }
