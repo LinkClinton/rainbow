@@ -26,9 +26,20 @@ rainbow::cpus::media::heterogeneous_medium::heterogeneous_medium(
 rainbow::cpus::shared::spectrums::spectrum rainbow::cpus::media::heterogeneous_medium::evaluate(
 	const std::shared_ptr<sampler1d>& sampler, const ray& ray) const
 {
-	const auto local_ray = mWorldToLocal(ray);
+	shared::ray local_ray;
+
+	// when mWorldToLocal has scale transform, the scale property is missed
+	// because the transform::operator() will normalize the direction of ray
+	// to avoid this situation, we transform the ray but do not normalize the direction
+	// in fact, if you normalize the direction of ray, the segment of t is not right(without scaling)
+	local_ray.length = ray.length;
+	local_ray.direction = transform_vector(mWorldToLocal, ray.direction);
+	local_ray.origin = transform_point(mWorldToLocal, ray.origin);
+
+	// find the range ray intersect the medium box
 	const auto [t0, t1, ret] = intersect(bound3(vector3(0), vector3(1)), local_ray);
 
+	// if the ray is not intersect with medium, just sample the surface interaction
 	if (ret == false) return spectrum(1);
 
 	real value = 1, t = t0;
@@ -36,11 +47,14 @@ rainbow::cpus::shared::spectrums::spectrum rainbow::cpus::media::heterogeneous_m
 	while (true) {
 		t = t - log(1 - sampler->next().x) * mInvMaxDensity;
 
+		// out of range
 		if (t >= t1) break;
 
 		const auto position = local_ray.origin + local_ray.direction * t;
 		const auto sigma_t = mSigmaT->sample(position);
-		
+
+		//ratio tracing for estimators of transmittance
+		//see https://cs.dartmouth.edu/~wjarosz/publications/novak14residual.pdf
 		value = value * (1 - max(static_cast<real>(0), sigma_t * mInvMaxDensity));
 	}
 
@@ -50,21 +64,39 @@ rainbow::cpus::shared::spectrums::spectrum rainbow::cpus::media::heterogeneous_m
 rainbow::cpus::media::medium_sample rainbow::cpus::media::heterogeneous_medium::sample(
 	const std::shared_ptr<sampler1d>& sampler, const ray& ray) const
 {
-	const auto local_ray = mWorldToLocal(ray);
+	shared::ray local_ray;
+
+	// when mWorldToLocal has scale transform, the scale property is missed
+	// because the transform::operator() will normalize the direction of ray
+	// to avoid this situation, we transform the ray but do not normalize the direction
+	// in fact, if you normalize the direction of ray, the segment of t is not right(without scaling)
+	// you also can transform the box from local to world and then transform the position from world to space every tracing loop
+	// but it damage the performance(you need do the transform every times)
+	local_ray.length = ray.length;
+	local_ray.direction = transform_vector(mWorldToLocal, ray.direction);
+	local_ray.origin = transform_point(mWorldToLocal, ray.origin);
+
+	// find the range ray intersect the medium box
 	const auto [t0, t1, ret] = intersect(bound3(vector3(0), vector3(1)), local_ray);
 
+	// if the ray is not intersect with medium, just sample the surface interaction
 	if (ret == false) return medium_sample(std::nullopt, spectrum(1));
 
 	auto t = t0;
 
 	while (true) {
+		// t = t - log(1 - sampler->next().x) / max_sigma_t for delta tracing
 		t = t - log(1 - sampler->next().x) * mInvMaxDensity;
 
+		// out of range
 		if (t >= t1) break;
 
+		// compute the position of current t in local space and sample sigma_t using it
 		const auto position = local_ray.origin + local_ray.direction * t;
 		const auto sigma_t = mSigmaT->sample(position);
 
+		// test if it is real particle, if it is, we will sample it
+		// and create it with medium_interaction
 		if (sigma_t * mInvMaxDensity > sampler->next().x) {
 			const auto albedo = mAlbedo->sample(position);
 			const auto g = mG->sample(position);
@@ -72,7 +104,7 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::heterogeneous_medium::
 			return medium_sample(
 				medium_interaction(
 					std::make_shared<henyey_greenstein>(g),
-					ray.origin + ray.direction * t,
+					transform_point(mLocalToWorld, position),
 					-ray.direction),
 				albedo
 			);

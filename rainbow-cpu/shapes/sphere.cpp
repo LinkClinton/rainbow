@@ -93,8 +93,10 @@ rainbow::core::math::bound3 rainbow::cpus::shapes::sphere::bounding_box(const tr
 rainbow::core::math::bound3 rainbow::cpus::shapes::sphere::bounding_box(const transform& transform) const
 {
 	const auto center = transform_point(transform, vector3(0));
-
-	return bound3(center - mRadius, center + mRadius);
+	const auto point = transform_point(transform, vector3(0, 0, mRadius));
+	const auto radius = length(point - center);
+	
+	return bound3(center - radius, center + radius);
 }
 
 rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const interaction& reference, const vector2& sample) const
