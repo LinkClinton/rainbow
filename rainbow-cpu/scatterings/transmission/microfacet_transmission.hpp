@@ -5,6 +5,8 @@
 
 #include "transmission_function.hpp"
 
+#include <memory>
+
 namespace rainbow::cpus::scatterings {
 
 	class microfacet_transmission final : public transmission_function {

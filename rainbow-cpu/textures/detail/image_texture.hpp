@@ -77,6 +77,12 @@ namespace rainbow::cpus::textures {
 	}
 
 	template <typename T>
+	T image_texture_t<2, T>::value(size_t index) const
+	{
+		return mValues[index];
+	}
+
+	template <typename T>
 	image_texture_t<3, T>::image_texture_t(const vector_t<3, size_t>& size, const std::vector<T>& values) :
 		texture_t<3, T>(size), mValues(values)
 	{
@@ -153,6 +159,12 @@ namespace rainbow::cpus::textures {
 		const auto v1 = textures::lerp(uv01, uv11, dy);
 
 		return textures::lerp(v0, v1, dz);
+	}
+
+	template <typename T>
+	T image_texture_t<3, T>::value(size_t index) const
+	{
+		return mValues[index];
 	}
 
 }

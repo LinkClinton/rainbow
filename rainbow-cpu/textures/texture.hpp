@@ -38,15 +38,15 @@ namespace rainbow::cpus::textures {
 	public:
 		explicit texture_t(const vector_t<Dimension, size_t>& size);
 
-		virtual T sample(const surface_interaction& interaction) const = 0;
-
-		virtual T sample(const vector_t<Dimension, real>& point) const = 0;
+		~texture_t() = default;
 		
 		virtual void multiply(const T& value) = 0;
 
 		virtual auto copy_to() const->std::shared_ptr<texture_t<Dimension, T>> = 0;
 
-		~texture_t() = default;
+		virtual T sample(const surface_interaction& interaction) const = 0;
+
+		virtual T sample(const vector_t<Dimension, real>& point) const = 0;
 	};
 
 	template <typename T>

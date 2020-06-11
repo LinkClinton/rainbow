@@ -5,6 +5,8 @@
 
 #include "reflection_function.hpp"
 
+#include <memory>
+
 namespace rainbow::cpus::scatterings {
 
 	class microfacet_reflection final : public reflection_function {

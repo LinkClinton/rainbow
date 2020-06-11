@@ -3,6 +3,8 @@
 #include "reflection_function.hpp"
 #include "../fresnel_effect.hpp"
 
+#include <memory>
+
 namespace rainbow::cpus::scatterings {
 
 	class specular_reflection final : public reflection_function {

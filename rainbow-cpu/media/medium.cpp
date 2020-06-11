@@ -21,14 +21,14 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::medium_sample::transfo
 rainbow::cpus::media::medium_info::medium_info(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const std::shared_ptr<const cpus::media::medium>& medium) :
-	entity(entity), medium(medium), local_to_world(entity->transform()), world_to_local(entity->transform().inverse())
+	entity(entity), medium(medium)
 {
 }
 
 rainbow::cpus::media::medium_info::medium_info(
 	const std::shared_ptr<const scenes::entity>& entity,
 	const vector3& normal, const vector3& wi) :
-	entity(entity), local_to_world(entity->transform()), world_to_local(entity->transform().inverse())
+	entity(entity)
 {
 	if (dot(normal, wi) > 0)
 		medium = entity->component<media>()->outside();
@@ -43,7 +43,7 @@ rainbow::cpus::shared::spectrums::spectrum rainbow::cpus::media::medium_info::ev
 	// so we just return 1 for the beam
 	if (medium == nullptr) return spectrum(1);
 
-	return medium->evaluate(sampler, world_to_local(ray));
+	return medium->evaluate(sampler, ray);
 }
 
 rainbow::cpus::media::medium_sample rainbow::cpus::media::medium_info::sample(
@@ -54,7 +54,7 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::medium_info::sample(
 	// so we just return std::nullopt and 1 for the beam
 	if (medium == nullptr) return medium_sample(std::nullopt, spectrum(1));
 
-	return medium_sample::transform(local_to_world, medium->sample(sampler, world_to_local(ray)));
+	return medium->sample(sampler, ray);
 }
 
 bool rainbow::cpus::media::medium_info::has() const noexcept

@@ -23,6 +23,8 @@ namespace rainbow::cpus::textures {
 		T sample(const surface_interaction& interaction) const override;
 
 		T sample(const vector_t<2, real>& point) const override;
+
+		T value(size_t index) const;
 	private:
 		std::vector<T> mValues;
 	};
@@ -43,6 +45,8 @@ namespace rainbow::cpus::textures {
 		T sample(const surface_interaction& interaction) const override;
 
 		T sample(const vector_t<3, real>& point) const override;
+
+		T value(size_t index) const;
 	private:
 		std::vector<T> mValues;
 	};

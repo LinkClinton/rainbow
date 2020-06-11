@@ -46,6 +46,7 @@
     <ClCompile Include="materials\subsurface_material.cpp" />
     <ClCompile Include="materials\translucent_material.cpp" />
     <ClCompile Include="materials\uber_material.cpp" />
+    <ClCompile Include="media\heterogeneous_medium.cpp" />
     <ClCompile Include="media\homogeneous_medium.cpp" />
     <ClCompile Include="media\medium.cpp" />
     <ClCompile Include="scatterings\bssrdf\normalized_diffusion.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="materials\subsurface_material.hpp" />
     <ClInclude Include="materials\translucent_material.hpp" />
     <ClInclude Include="materials\uber_material.hpp" />
+    <ClInclude Include="media\heterogeneous_medium.hpp" />
     <ClInclude Include="media\homogeneous_medium.hpp" />
     <ClInclude Include="media\medium.hpp" />
     <ClInclude Include="samplers\detail\random_sampler.hpp" />
@@ -177,11 +179,6 @@
     <ClInclude Include="textures\mixture_texture.hpp" />
     <ClInclude Include="textures\scale_texture.hpp" />
     <ClInclude Include="textures\texture.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\rainbow-core\rainbow-core.vcxproj">
-      <Project>{711d250b-fd81-464a-8645-b6d72eae93a7}</Project>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

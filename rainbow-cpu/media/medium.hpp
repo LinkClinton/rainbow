@@ -38,9 +38,6 @@ namespace rainbow::cpus::media {
 		std::shared_ptr<const entity> entity;
 		std::shared_ptr<const medium> medium;
 
-		transform local_to_world;
-		transform world_to_local;
-		
 		medium_info() = default;
 
 		medium_info(

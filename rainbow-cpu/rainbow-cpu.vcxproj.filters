@@ -279,6 +279,9 @@
     <ClCompile Include="media\homogeneous_medium.cpp">
       <Filter>media</Filter>
     </ClCompile>
+    <ClCompile Include="media\heterogeneous_medium.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
     <ClCompile Include="integrators\volume_path_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
@@ -555,6 +558,9 @@
       <Filter>shared\phases</Filter>
     </ClInclude>
     <ClInclude Include="media\homogeneous_medium.hpp">
+      <Filter>media</Filter>
+    </ClInclude>
+    <ClInclude Include="media\heterogeneous_medium.hpp">
       <Filter>media</Filter>
     </ClInclude>
     <ClInclude Include="integrators\volume_path_integrator.hpp">
