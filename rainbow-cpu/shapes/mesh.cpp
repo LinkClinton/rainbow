@@ -1,5 +1,6 @@
 #include "mesh.hpp"
 
+#include "../../rainbow-core/shading_function.hpp"
 #include "../../rainbow-core/sample_function.hpp"
 
 #include "../shared/accelerators/bounding_volume_hierarchy.hpp"
@@ -404,12 +405,14 @@ std::optional<surface_interaction> rainbow::cpus::shapes::mesh::intersect_with_t
 		shading_space = coordinate_system(shading_space.z());
 
 	ray.length = t;
-
+	
+	// if the shading_space and normal is not in the same hemisphere
+	// we need reverse the orientation of normal
 	return surface_interaction(
 		nullptr,
 		shading_space,
 		dp_du, dp_dv,
-		normal, point, -ray.direction,
+		face_forward(normal, shading_space.z()), point, -ray.direction,
 		uv
 	);
 }
