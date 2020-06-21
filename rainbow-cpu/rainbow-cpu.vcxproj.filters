@@ -285,6 +285,9 @@
     <ClCompile Include="integrators\volume_path_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
+    <ClCompile Include="shapes\curve.cpp">
+      <Filter>shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\coordinate_system.hpp">
@@ -565,6 +568,9 @@
     </ClInclude>
     <ClInclude Include="integrators\volume_path_integrator.hpp">
       <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="shapes\curve.hpp">
+      <Filter>shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
