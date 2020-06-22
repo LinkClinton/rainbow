@@ -11,7 +11,8 @@ namespace rainbow::cpus::shapes {
 		explicit curve(
 			const std::array<vector3, 4>& control_points,
 			const std::array<real, 2>& width,
-			real u_min, real u_max);
+			real u_min, real u_max,
+			bool reverse_orientation = false);
 
 		~curve() = default;
 
