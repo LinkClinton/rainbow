@@ -27,7 +27,7 @@ namespace rainbow::cpus::emitters {
 	bool has(const emitter_type& type, const emitter_type& flag);
 
 	struct emitter_sample {
-		spectrum intensity = 0;
+		spectrum intensity = spectrum(0);
 		vector3 position = vector3(0);
 		vector3 wi = vector3(0);
 		real pdf = 0;
@@ -39,26 +39,45 @@ namespace rainbow::cpus::emitters {
 		static emitter_sample transform(const transform& transform, const emitter_sample& sample);
 	};
 
+	struct emitter_ray_sample {
+		spectrum intensity = spectrum(0);
+		vector3 normal = vector3(0);
+		ray ray;
+
+		real pdf_direction = 0;
+		real pdf_position = 0;
+
+		emitter_ray_sample() = default;
+
+		emitter_ray_sample(
+			const spectrum& intensity, const vector3& normal, const shared::ray& ray,
+			real pdf_direction, real pdf_position);
+
+		static emitter_ray_sample transform(const transform& transform, const emitter_ray_sample& sample);
+	};
+	
 	bool is_delta_emitter(const emitter_type& type);
 
 	bool is_environment_emitter(const emitter_type& type);
 
 	class emitter : public interfaces::noncopyable {
 	public:
+		using ray_sample_type = emitter_ray_sample;
 		using sample_type = emitter_sample;
 	public:
 		explicit emitter(const emitter_type& type);
 
 		virtual spectrum evaluate(const interaction& interaction, const vector3& wi) const = 0;
 
-		virtual emitter_sample sample(
-			const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const = 0;
+		virtual emitter_ray_sample sample(const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const = 0;
+		
+		virtual emitter_sample sample(const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const = 0;
 
-		virtual real pdf(
-			const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const = 0;
+		virtual std::tuple<real, real> pdf(const std::shared_ptr<shape>& shape, const ray& ray, const vector3& normal) const = 0;
+		
+		virtual real pdf(const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const = 0;
 
-		virtual spectrum power(
-			const std::shared_ptr<shape>& shape) const = 0;
+		virtual spectrum power(const std::shared_ptr<shape>& shape) const = 0;
 
 		emitter_type type() const noexcept;
 

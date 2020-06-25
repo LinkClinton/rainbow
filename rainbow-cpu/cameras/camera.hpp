@@ -12,28 +12,44 @@ namespace rainbow::cpus::cameras {
 	using namespace shared;
 	
 	struct camera_sample {
-		vector2 position;
-		vector2 lens;
+		spectrum value = spectrum(0);
+		vector3 wi = vector3(0);
+		vector2 point = vector2(0);
+		real pdf = 0;
 
 		camera_sample() = default;
 
-		camera_sample(const vector2& position, const vector2& lens);
+		camera_sample(const spectrum& value, const vector3& wi, const vector2& point, real pdf);
 	};
 
+	enum class camera_system : uint32 {
+		right_hand = 0,
+		left_hand = 1
+	};
+	
 	class camera : public interfaces::noncopyable {
 	public:
 		explicit camera(
 			const std::shared_ptr<film>& film,
+			const camera_system& system,
 			const transform& transform);
 
 		~camera() = default;
 
-		virtual ray generate_ray(const camera_sample& sample) const noexcept = 0;
+		virtual std::tuple<spectrum, vector2> evaluate(const ray& ray) const = 0;
+		
+		virtual camera_sample sample(const interaction& reference, const vector2& sample) const = 0;
+		
+		virtual ray sample(const vector2& position, const vector2& sample) const = 0;
 
+		virtual std::tuple<real, real> pdf(const ray& ray) const = 0;
+		
 		std::shared_ptr<film> film() const noexcept;
 	protected:
 		std::shared_ptr<cameras::film> mFilm;
 
+		camera_system mCameraSystem;
+		
 		transform mCameraToWorld;
 	};
 
@@ -41,6 +57,7 @@ namespace rainbow::cpus::cameras {
 	public:
 		explicit projective_camera(
 			const std::shared_ptr<cameras::film>& film,
+			const camera_system& system,
 			const transform& projective,
 			const transform& transform,
 			const bound2& screen_window,

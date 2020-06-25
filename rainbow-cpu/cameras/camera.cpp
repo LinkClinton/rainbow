@@ -1,12 +1,13 @@
 #include "camera.hpp"
 
-rainbow::cpus::cameras::camera_sample::camera_sample(const vector2& position, const vector2& lens) :
-	position(position), lens(lens)
+rainbow::cpus::cameras::camera_sample::camera_sample(const spectrum& value, const vector3& wi, const vector2& point, real pdf) :
+	value(value), wi(wi), point(point), pdf(pdf)
 {
 }
 
-rainbow::cpus::cameras::camera::camera(const std::shared_ptr<cameras::film>& film, const transform& transform) :
-	mFilm(film), mCameraToWorld(transform)
+rainbow::cpus::cameras::camera::camera(
+	const std::shared_ptr<cameras::film>& film, const camera_system& system, const transform& transform) :
+	mFilm(film), mCameraSystem(system), mCameraToWorld(transform)
 {
 	
 }
@@ -17,12 +18,13 @@ std::shared_ptr<rainbow::cpus::cameras::film> rainbow::cpus::cameras::camera::fi
 }
 
 rainbow::cpus::cameras::projective_camera::projective_camera(
-	const std::shared_ptr<cameras::film>& film, 
+	const std::shared_ptr<cameras::film>& film,
+	const camera_system& system,
 	const transform& projective,
 	const transform& transform, 
 	const bound2& screen_window,
 	real focus, real lens) :
-	camera(film, transform), mCameraToScreen(projective), mFocus(focus), mLens(lens)
+	camera(film, system, transform), mCameraToScreen(projective), mFocus(focus), mLens(lens)
 {
 	mScreenToRaster = scale(
 		vector3(

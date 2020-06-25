@@ -71,6 +71,11 @@ rainbow::core::real rainbow::core::uniform_sample_cone_pdf(real cos_theta_max)
 	return 1 / (two_pi<real>() * (1 - cos_theta_max));
 }
 
+rainbow::core::real rainbow::core::uniform_sample_sphere_pdf()
+{
+	return one_over_four_pi<real>();
+}
+
 rainbow::core::real rainbow::core::cosine_sample_hemisphere_pdf(real cos_theta)
 {
 	return cos_theta * one_over_pi<real>();

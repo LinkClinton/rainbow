@@ -12,6 +12,13 @@ namespace rainbow::cpus::scenes {
 	 */
 
 	template <>
+	inline emitter::ray_sample_type entity::sample<emitter>(const vector2& sample0, const vector2& sample1) const
+	{
+		return emitter_ray_sample::transform(mLocalToWorld,
+			mEmitter->sample(mShape, sample0, sample1));
+	}
+
+	template <>
 	inline shape::sample_type entity::sample<shape>(const interaction& reference, const vector2& sample) const
 	{
 		return shape_sample::transform(mLocalToWorld,
@@ -38,6 +45,12 @@ namespace rainbow::cpus::scenes {
 		return shape_sample::transform(mLocalToWorld, mShape->sample(sample));
 	}
 
+	template <>
+	inline std::tuple<real, real> entity::pdf<emitter>(const ray& ray, const vector3& normal) const
+	{
+		return mEmitter->pdf(mShape, mWorldToLocal(ray), transform_normal(mWorldToLocal, normal));
+	}
+	
 	template <>
 	inline real entity::pdf<shape>(const interaction& reference, const vector3& wi) const
 	{

@@ -52,6 +52,36 @@ spectrum rainbow::cpus::emitters::environment_light::evaluate(
 	));
 }
 
+rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::environment_light::sample(
+	const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const
+{
+	// first, sample the distribution to find the direction of ray
+	const auto distribution_sample = mDistribution->sample(sample0);
+
+	if (distribution_sample.pdf == 0) return {};
+
+	const auto theta = distribution_sample.value.y * pi<real>();
+	const auto phi = distribution_sample.value.x * two_pi<real>();
+
+	const auto cos_theta = cos(theta);
+	const auto sin_theta = sin(theta);
+
+	// build the direction with spherical direction and inverse the direction
+	const auto direction = -spherical_direction(sin_theta, cos_theta, phi);
+
+	const auto system = coordinate_system(-direction);
+	const auto point_in_disk = concentric_sample_disk(sample1);
+	const auto point_in_local = mRadius * (point_in_disk.x * system.x() + point_in_disk.y * system.y());
+
+	return emitter_ray_sample(
+		mIntensity * mEnvironmentMap->sample(distribution_sample.value),
+		direction,
+		ray(direction, point_in_local + -direction * mRadius),
+		sin_theta != 0 ? distribution_sample.pdf / (two_pi<real>() * pi<real>() * sin_theta) : 0,
+		1 / (pi<real>() * mRadius * mRadius)
+	);
+}
+
 rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::environment_light::sample(
 	const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const
 {
@@ -74,6 +104,27 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::environment_lig
 		wi,
 		pdf
 	);
+}
+
+std::tuple<real, real> rainbow::cpus::emitters::environment_light::pdf(const std::shared_ptr<shape>& shape,
+	const ray& ray, const vector3& normal) const
+{
+	// the ray is spawned from the emitter, so we need inverse it direction to find theta and phi
+	const auto direction = normalize(-ray.direction);
+
+	const auto theta = spherical_theta(direction);
+	const auto phi = spherical_phi(direction);
+
+	const auto sin_theta = sin(theta);
+
+	if (sin_theta == 0) return { static_cast<real>(0), static_cast<real>(0) };
+	
+	const auto distribution_pdf = mDistribution->pdf(vector2(
+		phi * one_over_two_pi<real>(),
+		theta * one_over_pi<real>()));
+
+	// [pdf_position, pdf_direction]
+	return { 1 / (pi<real>() * mRadius * mRadius), distribution_pdf / (two_pi<real>() * pi<real>() * sin_theta) };
 }
 
 rainbow::core::real rainbow::cpus::emitters::environment_light::pdf(

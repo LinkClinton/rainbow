@@ -1,5 +1,7 @@
 #include "point_light.hpp"
 
+#include "../../rainbow-core/sample_function.hpp"
+
 using namespace rainbow::cpus::shared::spectrums;
 
 rainbow::cpus::emitters::point_light::point_light(const spectrum& intensity) :
@@ -14,6 +16,21 @@ spectrum rainbow::cpus::emitters::point_light::evaluate(const interaction& inter
 	return 0;
 }
 
+rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::point_light::sample(
+	const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const
+{
+	// sample the direction of ray spawn to 
+	const auto direction = uniform_sample_sphere(sample0);
+	
+	return emitter_ray_sample(
+		mIntensity,
+		direction,
+		ray(direction, vector3(0)),
+		uniform_sample_sphere_pdf(),
+		1
+	);
+}
+
 rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::point_light::sample(
 	const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const
 {
@@ -25,6 +42,13 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::point_light::sa
 		normalize(position - reference.point),
 		1
 	);
+}
+
+std::tuple<real, real> rainbow::cpus::emitters::point_light::pdf(
+	const std::shared_ptr<shape>& shape, const ray& ray, const vector3& normal) const
+{
+	// [pdf_position, pdf_direction]
+	return { static_cast<real>(1), uniform_sample_sphere_pdf() };
 }
 
 rainbow::core::real rainbow::cpus::emitters::point_light::pdf(

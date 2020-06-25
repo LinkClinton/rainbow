@@ -25,6 +25,22 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::emitter_sample:
 	);
 }
 
+rainbow::cpus::emitters::emitter_ray_sample::emitter_ray_sample(
+	const spectrum& intensity, const vector3& normal, const shared::ray& ray, real pdf_direction, real pdf_position) :
+	intensity(intensity), normal(normal), ray(ray), pdf_direction(pdf_direction), pdf_position(pdf_position)
+{
+}
+
+rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::emitter_ray_sample::transform(
+	const shared::transform& transform, const emitter_ray_sample& sample)
+{
+	return emitter_ray_sample(
+		sample.intensity,
+		transform_normal(transform, sample.normal),
+		transform(sample.ray),
+		sample.pdf_direction, sample.pdf_position);
+}
+
 bool rainbow::cpus::emitters::is_delta_emitter(const emitter_type& type)
 {
 	return has(type, emitter_type::delta_position) | has(type, emitter_type::delta_direction);

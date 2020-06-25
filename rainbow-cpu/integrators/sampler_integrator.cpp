@@ -101,9 +101,7 @@ void rainbow::cpus::integrators::sampler_integrator::render(
 
 					for (size_t index = 0; index < samples_per_pixel; index++) {
 						const auto position = vector2i(x, y);
-						const auto sample = camera_sample(
-							vector2(x, y) + trace_samplers.sampler2d->next(),
-							trace_samplers.sampler2d->next());
+						const auto sample = vector2(x, y) + trace_samplers.sampler2d->next();
 						
 						const auto debug = integrator_debug_info(position, index);
 						
@@ -115,7 +113,7 @@ void rainbow::cpus::integrators::sampler_integrator::render(
 
 							// we do not trace these sample, but the filter weight can not be zero
 							// so we will set the sample value to zero.
-							outputs[input.tile_index].tile.add_sample(sample.position, 0);
+							outputs[input.tile_index].tile.add_sample(sample, 0);
 							
 							trace_samplers.next_sample();
 
@@ -124,8 +122,8 @@ void rainbow::cpus::integrators::sampler_integrator::render(
 #endif					
 
 						outputs[input.tile_index].tile.add_sample(
-							sample.position,
-							trace(scene, debug, trace_samplers, camera->generate_ray(sample), 0)
+							sample,
+							trace(scene, debug, trace_samplers, camera->sample(sample, trace_samplers.sampler2d->next()), 0)
 						);
 
 						trace_samplers.next_sample();
