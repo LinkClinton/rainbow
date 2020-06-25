@@ -2,8 +2,9 @@
 
 using namespace rainbow::cpus::shared::spectrums;
 
-rainbow::cpus::scatterings::lambertian_transmission::lambertian_transmission(const spectrum& transmission) :
-	transmission_function(scattering_type::diffuse, transmission)
+rainbow::cpus::scatterings::lambertian_transmission::lambertian_transmission(
+	const transport_mode& mode, const spectrum& transmission) :
+	transmission_function(scattering_type::diffuse, mode, transmission)
 {
 }
 

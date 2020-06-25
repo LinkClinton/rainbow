@@ -11,7 +11,7 @@ rainbow::cpus::materials::matte_material::matte_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::matte_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto diffuse = mDiffuse->sample(interaction);
 	const auto sigma = math::clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));
@@ -29,7 +29,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::matte_mat
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::matte_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto diffuse = mDiffuse->sample(interaction) * scale;
 	const auto sigma = math::clamp(mSigma->sample(interaction), static_cast<real>(0), static_cast<real>(90));

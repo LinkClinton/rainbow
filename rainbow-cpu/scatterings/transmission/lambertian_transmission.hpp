@@ -6,7 +6,7 @@ namespace rainbow::cpus::scatterings {
 
 	class lambertian_transmission final : public transmission_function {
 	public:
-		explicit lambertian_transmission(const spectrum& transmission);
+		explicit lambertian_transmission(const transport_mode& mode, const spectrum& transmission);
 
 		~lambertian_transmission() = default;
 

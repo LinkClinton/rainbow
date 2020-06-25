@@ -23,7 +23,7 @@ rainbow::cpus::materials::subsurface_material::subsurface_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::subsurface_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto transmission = mTransmission->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
@@ -49,7 +49,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::subsurfac
 			);
 
 	if (is_specular) {
-		properties.functions.add_scattering_function(std::make_shared<fresnel_specular>(transmission, reflectance, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<fresnel_specular>(mode, transmission, reflectance, static_cast<real>(1), eta));
 	}
 
 	if (!reflectance.is_black() && !is_specular) {
@@ -59,16 +59,16 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::subsurfac
 	}
 
 	if (!transmission.is_black() && !is_specular) {
-		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, mode, transmission, static_cast<real>(1), eta));
 	}
 
-	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, diffuse, mfp, eta);
+	properties.bssrdf = std::make_shared<normalized_diffusion>(interaction, mode, diffuse, mfp, eta);
 
 	return properties;
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::subsurface_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	// bssrdf is not support mixture material.
 	return surface_properties();

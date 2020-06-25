@@ -3,10 +3,9 @@
 using namespace rainbow::cpus::shared::spectrums;
 
 rainbow::cpus::scatterings::specular_transmission::specular_transmission(
-	const spectrum& transmission, real eta_i, real eta_o) :
-	transmission_function(scattering_type::specular, transmission),
-	mFresnel(std::make_shared<fresnel_effect_dielectric>(eta_i, eta_o)),
-	mEtaI(eta_i), mEtaO(eta_o)
+	const transport_mode& mode, const spectrum& transmission, real eta_i, real eta_o) :
+	transmission_function(scattering_type::specular, mode, transmission),
+	mFresnel(std::make_shared<fresnel_effect_dielectric>(eta_i, eta_o)), mEtaI(eta_i), mEtaO(eta_o)
 {
 }
 
@@ -34,7 +33,7 @@ rainbow::cpus::scatterings::scattering_sample rainbow::cpus::scatterings::specul
 	// if entering == true, the cos_theta(wi) should less than 0, so the eta_i and eta_o will be swapped in fresnel
 	// if entering == false, the cos_theta(wi) should greater than 0
 	const auto fresnel = mFresnel->evaluate(cos_theta(wi));
-	const auto factor = (eta_i * eta_i) / (eta_o * eta_o);
+	const auto factor = mMode == transport_mode::radiance ? (eta_i * eta_i) / (eta_o * eta_o) : 1;
 	const auto value = mTransmission * (spectrum(1) - fresnel) * factor / math::abs(cos_theta(wi));
 	
 	return scattering_sample(

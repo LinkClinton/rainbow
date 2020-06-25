@@ -15,7 +15,7 @@ rainbow::cpus::materials::metal_material::metal_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::metal_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto k = mK->sample(interaction);
@@ -37,7 +37,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::metal_mat
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::metal_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto k = mK->sample(interaction);

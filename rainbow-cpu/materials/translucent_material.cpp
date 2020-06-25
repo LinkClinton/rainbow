@@ -21,7 +21,7 @@ rainbow::cpus::materials::translucent_material::translucent_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::translucent_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto transmission = mTransmission->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
@@ -40,7 +40,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::transluce
 		if (!reflectance.is_black())
 			properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
 		if (!transmission.is_black())
-			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(mode, diffuse * transmission));
 	}
 
 	if (!specular.is_black()) {
@@ -57,7 +57,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::transluce
 		}
 
 		if (!transmission.is_black()) {
-			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
+			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, mode, specular * transmission,
 				static_cast<real>(1), eta));
 		}
 	}
@@ -66,7 +66,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::transluce
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::translucent_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto transmission = mTransmission->sample(interaction);
 	const auto reflectance = mReflectance->sample(interaction);
@@ -85,7 +85,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::transluce
 		if (!reflectance.is_black())
 			properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * reflectance));
 		if (!transmission.is_black())
-			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(diffuse * transmission));
+			properties.functions.add_scattering_function(std::make_shared<lambertian_transmission>(mode, diffuse * transmission));
 	}
 
 	if (!specular.is_black()) {
@@ -102,7 +102,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::transluce
 		}
 
 		if (!transmission.is_black()) {
-			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, specular * transmission,
+			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, mode, specular * transmission,
 				static_cast<real>(1), eta));
 		}
 	}

@@ -51,14 +51,14 @@ rainbow::cpus::scatterings::scattering_surface_sample::scattering_surface_sample
 }
 
 rainbow::cpus::scatterings::bidirectional_scattering_surface_distribution_function::bidirectional_scattering_surface_distribution_function(
-	const surface_interaction& interaction, real eta) :
-	mInteraction(interaction), mEta(eta)
+	const surface_interaction& interaction, const transport_mode& mode, real eta) :
+	mInteraction(interaction), mMode(mode), mEta(eta)
 {
 }
 
 rainbow::cpus::scatterings::separable_bidirectional_scattering_surface_distribution_function::separable_bidirectional_scattering_surface_distribution_function(
-	const surface_interaction& interaction, real eta)
-	: bidirectional_scattering_surface_distribution_function(interaction, eta),
+	const surface_interaction& interaction, const transport_mode& mode, real eta)
+	: bidirectional_scattering_surface_distribution_function(interaction, mode, eta),
 	mMaterial(interaction.entity->component<materials::material>())
 {
 	mCoordinateSystem.z() = interaction.shading_space.z();
@@ -132,7 +132,7 @@ rainbow::cpus::scatterings::scattering_surface_sample rainbow::cpus::scatterings
 
 	scattering_function_collection functions;
 
-	functions.add_scattering_function(std::make_shared<separable_bssrdf_reflection>(mEta));
+	functions.add_scattering_function(std::make_shared<separable_bssrdf_reflection>(mMode, mEta));
 
 	// modify the wo to shading_space.z
 	// it will be used to find a wi in separable_bssrdf_reflection::sample() 

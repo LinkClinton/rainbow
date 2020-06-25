@@ -29,6 +29,7 @@ namespace rainbow::cpus::scatterings {
 	public:
 		explicit bidirectional_scattering_surface_distribution_function(
 			const surface_interaction& interaction,
+			const transport_mode& mode,
 			real eta);
 
 		virtual ~bidirectional_scattering_surface_distribution_function() = default;
@@ -39,6 +40,8 @@ namespace rainbow::cpus::scatterings {
 	protected:
 		surface_interaction mInteraction;
 
+		transport_mode mMode;
+		
 		real mEta;
 	};
 
@@ -48,6 +51,7 @@ namespace rainbow::cpus::scatterings {
 	public:
 		explicit separable_bidirectional_scattering_surface_distribution_function(
 			const surface_interaction& interaction,
+			const transport_mode& mode,
 			real eta);
 
 		~separable_bidirectional_scattering_surface_distribution_function() = default;

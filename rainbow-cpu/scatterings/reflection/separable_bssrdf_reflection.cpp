@@ -22,8 +22,8 @@ namespace rainbow::cpus::scatterings {
 	
 }
 
-rainbow::cpus::scatterings::separable_bssrdf_reflection::separable_bssrdf_reflection(real eta) :
-	reflection_function(scattering_type::diffuse, spectrum(1)), mEta(eta)
+rainbow::cpus::scatterings::separable_bssrdf_reflection::separable_bssrdf_reflection(const transport_mode& mode, real eta) :
+	reflection_function(scattering_type::diffuse, spectrum(1)), mMode(mode), mEta(eta)
 {
 }
 
@@ -32,5 +32,5 @@ spectrum rainbow::cpus::scatterings::separable_bssrdf_reflection::evaluate(const
     const auto c = 1 - 2 * fresnel_moment1(1 / mEta);
 	const auto value = (1 - fresnel_reflect_dielectric(cos_theta(wi), 1, mEta)) / (c * pi<real>());
 
-    return value * mEta * mEta;
+    return value * (mMode == transport_mode::radiance ? mEta * mEta : 1);
 }

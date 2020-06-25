@@ -8,6 +8,7 @@ namespace rainbow::cpus::scatterings {
 	public:
 		explicit normalized_diffusion(
 			const surface_interaction& interaction,
+			const transport_mode& mode,
 			const spectrum& A, const spectrum& L,
 			real eta);
 

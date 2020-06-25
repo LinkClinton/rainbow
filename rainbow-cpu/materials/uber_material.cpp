@@ -26,7 +26,7 @@ rainbow::cpus::materials::uber_material::uber_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto opacity = mOpacity->sample(interaction);
@@ -44,7 +44,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_mate
 	const auto invert = clamp(spectrum(1) - opacity);
 
 	if (!invert.is_black())
-		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(invert, static_cast<real>(1), static_cast<real>(1)));
+		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(mode, invert, static_cast<real>(1), static_cast<real>(1)));
 
 	if (!diffuse.is_black())
 		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse));
@@ -66,13 +66,13 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_mate
 	}
 
 	if (!transmission.is_black())
-		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(transmission, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(mode, transmission, static_cast<real>(1), eta));
 
 	return properties;
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto opacity = mOpacity->sample(interaction);
@@ -90,7 +90,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_mate
 	const auto invert = clamp(spectrum(1) - opacity);
 
 	if (!invert.is_black())
-		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(invert * scale, static_cast<real>(1), static_cast<real>(1)));
+		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(mode, invert * scale, static_cast<real>(1), static_cast<real>(1)));
 
 	if (!diffuse.is_black())
 		properties.functions.add_scattering_function(std::make_shared<lambertian_reflection>(diffuse * scale));
@@ -112,7 +112,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::uber_mate
 	}
 
 	if (!transmission.is_black())
-		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(transmission * scale, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<specular_transmission>(mode, transmission * scale, static_cast<real>(1), eta));
 
 	return properties;
 }

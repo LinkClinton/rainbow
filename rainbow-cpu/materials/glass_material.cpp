@@ -23,7 +23,7 @@ rainbow::cpus::materials::glass_material::glass_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
@@ -47,7 +47,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_mat
 			);
 
 	if (is_specular) {
-		properties.functions.add_scattering_function(std::make_shared<fresnel_specular>(transmission, reflectance, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<fresnel_specular>(mode, transmission, reflectance, static_cast<real>(1), eta));
 	}
 
 	if (!reflectance.is_black() && !is_specular) {
@@ -57,14 +57,14 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_mat
 	}
 
 	if (!transmission.is_black() && !is_specular) {
-		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
+		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, mode, transmission, static_cast<real>(1), eta));
 	}
 
 	return properties;
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto eta = mEta->sample(interaction);
 	const auto roughness_u = mRoughnessU->sample(interaction);
@@ -75,7 +75,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_mat
 	surface_properties properties;
 
 	properties.functions = scattering_function_collection(eta);
-	
+
 	if (reflectance.is_black() && transmission.is_black()) return properties;
 
 	const auto is_specular = roughness_u == 0 && roughness_v == 0;
@@ -87,20 +87,18 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::glass_mat
 			true
 			);
 
-	if (!reflectance.is_black()) {
-		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
-
-		if (is_specular)
-			properties.functions.add_scattering_function(std::make_shared<specular_reflection>(fresnel, reflectance));
-		else
-			properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, reflectance));
+	if (is_specular) {
+		properties.functions.add_scattering_function(std::make_shared<fresnel_specular>(mode, transmission, reflectance, static_cast<real>(1), eta));
 	}
 
-	if (!transmission.is_black()) {
-		if (is_specular)
-			properties.functions.add_scattering_function(std::make_shared<specular_transmission>(transmission, static_cast<real>(1), eta));
-		else
-			properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, transmission, static_cast<real>(1), eta));
+	if (!reflectance.is_black() && !is_specular) {
+		const auto fresnel = std::make_shared<fresnel_effect_dielectric>(static_cast<real>(1), eta);
+
+		properties.functions.add_scattering_function(std::make_shared<microfacet_reflection>(distribution, fresnel, reflectance));
+	}
+
+	if (!transmission.is_black() && !is_specular) {
+		properties.functions.add_scattering_function(std::make_shared<microfacet_transmission>(distribution, mode, transmission, static_cast<real>(1), eta));
 	}
 
 	return properties;

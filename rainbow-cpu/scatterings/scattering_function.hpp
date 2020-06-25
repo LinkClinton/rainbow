@@ -40,6 +40,11 @@ namespace rainbow::cpus::scatterings {
 
 	bool has(const scattering_type& target, const scattering_type& flag);
 
+	enum class transport_mode : uint32 {
+		radiance = 0,
+		important = 1
+	};
+	
 	struct scattering_sample {
 		scattering_type type = scattering_type::unknown;
 		spectrum value = spectrum(0);

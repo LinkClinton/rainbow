@@ -355,8 +355,9 @@ namespace rainbow::cpus::scatterings {
 	
 }
 
-rainbow::cpus::scatterings::normalized_diffusion::normalized_diffusion(const surface_interaction& interaction, const spectrum& A,
-	const spectrum& L, real eta) : separable_bidirectional_scattering_surface_distribution_function(interaction, eta),
+rainbow::cpus::scatterings::normalized_diffusion::normalized_diffusion(const surface_interaction& interaction, 
+    const transport_mode& mode, const spectrum& A, const spectrum& L, real eta) :
+	separable_bidirectional_scattering_surface_distribution_function(interaction, mode, eta),
 	mA(A), mL(L)
 {
     const auto t = abs(A - spectrum(static_cast<real>(0.8)));

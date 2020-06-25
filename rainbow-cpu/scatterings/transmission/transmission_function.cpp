@@ -2,8 +2,9 @@
 
 #include "../../../rainbow-core/sample_function.hpp"
 
-rainbow::cpus::scatterings::transmission_function::transmission_function(const scattering_type& type, const spectrum& transmission) :
-	bidirectional_scattering_distribution_function(type | scattering_type::transmission), mTransmission(transmission)
+rainbow::cpus::scatterings::transmission_function::transmission_function(
+	const scattering_type& type, const transport_mode& mode, const spectrum& transmission) :
+	bidirectional_scattering_distribution_function(type | scattering_type::transmission), mTransmission(transmission), mMode(mode)
 {
 }
 

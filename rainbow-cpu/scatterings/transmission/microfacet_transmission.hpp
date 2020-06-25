@@ -13,7 +13,7 @@ namespace rainbow::cpus::scatterings {
 	public:
 		explicit microfacet_transmission(
 			const std::shared_ptr<microfacet_distribution>& distribution,
-			const spectrum& transmission,
+			const transport_mode& mode, const spectrum& transmission,
 			real eta_i, real eta_o);
 
 		~microfacet_transmission() = default;

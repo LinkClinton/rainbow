@@ -29,10 +29,11 @@ namespace rainbow::cpus::materials {
 		material() = default;
 
 		virtual surface_properties build_surface_properties(
-			const surface_interaction& interaction) const noexcept = 0;
+			const surface_interaction& interaction, const transport_mode& mode = transport_mode::radiance) const noexcept = 0;
 
 		virtual surface_properties build_surface_properties(
-			const surface_interaction& interaction, const spectrum& scale) const noexcept = 0;
+			const surface_interaction& interaction, const spectrum& scale,
+			const transport_mode& mode = transport_mode::radiance) const noexcept = 0;
 	};
 
 }

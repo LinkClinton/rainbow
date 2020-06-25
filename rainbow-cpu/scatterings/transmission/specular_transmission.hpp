@@ -10,7 +10,9 @@ namespace rainbow::cpus::scatterings {
 
 	class specular_transmission final : public transmission_function {
 	public:
-		explicit specular_transmission(const spectrum& transmission, real eta_i, real eta_o);
+		explicit specular_transmission(
+			const transport_mode& mode, const spectrum& transmission, 
+			real eta_i, real eta_o);
 
 		~specular_transmission() = default;
 

@@ -23,10 +23,12 @@ namespace rainbow::cpus::materials {
 		~plastic_material() = default;
 
 		surface_properties build_surface_properties(
-			const surface_interaction& interaction) const noexcept override;
+			const surface_interaction& interaction, 
+			const transport_mode& mode = transport_mode::radiance) const noexcept override;
 
 		surface_properties build_surface_properties(
-			const surface_interaction& interaction, const spectrum& scale) const noexcept override;
+			const surface_interaction& interaction, const spectrum& scale,
+			const transport_mode& mode = transport_mode::radiance) const noexcept override;
 	private:
 		std::shared_ptr<textures::texture2d<spectrum>> mSpecular;
 		std::shared_ptr<textures::texture2d<spectrum>> mDiffuse;

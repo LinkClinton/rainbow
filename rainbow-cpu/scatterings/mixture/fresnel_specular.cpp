@@ -4,10 +4,11 @@
 
 using namespace rainbow::cpus::shared::spectrums;
 
-rainbow::cpus::scatterings::fresnel_specular::fresnel_specular(const spectrum& transmission, const spectrum& reflectance,
+rainbow::cpus::scatterings::fresnel_specular::fresnel_specular(
+	const transport_mode& mode, const spectrum& transmission, const spectrum& reflectance,
 	real eta_i, real eta_o) : bidirectional_scattering_distribution_function(
 		scattering_type::reflection | scattering_type::transmission | scattering_type::specular),
-	mTransmission(transmission), mReflectance(reflectance), mEtaI(eta_i), mEtaO(eta_o)
+	mTransmission(transmission), mReflectance(reflectance), mMode(mode), mEtaI(eta_i), mEtaO(eta_o)
 {
 	/*
 	 * fresnel specular is a bsdf that model specular reflectance and specular transmission with special weight
@@ -44,7 +45,7 @@ rainbow::cpus::scatterings::scattering_sample rainbow::cpus::scatterings::fresne
 
 	if (wi == vector3(0)) return {};
 
-	const auto factor = (eta_i * eta_i) / (eta_o * eta_o);
+	const auto factor = mMode == transport_mode::radiance ? (eta_i * eta_i) / (eta_o * eta_o) : 1;
 	const auto value = mTransmission * (spectrum(1) - fresnel) * factor / math::abs(cos_theta(wi));
 
 	return scattering_sample(

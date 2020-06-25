@@ -9,7 +9,7 @@ rainbow::cpus::materials::mirror_material::mirror_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::mirror_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto reflectance = mReflectance->sample(interaction);
 
@@ -26,7 +26,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::mirror_ma
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::mirror_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 
 	const auto reflectance = mReflectance->sample(interaction) * scale;

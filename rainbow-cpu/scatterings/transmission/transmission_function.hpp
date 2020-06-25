@@ -6,7 +6,7 @@ namespace rainbow::cpus::scatterings {
 
 	class transmission_function : public scattering_function {
 	public:
-		explicit transmission_function(const scattering_type& type, const spectrum& transmission);
+		explicit transmission_function(const scattering_type& type, const transport_mode& mode, const spectrum& transmission);
 
 		~transmission_function() = default;
 
@@ -15,6 +15,8 @@ namespace rainbow::cpus::scatterings {
 		real pdf(const vector3& wo, const vector3& wi) const override;
 	protected:
 		spectrum mTransmission;
+
+		transport_mode mMode;
 	};
 
 }

@@ -28,7 +28,7 @@ rainbow::cpus::materials::plastic_material::plastic_material(
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::plastic_material::build_surface_properties(
-	const surface_interaction& interaction) const noexcept
+	const surface_interaction& interaction, const transport_mode& mode) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction);
 	const auto diffuse = mDiffuse->sample(interaction);
@@ -56,7 +56,7 @@ rainbow::cpus::materials::surface_properties rainbow::cpus::materials::plastic_m
 }
 
 rainbow::cpus::materials::surface_properties rainbow::cpus::materials::plastic_material::build_surface_properties(
-	const surface_interaction& interaction, const spectrum& scale) const noexcept
+	const surface_interaction& interaction, const spectrum& scale, const transport_mode& mode) const noexcept
 {
 	const auto specular = mSpecular->sample(interaction) * scale;
 	const auto diffuse = mDiffuse->sample(interaction) * scale;

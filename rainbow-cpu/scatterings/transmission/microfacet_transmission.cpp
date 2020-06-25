@@ -3,8 +3,8 @@
 using namespace rainbow::cpus::shared::spectrums;
 
 rainbow::cpus::scatterings::microfacet_transmission::microfacet_transmission(
-	const std::shared_ptr<microfacet_distribution>& distribution, const spectrum& transmission,
-	real eta_i, real eta_o) : transmission_function(scattering_type::glossy, transmission),
+	const std::shared_ptr<microfacet_distribution>& distribution, const transport_mode& mode, const spectrum& transmission,
+	real eta_i, real eta_o) : transmission_function(scattering_type::glossy, mode, transmission),
 	mDistribution(distribution),
 	mFresnel(std::make_shared<fresnel_effect_dielectric>(eta_i, eta_o)),
 	mEtaI(eta_i), mEtaO(eta_o)
@@ -28,7 +28,7 @@ spectrum rainbow::cpus::scatterings::microfacet_transmission::evaluate(const vec
 	const auto fresnel = mFresnel->evaluate(dot(wo, wh));
 	const auto denominator = dot(wo, wh) + eta * dot(wi, wh);
 
-	const auto factor = (1 / eta);
+	const auto factor = mMode == transport_mode::radiance ? (1 / eta) : 1;
 	const auto distribution = mDistribution->distribution(wh);
 	const auto masking_shadowing = mDistribution->masking_shadowing(wo, wi);
 	
