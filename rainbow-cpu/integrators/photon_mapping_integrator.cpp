@@ -1,5 +1,7 @@
 #include "photon_mapping_integrator.hpp"
 
+#include "../../rainbow-core/logs/log.hpp"
+
 #include <unordered_map>
 #include <execution>
 #include <atomic>
@@ -24,15 +26,36 @@ namespace rainbow::cpus::integrators {
 		}
 	};
 
+	struct mapping_pixel;
+	
+	struct visible_point_node {
+		visible_point_node* next = nullptr;
+
+		mapping_pixel* value = nullptr;
+
+		visible_point_node() = default;
+	};
+	
+	struct visible_point_grid {
+		std::vector<std::atomic<visible_point_node*>> pool;
+		
+		vector3i size = vector3i(0);
+
+		bound3 bound;
+
+		visible_point_grid() = default;
+	};
+
 	struct mapping_pixel {
 		std::optional<visible_point> point = std::nullopt;
 
+		std::list<visible_point_node> node_pool;
+		
 		spectrum tau = spectrum(0);
 		spectrum L = spectrum(0);
 
 		real radius = 0;
 		real n = 0;
-
 
 		std::atomic<spectrum> phi;
 		std::atomic<size_t> m;
@@ -40,16 +63,7 @@ namespace rainbow::cpus::integrators {
 		mapping_pixel() = default;
 	};
 
-	struct visible_point_grid {
-		std::unordered_map<size_t, std::vector<mapping_pixel*>> pool;
-		
-		vector3_t<size_t> size = vector3_t<size_t>(0);
-
-		bound3 bound;
-
-		visible_point_grid() = default;
-	};
-
+	
 	inline bool position_in_grid(const visible_point_grid& grid, const vector3& position)
 	{
 		if (position.x < grid.bound.min.x || position.x > grid.bound.max.x) return false;
@@ -59,20 +73,23 @@ namespace rainbow::cpus::integrators {
 		return true;
 	}
 	
-	inline vector3_t<size_t> position_to_grid(const visible_point_grid& grid, const vector3& position)
+	inline vector3i position_to_grid(const visible_point_grid& grid, const vector3& position)
 	{
 		const auto position_offset_grid = position - grid.bound.min;
 
-		return vector3_t<size_t>(
+		return vector3i(
 			position_offset_grid.x / (grid.bound.max.x - grid.bound.min.x) * grid.size.x,
 			position_offset_grid.y / (grid.bound.max.y - grid.bound.min.y) * grid.size.y,
 			position_offset_grid.z / (grid.bound.max.z - grid.bound.min.z) * grid.size.z
 		);
 	}
 
-	inline size_t grid_to_index(const visible_point_grid& grid, const vector3_t<size_t>& position)
+	inline size_t grid_to_index(const visible_point_grid& grid, const vector3i& position)
 	{
-		return position.z * grid.size.x * grid.size.y + position.y * grid.size.x + position.x;
+		return static_cast<unsigned int>(
+			(position.x * 73856093) ^ 
+			(position.y * 19349663) ^
+			(position.z * 83492791)) % grid.pool.size();
 	}
 	
 	inline std::tuple<std::optional<visible_point>, spectrum> trace_visible_point(
@@ -190,6 +207,8 @@ namespace rainbow::cpus::integrators {
 		grid.bound.min = vector3(std::numeric_limits<real>::max());
 		grid.bound.max = vector3(std::numeric_limits<real>::min());
 
+		grid.pool = std::vector<std::atomic<visible_point_node*>>(pixels.size());
+		
 		// compute the bound of grid and the max_radius of visible points
 		for (const auto& pixel : pixels) {
 			if (!pixel.point.has_value()) continue;
@@ -208,19 +227,23 @@ namespace rainbow::cpus::integrators {
 
 		// the size of grid cell is max_radius in the axis max_diagonal on
 		// and we also try to keep the size of other axes to max_radius roughly.
-		// the number of grid cells one pixel can overlap will smaller than four
 		const auto base_size = static_cast<int>(max_diagonal / max_radius);
 
-		grid.size = vector3_t<size_t>(
-			max(static_cast<size_t>(base_size * diagonal.x / max_diagonal), static_cast<size_t>(1)),
-			max(static_cast<size_t>(base_size * diagonal.y / max_diagonal), static_cast<size_t>(1)),
-			max(static_cast<size_t>(base_size * diagonal.z / max_diagonal), static_cast<size_t>(1)));
+		grid.size = vector3i(
+			max(static_cast<int>(base_size * diagonal.x / max_diagonal), static_cast<int>(1)),
+			max(static_cast<int>(base_size * diagonal.y / max_diagonal), static_cast<int>(1)),
+			max(static_cast<int>(base_size * diagonal.z / max_diagonal), static_cast<int>(1)));
 
+		const auto execution_policy = std::execution::par;
+		
 		// loop the pixels and find voxels that in the box of visible points
-		std::for_each(std::execution::seq, pixels.begin(), pixels.end(), [&](mapping_pixel& pixel)
+		std::for_each(execution_policy, pixels.begin(), pixels.end(), [&](mapping_pixel& pixel)
 			{
 				if (!pixel.point.has_value()) return;
 
+				// the number of grid cells one pixel can overlap will smaller than four
+				pixel.node_pool.clear();
+			
 				// find the bound of visible points sphere, the photon that in this box will influence this visible point
 				const auto min = position_to_grid(grid, pixel.point->point - vector3(pixel.radius));
 				const auto max = position_to_grid(grid, pixel.point->point + vector3(pixel.radius));
@@ -229,7 +252,15 @@ namespace rainbow::cpus::integrators {
 				for (auto z = min.z; z <= max.z; z++) {
 					for (auto y = min.y; y <= max.y; y++) {
 						for (auto x = min.x; x <= max.x; x++) {
-							grid.pool[grid_to_index(grid, vector3i(x, y, z))].push_back(&pixel);
+							pixel.node_pool.insert(pixel.node_pool.end(), visible_point_node());
+							
+							const auto index = grid_to_index(grid, vector3i(x, y, z));
+							const auto node = &pixel.node_pool.back();
+							
+							node->next = grid.pool[index];
+							node->value = &pixel;
+
+							while (!grid.pool[index].compare_exchange_weak(node->next, node));
 						}
 					}
 				}
@@ -248,17 +279,19 @@ namespace rainbow::cpus::integrators {
 		const auto position = position_to_grid(grid, interaction.point);
 		const auto index = grid_to_index(grid, position);
 
-		for (auto& pixel : grid.pool.at(index)) {
+		for (auto node = grid.pool.at(index).load(std::memory_order_relaxed); node != nullptr; node = node->next) {
+			const auto pixel = node->value;
+			
 			if (distance_squared(pixel->point->point, interaction.point) > pixel->radius * pixel->radius)
 				continue;
 
 			auto value = pixel->phi.load();
-			
+
 			const auto phi = spectrum(value + tracing_info.beta *
 				pixel->point->functions.evaluate(pixel->point->wo, -tracing_info.ray.direction));
 
 			while (!pixel->phi.compare_exchange_weak(value, phi));
-			
+
 			++pixel->m;
 		}
 	}
@@ -288,7 +321,7 @@ namespace rainbow::cpus::integrators {
 
 			if (!interaction.has_value()) break;
 
-			add_photon(tracing_info, grid, interaction.value());
+			if (bounces > 0) add_photon(tracing_info, grid, interaction.value());
 
 			// when the material is nullptr, we can think it is a invisible entity
 			// we will continue spawn a ray without changing the direction
@@ -304,9 +337,8 @@ namespace rainbow::cpus::integrators {
 
 
 			// get the surface properties from material which the ray intersect
-			// if the entity does not have material, we return default surface properties(0 functions)
 			const auto surface_properties =
-				interaction->entity->component<material>()->build_surface_properties(interaction.value());
+				interaction->entity->component<material>()->build_surface_properties(interaction.value(), transport_mode::important);
 
 			// get the scattering functions from surface properties
 			const auto& scattering_functions = surface_properties.functions;
@@ -395,14 +427,21 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 		const auto generator = std::make_shared<random_generator>(photon_inputs.size());
 		const auto samplers = sampler_group(mSampler1D->clone(generator), mSampler2D->clone(generator));
 
-		const auto begin = max(index * chunk_size, static_cast<size_t>(0));
-		const auto end = min((index + 1) * chunk_size, photons);
+		const auto begin = max(index, static_cast<size_t>(0));
+		const auto end = min(index + chunk_size, photons);
 		
 		photon_inputs.push_back({ samplers, begin, end });
 	}
 	
 	const auto execution_policy = std::execution::par;
 
+	logs::info("start rendering...");
+	logs::info("image min range : x = {0}, y = {1}.", pixel_bound.min.x, pixel_bound.min.y);
+	logs::info("image max range : x = {0}, y = {1}.", pixel_bound.max.x, pixel_bound.max.y);
+	logs::info("tile size : width = {0}, height = {1}.", tile_size, tile_size);
+
+	const auto start_rendering_time = std::chrono::high_resolution_clock::now();
+	
 	for (size_t iteration = 0; iteration < mIterations; iteration++) {
 		// first pass, loop pixels to build the mapping_pixel and visible points
 		std::for_each(execution_policy, pixel_inputs.begin(), pixel_inputs.end(), [&](const pixel_input& input)
@@ -462,6 +501,8 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 
 				pixel.point = std::nullopt;
 			});
+
+		logs::info("iteration finished {0} / total : {1}", iteration + 1, mIterations);
 	}
 
 	const auto film = camera->film();
@@ -470,7 +511,12 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 		const auto& pixel = pixels[index];
 		const auto value = pixel.L / static_cast<real>(mIterations) + 
 			pixel.tau / (mIterations * photons * pi<real>() * pixel.radius * pixel.radius);
-
+		
 		film->set_pixel(index, value);
 	}
+
+	const auto end_rendering_time = std::chrono::high_resolution_clock::now();
+
+	logs::info("finish rendering..., time used {0}s.",
+		std::chrono::duration_cast<std::chrono::duration<double>>(end_rendering_time - start_rendering_time).count());
 }
