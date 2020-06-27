@@ -175,6 +175,16 @@ void rainbow::cpus::cameras::film::add_sample(const vector2& position, const spe
 	}
 }
 
+void rainbow::cpus::cameras::film::set_pixel(const vector2i& position, const spectrum& value)
+{
+	mPixels[pixel_index(position)] = pixel(value, 1);
+}
+
+void rainbow::cpus::cameras::film::set_pixel(size_t index, const spectrum& value)
+{
+	mPixels[index] = pixel(value, 1);
+}
+
 void rainbow::cpus::cameras::film::add_tile(const film_tile& tile)
 {
 	const auto filter_region_size = vector2i(

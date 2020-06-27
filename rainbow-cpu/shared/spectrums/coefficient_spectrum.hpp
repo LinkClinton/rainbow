@@ -13,7 +13,7 @@ namespace rainbow::cpus::shared::spectrums {
 	struct coefficient_spectrum {
 		using type = coefficient_spectrum<NumSpectrumSamples>;
 
-		static inline size_t num_samples = NumSpectrumSamples;
+		constexpr static inline size_t num_samples = NumSpectrumSamples;
 
 		std::array<real, NumSpectrumSamples> coefficient = {};
 

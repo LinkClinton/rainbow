@@ -60,6 +60,10 @@ namespace rainbow::cpus::cameras {
 
 		void add_sample(const vector2& position, const spectrum& sample) noexcept;
 
+		void set_pixel(const vector2i& position, const spectrum& value);
+
+		void set_pixel(size_t index, const spectrum& value);
+		
 		void add_tile(const film_tile& tile);
 
 		vector2i resolution() const noexcept;
