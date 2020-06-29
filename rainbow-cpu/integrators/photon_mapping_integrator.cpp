@@ -6,6 +6,8 @@
 #include <execution>
 #include <atomic>
 
+#define __NO_DEBUG_MAPPING_PIXEL__
+
 namespace rainbow::cpus::integrators {
 
 	struct visible_point {
@@ -50,6 +52,10 @@ namespace rainbow::cpus::integrators {
 		std::optional<visible_point> point = std::nullopt;
 
 		std::list<visible_point_node> node_pool;
+
+#ifndef __NO_DEBUG_MAPPING_PIXEL__
+		vector2i debug_pixel = vector2i();
+#endif
 		
 		spectrum tau = spectrum(0);
 		spectrum L = spectrum(0);
@@ -57,7 +63,7 @@ namespace rainbow::cpus::integrators {
 		real radius = 0;
 		real n = 0;
 
-		std::atomic<spectrum> phi;
+		std::array<std::atomic<real>, spectrum::num_samples> phi;
 		std::atomic<size_t> m;
 		
 		mapping_pixel() = default;
@@ -86,6 +92,8 @@ namespace rainbow::cpus::integrators {
 
 	inline size_t grid_to_index(const visible_point_grid& grid, const vector3i& position)
 	{
+		// hash the position to pool
+		// todo : avoid the collision of hashing
 		return static_cast<unsigned int>(
 			(position.x * 73856093) ^ 
 			(position.y * 19349663) ^
@@ -98,6 +106,8 @@ namespace rainbow::cpus::integrators {
 		const sampler_group& samplers,
 		const ray& first_ray, size_t max_depth)
 	{
+		
+		//tracing the visible point, if there is no visible point for this pixel, we will return std::nullopt 
 		path_tracing_info tracing_info;
 
 		tracing_info.specular = false;
@@ -162,6 +172,7 @@ namespace rainbow::cpus::integrators {
 			// if the surface is diffuse or glossy(it is the last bounce), we will break this loop
 			// and use this vertex as visible point
 			if (is_diffuse || (is_glossy && bounces == max_depth - 1)) {
+				
 				point = visible_point(
 					surface_properties.functions, 
 					tracing_info.beta, 
@@ -211,7 +222,7 @@ namespace rainbow::cpus::integrators {
 		
 		// compute the bound of grid and the max_radius of visible points
 		for (const auto& pixel : pixels) {
-			if (!pixel.point.has_value()) continue;
+			if (!pixel.point.has_value() || pixel.point->beta.is_black()) continue;
 
 			const auto pixel_bound = bound3(
 				pixel.point->point - pixel.radius, 
@@ -239,9 +250,10 @@ namespace rainbow::cpus::integrators {
 		// loop the pixels and find voxels that in the box of visible points
 		std::for_each(execution_policy, pixels.begin(), pixels.end(), [&](mapping_pixel& pixel)
 			{
-				if (!pixel.point.has_value()) return;
+				if (!pixel.point.has_value() || pixel.point->beta.is_black()) return;
 
-				// the number of grid cells one pixel can overlap will smaller than four
+				// clear up the nodes pool, we use mapping_pixel::pool to allocate the visible point node of this pixel
+				// todo : a memory allocator with thread
 				pixel.node_pool.clear();
 			
 				// find the bound of visible points sphere, the photon that in this box will influence this visible point
@@ -252,6 +264,7 @@ namespace rainbow::cpus::integrators {
 				for (auto z = min.z; z <= max.z; z++) {
 					for (auto y = min.y; y <= max.y; y++) {
 						for (auto x = min.x; x <= max.x; x++) {
+							// create a visible point node and insert it into pool
 							pixel.node_pool.insert(pixel.node_pool.end(), visible_point_node());
 							
 							const auto index = grid_to_index(grid, vector3i(x, y, z));
@@ -260,6 +273,7 @@ namespace rainbow::cpus::integrators {
 							node->next = grid.pool[index];
 							node->value = &pixel;
 
+							// change the head of list with atomic node
 							while (!grid.pool[index].compare_exchange_weak(node->next, node));
 						}
 					}
@@ -272,26 +286,38 @@ namespace rainbow::cpus::integrators {
 	inline void add_photon(
 		const path_tracing_info& tracing_info,
 		const visible_point_grid& grid,
-		const interaction& interaction)
+		const surface_interaction& interaction)
 	{
+		// if the point is not in this grid, just return.
 		if (!position_in_grid(grid, interaction.point)) return;
 
+		// transform the point from world space to grid and hash it.
 		const auto position = position_to_grid(grid, interaction.point);
 		const auto index = grid_to_index(grid, position);
 
+		// loop the pixels this point may be influence
 		for (auto node = grid.pool.at(index).load(std::memory_order_relaxed); node != nullptr; node = node->next) {
 			const auto pixel = node->value;
-			
+
 			if (distance_squared(pixel->point->point, interaction.point) > pixel->radius * pixel->radius)
 				continue;
 
-			auto value = pixel->phi.load();
+			// transform wo and wi from world space to local space and evaluate the bsdfs
+			const auto wo = world_to_local(interaction.shading_space, pixel->point->wo);
+			const auto wi = world_to_local(interaction.shading_space, -tracing_info.ray.direction);
+			
+			const auto phi = tracing_info.beta * pixel->point->functions.evaluate(wo, wi);
 
-			const auto phi = spectrum(value + tracing_info.beta *
-				pixel->point->functions.evaluate(pixel->point->wo, -tracing_info.ray.direction));
+			// update the phi of pixel per channel(for performance) with atomic operation
+			// because it maybe have two photons influence same grid point
+			for (size_t channel = 0; channel < spectrum::num_samples; channel++) {
+				auto value = pixel->phi[channel].load();
 
-			while (!pixel->phi.compare_exchange_weak(value, phi));
+				const auto new_value = value + phi[channel];
 
+				while (!pixel->phi[channel].compare_exchange_weak(value, new_value));
+			}
+			
 			++pixel->m;
 		}
 	}
@@ -302,6 +328,7 @@ namespace rainbow::cpus::integrators {
 		const sampler_group& samplers, 
 		const visible_point_grid& grid, size_t max_depth)
 	{
+		// uniform sample an emitter to spawn the photon and sample the direction and position of photon ray
 		const auto [emitter, pdf] = uniform_sample_one_emitter(scene, samplers);
 		const auto ray_sample = emitter->sample<emitters::emitter>(samplers.sampler2d->next(), samplers.sampler2d->next());
 
@@ -321,6 +348,7 @@ namespace rainbow::cpus::integrators {
 
 			if (!interaction.has_value()) break;
 
+			// avoid the first bounces
 			if (bounces > 0) add_photon(tracing_info, grid, interaction.value());
 
 			// when the material is nullptr, we can think it is a invisible entity
@@ -458,11 +486,16 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 
 						const auto debug = integrator_debug_info(position, 0);
 
+						// tracing the visible points of pixels
 						const auto [point, value] = trace_visible_point(scene, debug, trace_samplers,
 							camera->sample(sample, trace_samplers.sampler2d->next()), mMaxDepth);
 
 						const auto offset = y * bound_size.x + x;
 
+#ifndef __NO_DEBUG_MAPPING_PIXEL__
+						pixels[offset].debug_pixel = position;
+#endif
+						
 						pixels[offset].point = point;
 						pixels[offset].L += value;
 					}
@@ -488,7 +521,11 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 				if (pixel.m > 0) {
 					const auto new_n = pixel.n + gamma * pixel.m;
 					const auto new_r = pixel.radius * math::sqrt(new_n / (pixel.n + pixel.m));
-					const auto phi = pixel.phi.load();
+
+					spectrum phi = spectrum(0);
+
+					for (size_t index = 0; index < pixel.phi.size(); index++)
+						phi[index] = pixel.phi[index];
 
 					pixel.tau = (pixel.tau + pixel.point->beta * phi) * (new_r * new_r) / (pixel.radius * pixel.radius);
 
@@ -496,7 +533,8 @@ void rainbow::cpus::integrators::photon_mapping_integrator::render(
 					pixel.n = new_n;
 					pixel.m = 0;
 
-					pixel.phi = spectrum(0);
+					for (size_t index = 0; index < pixel.phi.size(); index++)
+						pixel.phi[index] = 0;
 				}
 
 				pixel.point = std::nullopt;
