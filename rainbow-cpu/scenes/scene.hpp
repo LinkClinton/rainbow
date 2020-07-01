@@ -17,7 +17,7 @@ namespace rainbow::cpus::scenes {
 
 	class scene : public interfaces::noncopyable {
 	public:
-		scene() = default;
+		scene();
 
 		~scene() = default;
 
@@ -32,6 +32,10 @@ namespace rainbow::cpus::scenes {
 		spectrum evaluate_media_beam(
 			const std::shared_ptr<sampler1d>& sampler, const std::tuple<medium_info, interaction>& from, 
 			const interaction& to) const;
+
+		std::tuple<vector3, real> bounding_sphere() const noexcept;
+		
+		bound3 bounding_box() const noexcept;
 		
 		const std::vector<std::shared_ptr<entity>>& entities() const noexcept;
 
@@ -57,6 +61,8 @@ namespace rainbow::cpus::scenes {
 			bool visible() const noexcept;
 		};
 	private:
+		bound3 mBoundingBox;
+		
 		std::vector<std::shared_ptr<entity>> mEntities;
 		std::vector<std::shared_ptr<entity>> mEmitters;
 		std::vector<std::shared_ptr<entity>> mEnvironments;

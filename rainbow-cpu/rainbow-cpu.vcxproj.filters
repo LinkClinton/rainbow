@@ -291,6 +291,9 @@
     <ClCompile Include="integrators\photon_mapping_integrator.cpp">
       <Filter>integrators</Filter>
     </ClCompile>
+    <ClCompile Include="integrators\bidirectional_path_integrator.cpp">
+      <Filter>integrators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shared\coordinate_system.hpp">
@@ -576,6 +579,9 @@
       <Filter>shapes</Filter>
     </ClInclude>
     <ClInclude Include="integrators\photon_mapping_integrator.hpp">
+      <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="integrators\bidirectional_path_integrator.hpp">
       <Filter>integrators</Filter>
     </ClInclude>
   </ItemGroup>

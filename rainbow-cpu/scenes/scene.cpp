@@ -6,6 +6,12 @@
 
 using namespace rainbow::cpus::shared::interactions;
 
+scene::scene()
+{
+	mBoundingBox.min = vector3(std::numeric_limits<real>::max());
+	mBoundingBox.max = vector3(std::numeric_limits<real>::min());
+}
+
 void rainbow::cpus::scenes::scene::add_entity(const std::shared_ptr<entity>& entity)
 {
 	if (entity->has_component<emitter>()) {
@@ -14,6 +20,9 @@ void rainbow::cpus::scenes::scene::add_entity(const std::shared_ptr<entity>& ent
 		if (entity->component<emitter>()->is_environment())
 			mEnvironments.push_back(entity);
 	}
+
+	if (entity->has_component<shape>())
+		mBoundingBox.union_it(entity->bounding_box());
 	
 	mEntities.push_back(entity);
 }
@@ -40,7 +49,7 @@ void rainbow::cpus::scenes::scene::build_accelerator()
 		reference_count[entity->component<shape>()]++;
 	}
 	
-	std::vector<bounding_box<entity_reference>> boxes;
+	std::vector<accelerators::bounding_box<entity_reference>> boxes;
 
 	for (const auto& entity : mEntities) {
 		if (!entity->has_component<shape>()) continue;
@@ -51,7 +60,7 @@ void rainbow::cpus::scenes::scene::build_accelerator()
 		if (count <= reference_threshold && count * shape->count() <= sub_shape_threshold) {
 
 			for (size_t index = 0; index < shape->count(); index++)
-				boxes.push_back(bounding_box<entity_reference>(
+				boxes.push_back(accelerators::bounding_box<entity_reference>(
 					std::make_shared<entity_reference>(entity, index)));
 			
 		}else {
@@ -61,7 +70,7 @@ void rainbow::cpus::scenes::scene::build_accelerator()
 			// and we will build a accelerator in the shape
 			shape->build_accelerator();
 
-			boxes.push_back(bounding_box<entity_reference>(
+			boxes.push_back(accelerators::bounding_box<entity_reference>(
 				std::make_shared<entity_reference>(entity, entity_reference::all)));
 		}
 		
@@ -136,6 +145,19 @@ spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler,
 	L *= medium.evaluate(sampler, beam_ray);
 
 	return L;
+}
+
+std::tuple<vector3, real> scene::bounding_sphere() const noexcept
+{
+	const auto center = (mBoundingBox.max + mBoundingBox.min) / static_cast<real>(2);
+	const auto radius = distance(center, mBoundingBox.max);
+
+	return { center, radius };
+}
+
+bound3 scene::bounding_box() const noexcept
+{
+	return mBoundingBox;
 }
 
 const std::vector<std::shared_ptr<entity>>& rainbow::cpus::scenes::scene::entities() const noexcept
