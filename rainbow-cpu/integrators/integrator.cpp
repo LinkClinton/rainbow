@@ -134,7 +134,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 			if (!function_value.is_black() && function_pdf > 0) {
 				
-				const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
+				const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.interaction.point);
 				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
 				// if the shadow ray intersect a entity that is not the emitter
@@ -143,7 +143,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					if (media) function_value *= scene->evaluate_media_beam(samplers.sampler1d,
-						{ tracing_info.medium, interaction }, shared::interaction(emitter_sample.position));
+						{ tracing_info.medium, interaction }, emitter_sample.interaction);
 					
 					// if the emitter is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)
@@ -223,7 +223,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 			if (!function_value.is_black() && function_pdf > 0) {
 
-				const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.position);
+				const auto shadow_ray = interaction.spawn_ray_to(emitter_sample.interaction.point);
 				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
 				// if the shadow ray intersect a entity that is not the emitter
@@ -232,7 +232,7 @@ spectrum rainbow::cpus::integrators::uniform_sample_one_emitter(
 
 					// if we need handle the media, we will evaluate the media beam from surface to light
 					const auto beam = scene->evaluate_media_beam(samplers.sampler1d,
-						{ tracing_info.medium, interaction }, shared::interaction(emitter_sample.position));
+						{ tracing_info.medium, interaction }, emitter_sample.interaction);
 					
 					// if the emitter is delta, the weight should be 1
 					// f(i) * g(i) * w(i) / (p(i) * nf) + f(j) * g(j) * w(j) / (p(j) * ng)

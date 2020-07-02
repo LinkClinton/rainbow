@@ -27,14 +27,15 @@ namespace rainbow::cpus::emitters {
 	bool has(const emitter_type& type, const emitter_type& flag);
 
 	struct emitter_sample {
+		interaction interaction = shared::interaction();
+		
 		spectrum intensity = spectrum(0);
-		vector3 position = vector3(0);
 		vector3 wi = vector3(0);
 		real pdf = 0;
 
 		emitter_sample() = default;
 
-		emitter_sample(const spectrum& intensity, const vector3& position, const vector3& wi, real pdf);
+		emitter_sample(const shared::interaction& interaction, const spectrum& intensity, const vector3& wi, real pdf);
 
 		static emitter_sample transform(const transform& transform, const emitter_sample& sample);
 	};

@@ -80,7 +80,7 @@ spectrum rainbow::cpus::integrators::direct_integrator::trace(
 
 			if (function_value.is_black() || function_pdf <= 0) continue;
 
-			const auto shadow_ray = interaction->spawn_ray_to(emitter_sample.position);
+			const auto shadow_ray = interaction->spawn_ray_to(emitter_sample.interaction.point);
 			const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
 			// if the shadow ray intersect a entity that is not the emitter

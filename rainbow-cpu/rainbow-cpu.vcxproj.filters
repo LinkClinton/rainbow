@@ -70,9 +70,6 @@
     <Filter Include="scatterings\transmission">
       <UniqueIdentifier>{4133f164-6c25-4aac-a725-bd924e404556}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cameras">
-      <UniqueIdentifier>{fff005e5-6ac5-4751-aa2a-f31657534026}</UniqueIdentifier>
-    </Filter>
     <Filter Include="integrators">
       <UniqueIdentifier>{ba978ef3-0018-4988-9b96-80571cd02a31}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="shared\phases">
       <UniqueIdentifier>{0d6236b6-28e6-4f4e-9c06-1cd22eaba666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cameras">
+      <UniqueIdentifier>{fff005e5-6ac5-4751-aa2a-f31657534026}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -583,6 +583,9 @@
     </ClInclude>
     <ClInclude Include="integrators\bidirectional_path_integrator.hpp">
       <Filter>integrators</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\scope_assignment.hpp">
+      <Filter>shared</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

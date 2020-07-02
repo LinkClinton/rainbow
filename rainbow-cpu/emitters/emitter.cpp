@@ -10,16 +10,16 @@ bool rainbow::cpus::emitters::has(const emitter_type& type, const emitter_type& 
 	return (type & flag) == flag;
 }
 
-rainbow::cpus::emitters::emitter_sample::emitter_sample(const spectrum& intensity, const vector3& position, const vector3& wi, real pdf) :
-	intensity(intensity), position(position), wi(wi), pdf(pdf)
+rainbow::cpus::emitters::emitter_sample::emitter_sample(const shared::interaction& interaction, const spectrum& intensity, const vector3& wi, real pdf) :
+	interaction(interaction), intensity(intensity), wi(wi), pdf(pdf)
 {
 }
 
 rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::emitter_sample::transform(const shared::transform& transform, const emitter_sample& sample)
 {
 	return emitter_sample(
+		transform_interaction(transform, sample.interaction),
 		sample.intensity,
-		transform_point(transform, sample.position),
 		transform_vector(transform, sample.wi),
 		sample.pdf
 	);

@@ -99,8 +99,8 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::environment_lig
 	const auto wi = spherical_direction(sin_theta, cos_theta, phi);
 
 	return emitter_sample(
+		interaction(reference.point + 2 * mRadius * wi),
 		mIntensity * mEnvironmentMap->sample(distribution_sample.value),
-		reference.point + 2 * mRadius * wi,
 		wi,
 		pdf
 	);

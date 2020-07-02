@@ -46,8 +46,8 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::surface_light::
 	const auto wi = normalize(shape_sample.interaction.point - reference.point);
 	
 	return emitter_sample(
+		shape_sample.interaction,
 		evaluate(shape_sample.interaction, -wi),
-		shape_sample.interaction.point,
 		wi,
 		shape_sample.pdf
 	);

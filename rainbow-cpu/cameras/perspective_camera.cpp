@@ -72,7 +72,7 @@ rainbow::cpus::cameras::camera_sample rainbow::cpus::cameras::perspective_camera
 
 	const auto [value, point] = evaluate(interaction.spawn_ray(-wi));
 
-	return camera_sample(value, wi, point, pdf);
+	return camera_sample(interaction, value, wi, point, pdf);
 }
 
 rainbow::cpus::shared::ray rainbow::cpus::cameras::perspective_camera::sample(const vector2& position, const vector2& sample) const

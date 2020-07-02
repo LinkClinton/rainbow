@@ -129,8 +129,8 @@ spectrum scene::evaluate_media_beam(const std::shared_ptr<sampler1d>& sampler,
 		// evaluate the value of beam 
 		L *= medium.evaluate(sampler, beam_ray);
 
-		// if the entity is visible, the ray is occluded, we can stop the tracing
-		if (interaction->entity->visible()) return L;
+		// if the entity is visible, the ray is occluded, we can stop the tracing and return 0
+		if (interaction->entity->visible()) return spectrum(0);
 
 		// spawn the new ray
 		beam_ray = interaction->spawn_ray_to(to.point);

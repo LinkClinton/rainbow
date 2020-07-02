@@ -169,6 +169,7 @@
     <ClInclude Include="shared\phases\phase_function.hpp" />
     <ClInclude Include="shared\random_generator.hpp" />
     <ClInclude Include="shared\ray.hpp" />
+    <ClInclude Include="shared\scope_assignment.hpp" />
     <ClInclude Include="shared\spectrums\cie_samples.hpp" />
     <ClInclude Include="shared\spectrums\coefficient_spectrum.hpp" />
     <ClInclude Include="shared\spectrums\color_spectrum.hpp" />

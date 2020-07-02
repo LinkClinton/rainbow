@@ -42,8 +42,8 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::directional_lig
                                                                                            const interaction& reference, const vector2& sample) const
 {
 	return emitter_sample(
+		interaction(reference.point + 2 * mRadius * mDirection),
 		mIrradiance,
-		reference.point + 2 * mRadius * mDirection,
 		mDirection,
 		1
 	);

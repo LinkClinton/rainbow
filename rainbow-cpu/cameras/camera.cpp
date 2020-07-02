@@ -1,7 +1,8 @@
 #include "camera.hpp"
 
-rainbow::cpus::cameras::camera_sample::camera_sample(const spectrum& value, const vector3& wi, const vector2& point, real pdf) :
-	value(value), wi(wi), point(point), pdf(pdf)
+rainbow::cpus::cameras::camera_sample::camera_sample(
+	const shared::interaction& interaction, const spectrum& value, const vector3& wi, const vector2& point, real pdf) :
+	interaction(interaction), value(value), wi(wi), point(point), pdf(pdf)
 {
 }
 

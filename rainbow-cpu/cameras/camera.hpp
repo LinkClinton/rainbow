@@ -12,6 +12,8 @@ namespace rainbow::cpus::cameras {
 	using namespace shared;
 	
 	struct camera_sample {
+		interaction interaction = shared::interaction();
+		
 		spectrum value = spectrum(0);
 		vector3 wi = vector3(0);
 		vector2 point = vector2(0);
@@ -19,7 +21,7 @@ namespace rainbow::cpus::cameras {
 
 		camera_sample() = default;
 
-		camera_sample(const spectrum& value, const vector3& wi, const vector2& point, real pdf);
+		camera_sample(const shared::interaction& interaction, const spectrum& value, const vector3& wi, const vector2& point, real pdf);
 	};
 
 	enum class camera_system : uint32 {

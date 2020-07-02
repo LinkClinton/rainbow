@@ -37,8 +37,8 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::point_light::sa
 	const auto position = vector3(0);
 	
 	return emitter_sample(
+		interaction(position),
 		mIntensity / distance_squared(position, reference.point),
-		position,
 		normalize(position - reference.point),
 		1
 	);
