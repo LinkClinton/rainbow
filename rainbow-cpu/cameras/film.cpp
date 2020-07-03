@@ -1,5 +1,6 @@
 #include "film.hpp"
 
+#include "../../rainbow-core/atomic_function.hpp"
 #include "../../rainbow-core/file_system.hpp"
 #include "../../rainbow-core/logs/log.hpp"
 
@@ -95,6 +96,7 @@ rainbow::cpus::cameras::film::film(
 	const vector2i& resolution,
 	const bound2& crop_window,
 	real scale) :
+	mValues(static_cast<size_t>(resolution.x)* static_cast<size_t>(resolution.y)),
 	mPixels(static_cast<size_t>(resolution.x)* static_cast<size_t>(resolution.y)),
 	mFilter(filter), mResolution(resolution), mScale(scale)
 {
@@ -132,12 +134,18 @@ void rainbow::cpus::cameras::film::write(const std::string& file_name) const noe
 		if (y_position < mPixelsBound.min.y || y_position >= mPixelsBound.max.y) continue;
 		
 		const auto spectrum = mPixels[index].spectrum();
-
-		if (spectrum.has_nan()) logs::warn("pixel [{0}, {1}] has nan.", x_position, y_position);
 		
-		colors[index * 4 + 0] = to_byte(spectrum.red() * mScale);
-		colors[index * 4 + 1] = to_byte(spectrum.green() * mScale);
-		colors[index * 4 + 2] = to_byte(spectrum.blue() * mScale);
+		if (spectrum.has_nan()) logs::warn("pixel [{0}, {1}] has nan.", x_position, y_position);
+
+		std::array<real, 3> values = {
+			spectrum[0] + mValues[index][0],
+			spectrum[1] + mValues[index][1],
+			spectrum[2] + mValues[index][2]
+		};
+		
+		colors[index * 4 + 0] = to_byte(values[0] * mScale);
+		colors[index * 4 + 1] = to_byte(values[1] * mScale);
+		colors[index * 4 + 2] = to_byte(values[2] * mScale);
 		colors[index * 4 + 3] = 255;
 	}
 
@@ -173,6 +181,17 @@ void rainbow::cpus::cameras::film::add_sample(const vector2& position, const spe
 			pixel.add_sample(sample * filter_value, filter_value);
 		}
 	}
+}
+
+void rainbow::cpus::cameras::film::add_pixel(const vector2i& position, const spectrum& value) noexcept
+{
+	if (position.x >= mPixelsBound.max.x || position.x < mPixelsBound.min.x) return;
+	if (position.y >= mPixelsBound.max.y || position.y < mPixelsBound.min.y) return;
+
+	const auto index = pixel_index(position);
+
+	for (size_t channel = 0; channel < 3; channel++)
+		atomic_real_add(mValues[index][channel], value[channel]);
 }
 
 void rainbow::cpus::cameras::film::set_pixel(const vector2i& position, const spectrum& value)

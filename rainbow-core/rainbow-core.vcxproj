@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="assert.hpp" />
+    <ClInclude Include="atomic_function.hpp" />
     <ClInclude Include="file_system.hpp" />
     <ClInclude Include="logs\detail\log.hpp" />
     <ClInclude Include="logs\log.hpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="utilities.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="atomic_function.cpp" />
     <ClCompile Include="file_system.cpp" />
     <ClCompile Include="sample_function.cpp" />
     <ClCompile Include="shading_function.cpp" />

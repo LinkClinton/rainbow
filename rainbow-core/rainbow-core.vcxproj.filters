@@ -74,11 +74,13 @@
     <ClInclude Include="sample_function.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="shading_function.hpp" />
+    <ClInclude Include="atomic_function.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="file_system.cpp" />
     <ClCompile Include="sample_function.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="shading_function.cpp" />
+    <ClCompile Include="atomic_function.cpp" />
   </ItemGroup>
 </Project>

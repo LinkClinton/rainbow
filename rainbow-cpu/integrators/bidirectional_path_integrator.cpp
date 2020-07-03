@@ -416,6 +416,8 @@ namespace rainbow::cpus::integrators {
 
 				// because we intersect a invisible shape, we do not need add the bounces
 				bounces--;
+
+				continue;
 			}
 
 			// get the surface properties from material which the ray intersect
@@ -874,9 +876,12 @@ void rainbow::cpus::integrators::bidirectional_path_integrator::render(
 									emitter_sub_path, camera_sub_path,
 									emitter_count, camera_count, sample_position);
 
-								if (camera_count != 1) L += value;
-								
-								// todo : if camera_count is 1, we need update the film directly because the sample_position has changed
+								if (camera_count == 1) {
+									const auto inv_weight = static_cast<real>(1) / samples_per_pixel;
+
+									film->add_pixel(floor(sample_position), value * inv_weight);
+								}
+								else L += value;
 							}
 						}
 

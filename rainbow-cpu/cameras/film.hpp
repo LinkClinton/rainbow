@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <atomic>
 
 namespace rainbow::cpus::cameras {
 
@@ -60,6 +61,8 @@ namespace rainbow::cpus::cameras {
 
 		void add_sample(const vector2& position, const spectrum& sample) noexcept;
 
+		void add_pixel(const vector2i& position, const spectrum& value) noexcept;
+		
 		void set_pixel(const vector2i& position, const spectrum& value);
 
 		void set_pixel(size_t index, const spectrum& value);
@@ -74,8 +77,11 @@ namespace rainbow::cpus::cameras {
 	private:
 		int32 pixel_index(const vector2i& position) const noexcept;
 	private:
-		std::vector<cameras::pixel> mPixels;
+		using atomic_spectrum = std::array<std::atomic<real>, 3>;
 
+		std::vector<atomic_spectrum> mValues;
+		std::vector<cameras::pixel> mPixels;
+		
 		std::shared_ptr<filters::filter> mFilter;
 
 		vector2i mResolution;
