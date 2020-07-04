@@ -3,6 +3,8 @@
 #include "../../rainbow-core/logs/log.hpp"
 #include "../shared/scope_assignment.hpp"
 
+#pragma optimize("", off)
+
 #ifndef _DEBUG
 #define __PARALLEL_RENDER__
 #endif
@@ -60,6 +62,7 @@ namespace rainbow::cpus::integrators {
 		std::variant<surface_interaction, medium_interaction, point_interaction> which;
 
 		surface_properties properties;
+		medium_info medium;
 		
 		vertex_type type = vertex_type::unknown;
 
@@ -74,17 +77,21 @@ namespace rainbow::cpus::integrators {
 
 		vertex(
 			const std::variant<surface_interaction, medium_interaction, point_interaction>& which,
-			const surface_properties& properties, const vertex_type& type, const spectrum& beta, 
+			const surface_properties& properties, const medium_info& medium, 
+			const vertex_type& type, const spectrum& beta, 
 			real forward_pdf, real reverse_pdf, bool delta) :
-			which(which), properties(properties), type(type), beta(beta),
+			which(which), properties(properties), medium(medium), type(type), beta(beta),
 			forward_pdf(forward_pdf), reverse_pdf(reverse_pdf), delta(delta)
 		{
 			// which is a std::variant handle the interaction depend on the type of vertex
 			// vertex_type::surface handle a surface_interaction and a surface_properties
-			// vertex_type::medium handle a medium_interaction
+			// vertex_type::medium handle a medium_interaction and a medium_info
 			// vertex_type::camera handle a point_interaction with pointer of camera
 			// vertex_type::emitter handle a point_interaction with pointer of emitter
 
+			// properties is the surface properties of this vertex
+			// medium is the medium of this vertex
+			
 			// beta is the value from the start of vertex to this vertex
 			// forward_pdf is the pdf from last vertex to this vertex
 			// reverse_pdf is the pdf from next vertex to this vertex
@@ -97,7 +104,7 @@ namespace rainbow::cpus::integrators {
 
 			return std::get<point_interaction>(which);
 		}
-
+		
 		vector3 shading_normal() const
 		{
 			// return the shading normal, if the type is vertex_type::surface we will use shading_space.z()
@@ -129,6 +136,26 @@ namespace rainbow::cpus::integrators {
 
 			// if the type is vertex_type::medium or vertex_type::camera we will return nullptr
 			return nullptr;
+		}
+
+		spectrum evaluate_media_beam(
+			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
+			const interactions::interaction& to) const
+		{
+			if (type == vertex_type::emitter || type == vertex_type::camera)
+				return scene->evaluate_media_beam(samplers.sampler1d, { medium_info(), interaction() }, to);
+
+			if (type == vertex_type::medium)
+				return scene->evaluate_media_beam(samplers.sampler1d, { medium, interaction() }, to);
+
+			const auto interaction = std::get<surface_interaction>(which);
+
+			const auto medium =
+				interaction.entity->has_component<cpus::media::media>() ?
+				medium_info(interaction.entity, interaction.normal, normalize(to.point - interaction.point)) :
+				medium_info();
+
+			return scene->evaluate_media_beam(samplers.sampler1d, { medium, interaction }, to);
 		}
 
 		spectrum evaluate(const vertex& next, const transport_mode& mode) const
@@ -241,7 +268,7 @@ namespace rainbow::cpus::integrators {
 			if (type == vertex_type::medium) {
 				const auto interaction = std::get<medium_interaction>(which);
 
-				pdf = interaction.function->evaluate(last_w, next_w);
+				pdf = interaction.function->evaluate(normalize(last_w), normalize(next_w));
 			}
 
 			return convert_density(pdf, next);
@@ -369,7 +396,7 @@ namespace rainbow::cpus::integrators {
 	{
 		return vertex(
 			point_interaction(interaction(ray.origin), camera),
-			surface_properties(),
+			surface_properties(), medium_info(),
 			vertex_type::camera,
 			beta,
 			0, 0, false);
@@ -379,7 +406,7 @@ namespace rainbow::cpus::integrators {
 	{
 		return vertex(
 			point_interaction(interaction, camera),
-			surface_properties(),
+			surface_properties(), medium_info(),
 			vertex_type::camera,
 			beta, 0, 0, false);
 	}
@@ -388,7 +415,7 @@ namespace rainbow::cpus::integrators {
 	{
 		return vertex(
 			point_interaction(interaction(ray_sample.normal, ray_sample.ray.origin, ray_sample.ray.direction), emitter),
-			surface_properties(),
+			surface_properties(), medium_info(),
 			vertex_type::emitter,
 			ray_sample.intensity,
 			ray_sample.pdf_direction * ray_sample.pdf_position,
@@ -399,7 +426,7 @@ namespace rainbow::cpus::integrators {
 	{
 		return vertex(
 			point_interaction(interaction(-ray.direction, ray.origin + ray.direction, ray.direction), emitter),
-			surface_properties(),
+			surface_properties(), medium_info(),
 			vertex_type::emitter,
 			beta, pdf, 0, false
 		);
@@ -409,7 +436,7 @@ namespace rainbow::cpus::integrators {
 	{
 		return vertex(
 			point_interaction(interaction, emitter),
-			surface_properties(),
+			surface_properties(), medium_info(),
 			vertex_type::emitter,
 			beta, pdf, 0, false);
 	}
@@ -418,7 +445,18 @@ namespace rainbow::cpus::integrators {
 		const surface_interaction& interaction, const surface_properties& properties,
 		const spectrum& beta, const vertex& last, real pdf)
 	{
-		auto v = vertex(interaction, properties, vertex_type::surface, beta, 0, 0, false);
+		auto v = vertex(interaction, properties, medium_info(), vertex_type::surface, beta, 0, 0, false);
+
+		v.forward_pdf = last.convert_density(pdf, v);
+
+		return v;
+	}
+
+	inline vertex create_medium_vertex(
+		const medium_interaction& interaction, const medium_info& medium, 
+		const spectrum& beta, const vertex& last, real pdf)
+	{
+		auto v = vertex(interaction, surface_properties(), medium, vertex_type::medium, beta, 0, 0, false);
 
 		v.forward_pdf = last.convert_density(pdf, v);
 
@@ -442,6 +480,7 @@ namespace rainbow::cpus::integrators {
 		// the tracing_info.ray is the ray from last vertex to current vertex
 		tracing_info.beta = beta;
 		tracing_info.ray = ray;
+		tracing_info.medium = medium_info(); //default medium is vacuum
 
 		// the forward_pdf means the pdf from last vertex to this vertex
 		// the reverse_pdf means the pdf from next vertex to this vertex
@@ -450,6 +489,34 @@ namespace rainbow::cpus::integrators {
 		for (auto bounces = 0; bounces < max_depth; bounces++) {
 			const auto interaction = scene->intersect(tracing_info.ray);
 
+			// sample the medium
+			const auto medium_sample = tracing_info.medium.sample(samplers.sampler1d, tracing_info.ray);
+
+			tracing_info.beta *= medium_sample.value;
+
+			if (tracing_info.beta.is_black()) break;
+
+			// if the medium_sample.interaction has value, we will sample the medium's phase function and build new ray
+			// otherwise, we will sample surface_interaction
+			if (medium_sample.interaction.has_value()) {
+				vertices.push_back(create_medium_vertex(medium_sample.interaction.value(), tracing_info.medium, tracing_info.beta,
+					vertices.back(), forward_pdf));
+
+				const auto phase_sample = medium_sample.interaction->function->sample(
+					medium_sample.interaction.value(), samplers.sampler2d->next());
+
+				forward_pdf = phase_sample.value;
+				reverse_pdf = phase_sample.value;
+
+				tracing_info.ray = medium_sample.interaction->spawn_ray(phase_sample.wi);
+
+				auto& last = vertices[vertices.size() - 2];
+
+				last.reverse_pdf = vertices.back().convert_density(reverse_pdf, last);
+				
+				continue;
+			}
+			
 			if (!interaction.has_value()) {
 
 				// the mode is transport_mode::radiance means the path start from camera
@@ -506,6 +573,12 @@ namespace rainbow::cpus::integrators {
 			}
 
 			tracing_info.ray = interaction->spawn_ray(scattering_sample.wi);
+
+			// update the medium property when interaction->entity has media
+			// if interaction->normal dot ray.direction > 0, the medium we tracing should be outside of entity
+			// otherwise the medium should be inside
+			if (interaction->entity->has_component<cpus::media::media>())
+				tracing_info.medium = medium_info(interaction->entity, interaction->normal, tracing_info.ray.direction);
 
 			auto& last = vertices[vertices.size() - 2];
 
@@ -769,14 +842,14 @@ namespace rainbow::cpus::integrators {
 		// when the emitter count is 0, means we will use the camera sub path as the full path
 		// so we evaluate this path(emitter_count + camera_count >= 2)
 		if (emitter_count == 0) {
-			const auto& current = camera_sub_path[camera_count - 1];
-			const auto& last = camera_sub_path[camera_count - 2];
+			const auto& this_camera = camera_sub_path[camera_count - 1];
+			const auto& last_camera = camera_sub_path[camera_count - 2];
 
 			// because the camera sub path is the full path, so we will use the end vertex of sub path as emitter
 			// if the vertex has emitter, we will evaluate the intensity reference last vertex(from emitter to last vertex)
 			// and current.beta is the value of beta from start vertex to this vertex
 			// so the L should be current.beta * the intensity from current vertex(the direction should from current to last)
-			L = current.evaluate(scene, last) * current.beta;
+			L = this_camera.evaluate(scene, last_camera) * this_camera.beta;
 
 			if (L.is_black()) return L;
 			
@@ -818,15 +891,16 @@ namespace rainbow::cpus::integrators {
 				if (L.is_black()) return L;
 
 				// visible test
-				const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
+				/*const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
 				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
-				if (shadow_interaction.has_value()) return spectrum(0);
-
+				if (shadow_interaction.has_value()) return spectrum(0);*/
+				const auto beam = current_vertex.evaluate_media_beam(scene, samplers, sampled_vertex.interaction());
+				
 				const auto weight = mis_weight_emitter_case(scene, sampled_vertex, 
 					emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 
-				return L * weight;
+				return L * weight * beam;
 			}
 		}
 
@@ -861,26 +935,28 @@ namespace rainbow::cpus::integrators {
 				if (L.is_black()) return L;
 
 				// visible test
-				const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
+				/*const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
 				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
-				if (shadow_interaction.has_value()) return spectrum(0);
+				if (shadow_interaction.has_value()) return spectrum(0);*/
 
+				const auto beam = current_vertex.evaluate_media_beam(scene, samplers, sampled_vertex.interaction());
+				
 				const auto weight = mis_weight_camera_case(scene, sampled_vertex,
 					emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 				
-				return L * weight;
+				return L * weight * beam;
 			}
 
 			return spectrum(0);
 		}
 
 		// now, connect the two sub path
-		const auto current_emitter = emitter_sub_path[emitter_count - 1];
-		const auto current_camera = camera_sub_path[camera_count - 1];
+		const auto this_emitter = emitter_sub_path[emitter_count - 1];
+		const auto this_camera = camera_sub_path[camera_count - 1];
 
 		// if the current_emitter or current_camera can not be connected, we will return 0
-		if (!current_camera.connectible() || !current_emitter.connectible()) 
+		if (!this_camera.connectible() || !this_emitter.connectible()) 
 			return spectrum(0);
 
 		// current_emitter.beta is the value from emitter to current_emitter
@@ -891,25 +967,27 @@ namespace rainbow::cpus::integrators {
 		// and p - 1 is the prev vertex in camera sub path
 		// the beta of two vertex is F(q - 1, q, p) * F(p - 1, p, q)
 		// so current_emitter.evaluate() is F(q - 1, q, p) and current_camera.evaluate() is F(p - 1, p, q)
-		L = current_emitter.beta * current_emitter.evaluate(current_camera, transport_mode::important) *
-			current_camera.evaluate(current_emitter, transport_mode::radiance) * current_camera.beta;
+		L = this_emitter.beta * this_emitter.evaluate(this_camera, transport_mode::important) *
+			this_camera.evaluate(this_emitter, transport_mode::radiance) * this_camera.beta;
 
 		if (L.is_black()) return L;
 
-		const auto shadow_ray = current_emitter.interaction().spawn_ray_to(current_camera.interaction().point);
+		/*const auto shadow_ray = current_emitter.interaction().spawn_ray_to(current_camera.interaction().point);
 		const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
 
-		if (shadow_interaction.has_value()) return spectrum(0);
+		if (shadow_interaction.has_value()) return spectrum(0);*/
 
+		const auto beam = this_emitter.evaluate_media_beam(scene, samplers, this_camera.interaction());
+		
 		// G = V * T * C(p0, p1) * C(p1, p0) / distance_squared(p0 - p1)
 		// C(p0, p1) = abs(normal of p0 dot normalize(p0 - p1)) if p0 is on surface otherwise C = 1
 		// T = transmittance between p0 and p1
 		// V = 1 if the ray is not occluded otherwise V = 0 
-		const auto w = normalize(current_emitter.interaction().point - current_camera.interaction().point);
-		const auto inv_distance_2 = 1 / distance_squared(current_emitter.interaction().point, current_camera.interaction().point);
+		const auto w = normalize(this_emitter.interaction().point - this_camera.interaction().point);
+		const auto inv_distance_2 = 1 / distance_squared(this_emitter.interaction().point, this_camera.interaction().point);
 
-		if (current_emitter.on_surface()) L *= math::abs(dot(w, current_emitter.shading_normal()));
-		if (current_camera.on_surface()) L *= math::abs(dot(w, current_camera.shading_normal()));
+		if (this_emitter.on_surface()) L *= math::abs(dot(w, this_emitter.shading_normal()));
+		if (this_camera.on_surface()) L *= math::abs(dot(w, this_camera.shading_normal()));
 		
 		L *= inv_distance_2;
 
@@ -917,7 +995,7 @@ namespace rainbow::cpus::integrators {
 		const auto weight = mis_weight_common_case(scene,
 			emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 		
-		return L * weight;
+		return L * weight * beam;
 	}
 
 }
