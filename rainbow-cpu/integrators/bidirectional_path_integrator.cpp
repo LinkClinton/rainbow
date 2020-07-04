@@ -79,6 +79,15 @@ namespace rainbow::cpus::integrators {
 			which(which), properties(properties), type(type), beta(beta),
 			forward_pdf(forward_pdf), reverse_pdf(reverse_pdf), delta(delta)
 		{
+			// which is a std::variant handle the interaction depend on the type of vertex
+			// vertex_type::surface handle a surface_interaction and a surface_properties
+			// vertex_type::medium handle a medium_interaction
+			// vertex_type::camera handle a point_interaction with pointer of camera
+			// vertex_type::emitter handle a point_interaction with pointer of emitter
+
+			// beta is the value from the start of vertex to this vertex
+			// forward_pdf is the pdf from last vertex to this vertex
+			// reverse_pdf is the pdf from next vertex to this vertex
 		}
 
 		const interaction& interaction() const
@@ -91,6 +100,8 @@ namespace rainbow::cpus::integrators {
 
 		vector3 shading_normal() const
 		{
+			// return the shading normal, if the type is vertex_type::surface we will use shading_space.z()
+			// otherwise, we will use the normal of interaction
 			if (type == vertex_type::surface)
 				return std::get<surface_interaction>(which).shading_space.z();
 
@@ -99,8 +110,15 @@ namespace rainbow::cpus::integrators {
 
 		std::shared_ptr<const entity> emitter() const
 		{
+			// return the emitter if the vertex has emitter
+			// if the type is vertex_type::emitter, we just return the point_interaction::emitter()
+			// if point_interaction::emitter() is nullptr, means there is no environment emitter
+			// if the type is vertex_type::surface, we will return the surface_interaction::entity(if the entity has emitter)
+
+			// type is vertex_type::emitter
 			if (type == vertex_type::emitter) return std::get<point_interaction>(which).emitter();
 
+			// type is vertex_type::surface, if the surface_interaction::entity has emitter, we will return this entity
 			if (type == vertex_type::surface) {
 				const auto entity = std::get<surface_interaction>(which).entity;
 
@@ -108,12 +126,17 @@ namespace rainbow::cpus::integrators {
 
 				return nullptr;
 			}
-					
+
+			// if the type is vertex_type::medium or vertex_type::camera we will return nullptr
 			return nullptr;
 		}
 
 		spectrum evaluate(const vertex& next, const transport_mode& mode) const
 		{
+			// evaluate the value between two vertex(this vertex and next vertex)
+			// only support vertex_type::surface and vertex_type::medium
+			// the mode indicate the direction of transporting(from camera or from emitter)
+			
 			if (type != vertex_type::surface && type != vertex_type::medium)
 				return spectrum(0);
 			
@@ -125,7 +148,8 @@ namespace rainbow::cpus::integrators {
 			
 			if (type == vertex_type::surface) {
 				const auto& surface = std::get<surface_interaction>(which);
-				
+
+				// transform the wo and wi from world space to local space
 				const auto wo = world_to_local(surface.shading_space, surface.wo);
 				const auto wi = world_to_local(surface.shading_space, world_wi);
 
@@ -139,6 +163,9 @@ namespace rainbow::cpus::integrators {
 
 		spectrum evaluate(const std::shared_ptr<scene>& scene, const vertex& point) const
 		{
+			// evaluate the value from emitter to point vertex(this vertex should be the emitter vertex)
+			// we do not consider the volume scattering(we will solve it in other function)
+			
 			const auto emitter = this->emitter();
 
 			// if the emitter is nullptr and type = emitter it should intersect with environment emitter
@@ -153,6 +180,8 @@ namespace rainbow::cpus::integrators {
 
 			w = normalize(w);
 
+			// if the emitter is environment emitter, we will evaluate the all environment emitter
+			// in fact, we will consider the one emitter that contains all environment emitters
 			if (emitter->component<emitters::emitter>()->is_environment()) {
 				auto L = spectrum(0);
 
@@ -165,23 +194,35 @@ namespace rainbow::cpus::integrators {
 			return emitter->component<emitters::emitter>()->evaluate(interaction(), w);
 		}
 
-		real pdf(const std::shared_ptr<scene>& scene, const vertex& last, const vertex& next) const
+		real pdf(const vertex& next) const
 		{
-			if (type == vertex_type::emitter) return pdf(scene, next);
+			// evaluate the density pdf from this vertex to next vertex
+			// the function is used for vertex_type::camera
+			// we evaluate the pdf_direction and convert it to density pdf
 
-			if (type == vertex_type::camera) {
-				auto w = next.interaction().point - interaction().point;
+			assert(type == vertex_type::camera);
 
-				if (length_squared(w) == 0) return 0;
+			auto w = next.interaction().point - interaction().point;
 
-				w = normalize(w);
+			if (length_squared(w) == 0) return 0;
 
-				const auto interaction = std::get<point_interaction>(which);
-				const auto [pdf_position, pdf_direction] = interaction.camera()->pdf(interaction.spawn_ray(w));
-				
-				return convert_density(pdf_direction, next);
-			}
+			w = normalize(w);
 
+			const auto interaction = std::get<point_interaction>(which);
+			const auto [pdf_position, pdf_direction] = interaction.camera()->pdf(ray(w, interaction.point));
+
+			return convert_density(pdf_direction, next);
+		}
+
+		real pdf(const vertex& last, const vertex& next) const
+		{
+			// evaluate the density pdf from this vertex to next vertex
+			// the function is used for vertex_type::surface or vertex_type::medium
+			// we evaluate properties.functions.pdf or the value of phase(the value and pdf of phase are same)
+			// and convert it from solid angle pdf to density pdf
+
+			assert(type == vertex_type::surface || type == vertex_type::medium);
+			
 			const auto next_w = next.interaction().point - interaction().point;
 			const auto last_w = last.interaction().point - interaction().point;
 
@@ -205,9 +246,12 @@ namespace rainbow::cpus::integrators {
 
 			return convert_density(pdf, next);
 		}
-
+		
 		real pdf(const std::shared_ptr<scene>& scene, const vertex& next) const
 		{
+			// evaluate the density pdf from this vertex to next vertex
+			// the function is used for vertex_type::emitter
+			
 			if (is_environment_emitter()) {
 				const auto [center, radius] = scene->bounding_sphere();
 				const auto w = normalize(next.interaction().point - interaction().point);
@@ -228,6 +272,7 @@ namespace rainbow::cpus::integrators {
 			const auto [pdf_position, pdf_direction] = emitter->pdf<emitters::emitter>(
 				ray(w, interaction().point), interaction().normal);
 
+			// convert it from solid angle pdf to density pdf
 			auto pdf = pdf_direction * inv_distance_2;
 
 			// abs(dot(normal, w)) == abs(dot(normal, -w))
@@ -386,13 +431,20 @@ namespace rainbow::cpus::integrators {
 		const ray& ray, real pdf, size_t max_depth,
 		std::vector<vertex>& vertices)
 	{
+		// generate the sub path from emitter or camera the transport_mode will indicate the direction of path
+		// the vertices[0] will be the start of path(camera or emitter), the creation is not included in this function
+		
 		if (max_depth == 0) return;
 
 		path_tracing_info tracing_info;
 
+		// the tracing_info.beta is the value of beta in current vertex(from the start vertex to this vertex)
+		// the tracing_info.ray is the ray from last vertex to current vertex
 		tracing_info.beta = beta;
 		tracing_info.ray = ray;
-		
+
+		// the forward_pdf means the pdf from last vertex to this vertex
+		// the reverse_pdf means the pdf from next vertex to this vertex
 		real forward_pdf = pdf, reverse_pdf = 0;
 
 		for (auto bounces = 0; bounces < max_depth; bounces++) {
@@ -400,8 +452,11 @@ namespace rainbow::cpus::integrators {
 
 			if (!interaction.has_value()) {
 
+				// the mode is transport_mode::radiance means the path start from camera
+				// so if the ray is not intersect with anything, we can think it intersect environment emitters
 				if (mode == transport_mode::radiance) {
 					// get the environment emitters, if the environments is empty in scene, we set it into nullptr
+					// otherwise, we will use the first environment emitter
 					const auto emitter = scene->environments().empty() ? nullptr : scene->environments()[0];
 
 					vertices.push_back(create_emitter_vertex(emitter, tracing_info.beta, tracing_info.ray, forward_pdf));
@@ -443,6 +498,7 @@ namespace rainbow::cpus::integrators {
 			forward_pdf = scattering_sample.pdf;
 			reverse_pdf = scattering_functions.pdf(wi, wo);
 
+			// if the bsdf we sample is specular, the pdf will be set zero and the delta is marked with this vertex
 			if (has(scattering_sample.type, scattering_type::specular)) {
 				vertices.back().delta = true;
 				forward_pdf = 0;
@@ -464,8 +520,10 @@ namespace rainbow::cpus::integrators {
 		const vector2& position,
 		size_t max_depth)
 	{
+		// create the camera sub path, if the max_depth is 0 we will return empty sub path
 		if (max_depth == 0) return {};
-		
+
+		// sample the camera to find the ray
 		const auto ray = camera->sample(position, samplers.sampler2d->next());
 		const auto beta = spectrum(1);
 		
@@ -485,8 +543,10 @@ namespace rainbow::cpus::integrators {
 		const sampler_group& samplers,
 		size_t max_depth)
 	{
+		// create the emitter sub path, if the max_depth is 0 we will return empty sub path
 		if (max_depth == 0) return {};
 
+		// uniform sample the emitters and sample the ray from the emitter
 		const auto [emitter, pdf] = uniform_sample_one_emitter(scene, samplers);
 
 		const auto ray_sample = emitter->sample<emitters::emitter>(samplers.sampler2d->next(), samplers.sampler2d->next());
@@ -503,7 +563,10 @@ namespace rainbow::cpus::integrators {
 		generate_sub_path(scene, samplers, transport_mode::important, beta, ray_sample.ray, ray_sample.pdf_direction, max_depth - 1,
 			vertices);
 
+		// if the start emitter is environment emitter, the forward pdf should be he pdf of position
+		// todo : add more text
 		if (vertices[0].is_environment_emitter()) {
+			
 			if (vertices.size() > 1) {
 				vertices[1].forward_pdf = ray_sample.pdf_position;
 
@@ -523,79 +586,167 @@ namespace rainbow::cpus::integrators {
 	}
 
 	inline real mis_weight(
-		const std::shared_ptr<scene>& scene, const vertex& sampled_vertex,
-		std::vector<vertex>& emitter_sub_path,
-		std::vector<vertex>& camera_sub_path,
+		const std::vector<vertex>& emitter_sub_path,
+		const std::vector<vertex>& camera_sub_path,
 		size_t emitter_count, size_t camera_count)
 	{
 		if (emitter_count + camera_count == 2) return 1;
 
+		// evaluate the mis weight of current path :
+		// we reference emitter_sub_path as q_path and camera_sub_path as p_path
+		// we reference emitter_count as q and camera_count as p
+		// so the path is q_path[0 .. q - 1] -> p_path[p - 1 .. 0]
+
+		// we reference x(0) .. x(n - 1) as q_path[0] .. q_path[q - 1] p_path[p - 1] .. p_path[0]
+		// the pdf(q) = x(0).forward_pdf * ... * x(q - 1).forward_pdf ... * x(q).reverse_pdf * ... * x(n - 1).reverse_pdf
+		// the pdf(i) = x(0).forward_pdf * ... * x(i - 1).forward_pdf ... * x(i).reverse_pdf * ... * x(n - 1).reverse_pdf
+		// the pdf(q) is the pdf(s) where i = q
+
+		// the balance heuristic weight is : pdf(q) / (pdf(0) + pdf(1) + ... + pdf(n - 1))
+		// pdf(q) / (pdf(0) + pdf(1) + ... + pdf(n - 1)) = (pdf(0) / pdf(q) + ... + pdf(q - 1) / pdf(q) + 1 + pdf(q + 1) / pdf(q) + ... + pdf(n - 1) / pdf(q)) ^ -1
+		// we set r(i) = pdf(i) / pdf(q), the balance heuristic weight is 1 / (r(0) + ... + r(q - 1) + r(q) + r(q + 1) ... + r(n - 1))
+
+		// if i = q, r(i) = 1
+		// if i < q, r(i) = r(i + 1) * x(i + 0).reverse_pdf / x(i + 0).forward_pdf
+		// if i > q, r(i) = r(i - 1) * x(i - 1).forward_pdf / x(i - 1).reverse_pdf
+		
 		real sum_ri = 0;
-
-		vertex* current_emitter = emitter_count > 0 ? &emitter_sub_path[emitter_count - 1] : nullptr;
-		vertex* current_camera = camera_count > 0 ? &camera_sub_path[camera_count - 1] : nullptr;
-
-		vertex* last_emitter = emitter_count > 1 ? &emitter_sub_path[emitter_count - 2] : nullptr;
-		vertex* last_camera = camera_count > 1 ? &camera_sub_path[camera_count - 2] : nullptr;
-
-		scope_assignment_t<vertex> assignment0 = scope_assignment_t<vertex>();
-
-		if (camera_count == 1)
-			assignment0 = scope_assignment_t<vertex>(current_camera, sampled_vertex);
 		
-		if (emitter_count == 1)
-			assignment0 = scope_assignment_t<vertex>(current_emitter, sampled_vertex);
-
-		scope_assignment_t<bool> assignment1 = scope_assignment_t<bool>();
-		scope_assignment_t<bool> assignment2 = scope_assignment_t<bool>();
-
-		if (current_emitter != nullptr) assignment1 = scope_assignment_t<bool>(&current_emitter->delta, false);
-		if (current_camera != nullptr) assignment2 = scope_assignment_t<bool>(&current_camera->delta, false);
-
-		scope_assignment_t<real> assignment3 = scope_assignment_t<real>();
-		scope_assignment_t<real> assignment4 = scope_assignment_t<real>();
-		scope_assignment_t<real> assignment5 = scope_assignment_t<real>();
-		scope_assignment_t<real> assignment6 = scope_assignment_t<real>();
-		
-		if (current_camera != nullptr) assignment3 = scope_assignment_t<real>(&current_camera->reverse_pdf,
-			emitter_count > 0 ? 
-			current_emitter->pdf(scene, last_emitter == nullptr ? vertex() : *last_emitter, *current_camera) :
-			current_camera->pdf_emitter_origin(scene, *last_camera));
-		
-		if (last_camera != nullptr) assignment4 = scope_assignment_t<real>(&last_camera->reverse_pdf,
-			emitter_count > 0 ?
-			current_camera->pdf(scene, *current_emitter, *last_camera) :
-			current_camera->pdf(scene, *last_camera));
-
-		if (current_emitter != nullptr) assignment5 = scope_assignment_t<real>(&current_emitter->reverse_pdf,
-			current_camera->pdf(scene, *last_camera, *current_emitter));
-
-		if (last_emitter != nullptr) assignment6 = scope_assignment_t<real>(&last_emitter->reverse_pdf,
-			current_emitter->pdf(scene, *current_camera, *last_emitter));
-
 		real emitter_ri = 1;
 
+		// build the r(0) + ... + r(q - 1), loop i from q to 0
 		for (auto index = static_cast<int>(emitter_count - 1); index >= 0; index--) {
 			emitter_ri = emitter_ri * remapped_value(emitter_sub_path[index].reverse_pdf) / remapped_value(emitter_sub_path[index].forward_pdf);
 
 			const auto is_last_delta = index > 0 ?
-				emitter_sub_path[static_cast<size_t>(index - 1)].delta :
+				emitter_sub_path[index - 1].delta :
 				emitter_sub_path[0].is_delta_emitter();
 
 			if (emitter_sub_path[index].delta == false && is_last_delta == false)
 				sum_ri = sum_ri + emitter_ri;
 		}
-		
+
 		real camera_ri = 1;
 
+		// build the r(q + 1) ... r(n - 1), loop i from q + 1 to r(n - 1)
+		// the p_path[0] is camera and we can not intersect it. so we ignore it
 		for (auto index = static_cast<int>(camera_count - 1); index > 0; index--) {
+			// p_path[i].reverse_pdf is the pdf from next(i + 1) vertex to this vertex
+			// p_path[i].forward_pdf is the pdf from this vertex to next vertex(i + 1)
+			// because the direction is from p_path[i + 1] - p_path[i]
+			// the x(i - 1).forward_pdf is from p_path[i + 1] to p_path[i + 0]
+			// the x(i - 1).reverse_pdf is from p_path[i + 0] to p_path[i + 1]
+			// x(i - 1).forward_pdf = p_path[i].reverse_pdf
+			// x(i - 1).reverse_pdf = p_path[i].forward_pdf
 			camera_ri = camera_ri * remapped_value(camera_sub_path[index].reverse_pdf) / remapped_value(camera_sub_path[index].forward_pdf);
 
-			if (camera_sub_path[index].delta == false && camera_sub_path[static_cast<size_t>(index - 1)].delta == false)
+			if (camera_sub_path[index].delta == false && camera_sub_path[index - 1].delta == false)
 				sum_ri = sum_ri + camera_ri;
 		}
-	
+
 		return 1 / (1 + sum_ri);
+	}
+
+	inline real mis_weight_full_camera_path_case(
+		const std::shared_ptr<scene>& scene,
+		std::vector<vertex>& emitter_sub_path,
+		std::vector<vertex>& camera_sub_path,
+		size_t emitter_count, size_t camera_count)
+	{
+		// emitter_count == 0 and camera_count >= 2
+		
+		if (emitter_count + camera_count == 2) return 1;
+
+		auto& this_camera = camera_sub_path[camera_count - 1];
+		auto& last_camera = camera_sub_path[camera_count - 2];
+
+		const auto assignment0 = scope_assignment_t<bool>(&this_camera.delta, false);
+
+		const auto assignment1 = scope_assignment_t<real>(&this_camera.reverse_pdf, this_camera.pdf_emitter_origin(scene, last_camera));
+		const auto assignment2 = scope_assignment_t<real>(&last_camera.reverse_pdf, this_camera.pdf(scene, last_camera));
+
+		return mis_weight(emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+	}
+
+	inline real mis_weight_emitter_case(
+		const std::shared_ptr<scene>& scene, const vertex& sampled_vertex,
+		std::vector<vertex>& emitter_sub_path,
+		std::vector<vertex>& camera_sub_path,
+		size_t emitter_count, size_t camera_count)
+	{
+		// emitter_count = 1 and camera_count > 1
+		// because emitter_count = 1 and camera_count = 1 is invalid
+		
+		if (emitter_count + camera_count == 2) return 1;
+
+		auto& this_emitter = emitter_sub_path[emitter_count - 1];
+		
+		auto& this_camera = camera_sub_path[camera_count - 1];
+		auto& last_camera = camera_sub_path[camera_count - 2];
+
+		const auto assignment0 = scope_assignment_t<vertex>(&this_emitter, sampled_vertex);
+
+		const auto assignment1 = scope_assignment_t<bool>(&this_emitter.delta, false);
+		const auto assignment2 = scope_assignment_t<bool>(&this_camera.delta, false);
+
+		const auto assignment3 = scope_assignment_t<real>(&this_emitter.reverse_pdf, this_camera.pdf(last_camera, this_emitter));
+		const auto assignment4 = scope_assignment_t<real>(&this_camera.reverse_pdf, this_emitter.pdf(scene, this_camera));
+		const auto assignment5 = scope_assignment_t<real>(&last_camera.reverse_pdf, this_camera.pdf(this_emitter, last_camera));
+		
+		return mis_weight(emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+	}
+
+	inline real mis_weight_camera_case(
+		const std::shared_ptr<scene>& scene, const vertex& sampled_vertex,
+		std::vector<vertex>& emitter_sub_path,
+		std::vector<vertex>& camera_sub_path,
+		size_t emitter_count, size_t camera_count)
+	{
+		// emitter_count > 1 and camera_count = 1
+		// because emitter_count = 1 and camera_count = 1 is invalid
+
+		if (emitter_count + camera_count == 2) return 1;
+
+		auto& this_emitter = emitter_sub_path[emitter_count - 1];
+		auto& last_emitter = emitter_sub_path[emitter_count - 2];
+
+		auto& this_camera = camera_sub_path[camera_count - 1];
+
+		const auto assignment0 = scope_assignment_t<vertex>(&this_camera, sampled_vertex);
+
+		const auto assignment1 = scope_assignment_t<bool>(&this_emitter.delta, false);
+		const auto assignment2 = scope_assignment_t<bool>(&this_camera.delta, false);
+
+		const auto assignment3 = scope_assignment_t<real>(&this_emitter.reverse_pdf, this_camera.pdf(this_emitter));
+		const auto assignment4 = scope_assignment_t<real>(&last_emitter.reverse_pdf, this_emitter.pdf(this_camera, last_emitter));
+		const auto assignment5 = scope_assignment_t<real>(&this_camera.reverse_pdf, this_emitter.pdf(last_emitter, this_camera));
+
+		return mis_weight(emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+	}
+
+	inline real mis_weight_common_case(
+		const std::shared_ptr<scene>& scene,
+		std::vector<vertex>& emitter_sub_path,
+		std::vector<vertex>& camera_sub_path,
+		size_t emitter_count, size_t camera_count)
+	{
+		// emitter_count > 1 and camera_count > 1
+
+		auto& this_emitter = emitter_sub_path[emitter_count - 1];
+		auto& last_emitter = emitter_sub_path[emitter_count - 2];
+
+		auto& this_camera = camera_sub_path[camera_count - 1];
+		auto& last_camera = camera_sub_path[camera_count - 2];
+		
+		const auto assignment0 = scope_assignment_t<bool>(&this_emitter.delta, false);
+		const auto assignment1 = scope_assignment_t<bool>(&this_camera.delta, false);
+
+		const auto assignment2 = scope_assignment_t<real>(&this_emitter.reverse_pdf, this_camera.pdf(last_camera, this_emitter));
+		const auto assignment3 = scope_assignment_t<real>(&last_emitter.reverse_pdf, this_emitter.pdf(this_camera, last_emitter));
+		const auto assignment4 = scope_assignment_t<real>(&this_camera.reverse_pdf, this_emitter.pdf(last_emitter, this_camera));
+		const auto assignment5 = scope_assignment_t<real>(&last_camera.reverse_pdf, this_camera.pdf(this_emitter, last_camera));
+
+		return mis_weight(emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 	}
 	
 	inline spectrum connect_sub_path(
@@ -621,14 +772,62 @@ namespace rainbow::cpus::integrators {
 			const auto& current = camera_sub_path[camera_count - 1];
 			const auto& last = camera_sub_path[camera_count - 2];
 
+			// because the camera sub path is the full path, so we will use the end vertex of sub path as emitter
+			// if the vertex has emitter, we will evaluate the intensity reference last vertex(from emitter to last vertex)
+			// and current.beta is the value of beta from start vertex to this vertex
+			// so the L should be current.beta * the intensity from current vertex(the direction should from current to last)
 			L = current.evaluate(scene, last) * current.beta;
 
 			if (L.is_black()) return L;
 			
-			const auto weight = mis_weight(scene, vertex(), emitter_sub_path, camera_sub_path,
-				emitter_count, camera_count);
+			const auto weight = mis_weight_full_camera_path_case(scene,
+				emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 			
 			return L * weight;
+		}
+
+		// when the emitter_count is 1, means we will connect a emitter vertex with camera sub path
+		// so we need sample the emitter and connect it
+		if (emitter_count == 1) {
+			const auto current_vertex = camera_sub_path[camera_count - 1];
+
+			// if the current_emitter can not be connected, we will return 0
+			if (!current_vertex.connectible()) return spectrum(0);
+
+			// sample the emitter
+			const auto [emitter, pdf] = uniform_sample_one_emitter(scene, samplers);
+			const auto emitter_sample = emitter->sample<emitters::emitter>(current_vertex.interaction(), samplers.sampler2d->next());
+
+			if (!emitter_sample.intensity.is_black() && emitter_sample.pdf > 0) {
+				auto sampled_vertex = create_emitter_vertex(emitter, emitter_sample.interaction,
+					emitter_sample.intensity / (pdf * emitter_sample.pdf), 0);
+
+				// todo : add some text
+				sampled_vertex.forward_pdf = sampled_vertex.pdf_emitter_origin(scene, current_vertex);
+
+				// current_vertex.beta is the beta value from camera to current_vertex
+				// the sampled_vertex.beta is the beta value(intensity or radiance / pdf)
+				// so the L should be current_vertex.beta * sampled_vertex.beta * beta from current_vertex to sampled_vertex
+				// so we will use current_vertex.evaluate() to evaluate the beta
+				// because the path is from camera to emitter, so we will use transport_mode::radiance
+				L = current_vertex.beta * current_vertex.evaluate(sampled_vertex, transport_mode::radiance) * sampled_vertex.beta;
+
+				// if current is on the surface, we need consider dot value between the normal and wi
+				if (current_vertex.on_surface()) L *= math::abs(dot(emitter_sample.wi, current_vertex.shading_normal()));
+
+				if (L.is_black()) return L;
+
+				// visible test
+				const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
+				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
+
+				if (shadow_interaction.has_value()) return spectrum(0);
+
+				const auto weight = mis_weight_emitter_case(scene, sampled_vertex, 
+					emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+
+				return L * weight;
+			}
 		}
 
 		// when the camera_count is 1, means we will connect the camera vertex with emitter sub path
@@ -649,9 +848,14 @@ namespace rainbow::cpus::integrators {
 				// create a camera vertex and connect it with emitter sub path
 				const auto sampled_vertex = create_camera_vertex(camera, camera_sample.interaction, camera_sample.value / camera_sample.pdf);
 
-				// evaluate the value of this path
+				// the current_vertex.beta is the value from start of path to current vertex
+				// and sampled_vertex.beta is the value of this vertex
+				// so the L should be the current_vertex.beta * sampled_vertex.beta * beta from current_vertex to sampled_vertex
+				// so we will use current_vertex.evaluate() to evaluate the beta
+				// because the path is from emitter to camera, so we will use transport_mode::important
 				L = current_vertex.beta * current_vertex.evaluate(sampled_vertex, transport_mode::important) * sampled_vertex.beta;
 
+				// if current is on the surface, we need consider dot value between the normal and wi
 				if (current_vertex.on_surface()) L *= math::abs(dot(camera_sample.wi, current_vertex.shading_normal()));
 
 				if (L.is_black()) return L;
@@ -662,8 +866,8 @@ namespace rainbow::cpus::integrators {
 
 				if (shadow_interaction.has_value()) return spectrum(0);
 
-				const auto weight = mis_weight(
-					scene, sampled_vertex, emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+				const auto weight = mis_weight_camera_case(scene, sampled_vertex,
+					emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 				
 				return L * weight;
 			}
@@ -671,50 +875,22 @@ namespace rainbow::cpus::integrators {
 			return spectrum(0);
 		}
 
-		// when the emitter_count is 1, means we will connect a emitter vertex with camera sub path
-		// so we need sample the emitter and connect it
-		if (emitter_count == 1) {
-			const auto current_vertex = camera_sub_path[camera_count - 1];
-
-			// if the current_emitter can not be connected, we will return 0
-			if (!current_vertex.connectible()) return spectrum(0);
-
-			// sample the emitter
-			const auto [emitter, pdf] = uniform_sample_one_emitter(scene, samplers);
-			const auto emitter_sample = emitter->sample<emitters::emitter>(current_vertex.interaction(), samplers.sampler2d->next());
-			
-			if (!emitter_sample.intensity.is_black() && emitter_sample.pdf > 0) {
-				auto sampled_vertex = create_emitter_vertex(emitter, emitter_sample.interaction,
-					emitter_sample.intensity / (pdf * emitter_sample.pdf), 0);
-
-				// update the forward pdf
-				sampled_vertex.forward_pdf = sampled_vertex.pdf_emitter_origin(scene, current_vertex);
-
-				L = current_vertex.beta * current_vertex.evaluate(sampled_vertex, transport_mode::radiance) * sampled_vertex.beta;
-
-				if (current_vertex.on_surface()) L *= math::abs(dot(emitter_sample.wi, current_vertex.shading_normal()));
-
-				if (L.is_black()) return L;
-
-				// visible test
-				const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
-				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
-
-				if (shadow_interaction.has_value()) return spectrum(0);
-
-				const auto weight = mis_weight(
-					scene, sampled_vertex, emitter_sub_path, camera_sub_path, emitter_count, camera_count);
-				
-				return L * weight;
-			}
-		}
-
+		// now, connect the two sub path
 		const auto current_emitter = emitter_sub_path[emitter_count - 1];
 		const auto current_camera = camera_sub_path[camera_count - 1];
 
+		// if the current_emitter or current_camera can not be connected, we will return 0
 		if (!current_camera.connectible() || !current_emitter.connectible()) 
 			return spectrum(0);
 
+		// current_emitter.beta is the value from emitter to current_emitter
+		// current_camera.beta is the value from camera to current_camera
+		// so we need the beta of two vertex(current_emitter and current_camera)
+		// we reference current_emitter as q and current_camera as p
+		// and q - 1 is the prev vertex in emitter sub path
+		// and p - 1 is the prev vertex in camera sub path
+		// the beta of two vertex is F(q - 1, q, p) * F(p - 1, p, q)
+		// so current_emitter.evaluate() is F(q - 1, q, p) and current_camera.evaluate() is F(p - 1, p, q)
 		L = current_emitter.beta * current_emitter.evaluate(current_camera, transport_mode::important) *
 			current_camera.evaluate(current_emitter, transport_mode::radiance) * current_camera.beta;
 
@@ -725,6 +901,10 @@ namespace rainbow::cpus::integrators {
 
 		if (shadow_interaction.has_value()) return spectrum(0);
 
+		// G = V * T * C(p0, p1) * C(p1, p0) / distance_squared(p0 - p1)
+		// C(p0, p1) = abs(normal of p0 dot normalize(p0 - p1)) if p0 is on surface otherwise C = 1
+		// T = transmittance between p0 and p1
+		// V = 1 if the ray is not occluded otherwise V = 0 
 		const auto w = normalize(current_emitter.interaction().point - current_camera.interaction().point);
 		const auto inv_distance_2 = 1 / distance_squared(current_emitter.interaction().point, current_camera.interaction().point);
 
@@ -733,8 +913,9 @@ namespace rainbow::cpus::integrators {
 		
 		L *= inv_distance_2;
 
-		const auto weight = mis_weight(
-			scene, vertex(), emitter_sub_path, camera_sub_path, emitter_count, camera_count);
+		// the pdf will be computed and used in MIS weight
+		const auto weight = mis_weight_common_case(scene,
+			emitter_sub_path, camera_sub_path, emitter_count, camera_count);
 		
 		return L * weight;
 	}
@@ -862,20 +1043,30 @@ void rainbow::cpus::integrators::bidirectional_path_integrator::render(
 
 						auto L = spectrum(0);
 
+						// loop the camera sub path and emitter sub path and try to connect them
 						for (auto camera_count = 1; camera_count <= camera_sub_path.size(); camera_count++) {
 							for (auto emitter_count = 0; emitter_count <= emitter_sub_path.size(); emitter_count++) {
 								
 								const auto depth = camera_count + emitter_count - 2;
 
+								// if the depth of path less than 2 or grater than max_depth the connected path is invalid
+								// so we will skip this path
 								if (depth < 0 || depth > mMaxDepth || (camera_count == 1 && emitter_count == 1))
 									continue;
 
+								// record the sample position, if the camera_count is 1 the path will sample the camera
+								// the sample position will change
+								// (we need to know the new sample position and add the spectrum to the position of sample_position)
 								auto sample_position = sample;
 
+								// try to connect the camera sub path and emitter sub path
 								const auto value = connect_sub_path(camera, scene, trace_samplers,
 									emitter_sub_path, camera_sub_path,
 									emitter_count, camera_count, sample_position);
 
+								// if camera_count is 1, the value should be add to film directly
+								// and we will use the samples per pixel to weight the value
+								// otherwise, add this value into L
 								if (camera_count == 1) {
 									const auto inv_weight = static_cast<real>(1) / samples_per_pixel;
 

@@ -45,7 +45,7 @@ std::tuple<rainbow::cpus::shared::spectrums::spectrum, rainbow::core::vector2> r
 	const auto pixels_bound = mFilm->pixels_bound();
 
 	// if the focus point is not on the film, we just return 0
-	if (focus.x < pixels_bound.min.x || focus.y >= pixels_bound.max.x ||
+	if (focus.x < pixels_bound.min.x || focus.x >= pixels_bound.max.x ||
 		focus.y < pixels_bound.min.y || focus.y >= pixels_bound.max.y)
 		return { spectrum(0), vector2(0) };
 
@@ -70,7 +70,7 @@ rainbow::cpus::cameras::camera_sample rainbow::cpus::cameras::perspective_camera
 	const auto lens_area = mLens != 0 ? pi<real>() * mLens * mLens : 1;
 	const auto pdf = (distance * distance) / (math::abs(dot(interaction.normal, wi)) * lens_area);
 
-	const auto [value, point] = evaluate(interaction.spawn_ray(-wi));
+	const auto [value, point] = evaluate(ray(-wi, interaction.point));
 
 	return camera_sample(interaction, value, wi, point, pdf);
 }
