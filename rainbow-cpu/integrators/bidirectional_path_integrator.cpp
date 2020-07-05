@@ -85,12 +85,16 @@ namespace rainbow::cpus::integrators {
 		{
 			// which is a std::variant handle the interaction depend on the type of vertex
 			// vertex_type::surface handle a surface_interaction and a surface_properties
-			// vertex_type::medium handle a medium_interaction and a medium_info
+			// vertex_type::medium handle a medium_interaction
 			// vertex_type::camera handle a point_interaction with pointer of camera
 			// vertex_type::emitter handle a point_interaction with pointer of emitter
 
 			// properties is the surface properties of this vertex
-			// medium is the medium of this vertex
+			// medium is the medium info
+			// for vertex_type::camera, it is empty(we think the space the ray from camera is vacuum)
+			// for vertex_type::medium, it is the current medium of it
+			// for vertex_type::surface and vertex_type::emitter
+			// it is the medium from last vertex to this vertex if the vertex does not have media component
 			
 			// beta is the value from the start of vertex to this vertex
 			// forward_pdf is the pdf from last vertex to this vertex
@@ -142,18 +146,30 @@ namespace rainbow::cpus::integrators {
 			const std::shared_ptr<scene>& scene, const sampler_group& samplers,
 			const interactions::interaction& to) const
 		{
-			if (type == vertex_type::emitter || type == vertex_type::camera)
+			// evaluate the media beam from this vertex to point
+			
+			// in fact, the type of vertex is impossible to be emitter
+			// so we do not discuss this type
+			assert(type != vertex_type::vertex_type::emitter);
+			
+			if (type == vertex_type::camera)
 				return scene->evaluate_media_beam(samplers.sampler1d, { medium_info(), interaction() }, to);
 
+			// for medium, vertex::medium is the medium the point in
+			// so we just use medium to evaluate value
 			if (type == vertex_type::medium)
 				return scene->evaluate_media_beam(samplers.sampler1d, { medium, interaction() }, to);
 
+			// for surface, if the entity surface on does not have media
+			// we will use the vertex::medium(the medium from last vertex to this vertex)
+			// because it means there is no different between two side of surface
+			// otherwise, we will create a new medium_info 
 			const auto interaction = std::get<surface_interaction>(which);
 
 			const auto medium =
 				interaction.entity->has_component<cpus::media::media>() ?
 				medium_info(interaction.entity, interaction.normal, normalize(to.point - interaction.point)) :
-				medium_info();
+				this->medium;
 
 			return scene->evaluate_media_beam(samplers.sampler1d, { medium, interaction }, to);
 		}
@@ -411,11 +427,11 @@ namespace rainbow::cpus::integrators {
 			beta, 0, 0, false);
 	}
 
-	inline vertex create_emitter_vertex(const std::shared_ptr<const entity>& emitter, const emitter_ray_sample& ray_sample)
+	inline vertex create_emitter_vertex(const std::shared_ptr<const entity>& emitter, const emitter_ray_sample& ray_sample, const medium_info& medium)
 	{
 		return vertex(
 			point_interaction(interaction(ray_sample.normal, ray_sample.ray.origin, ray_sample.ray.direction), emitter),
-			surface_properties(), medium_info(),
+			surface_properties(), medium,
 			vertex_type::emitter,
 			ray_sample.intensity,
 			ray_sample.pdf_direction * ray_sample.pdf_position,
@@ -443,9 +459,9 @@ namespace rainbow::cpus::integrators {
 
 	inline vertex create_surface_vertex(
 		const surface_interaction& interaction, const surface_properties& properties,
-		const spectrum& beta, const vertex& last, real pdf)
+		const medium_info& medium, const spectrum& beta, const vertex& last, real pdf)
 	{
-		auto v = vertex(interaction, properties, medium_info(), vertex_type::surface, beta, 0, 0, false);
+		auto v = vertex(interaction, properties, medium, vertex_type::surface, beta, 0, 0, false);
 
 		v.forward_pdf = last.convert_density(pdf, v);
 
@@ -465,9 +481,9 @@ namespace rainbow::cpus::integrators {
 
 	inline void generate_sub_path(
 		const std::shared_ptr<scene>& scene, const sampler_group& samplers,
-		const transport_mode& mode, const spectrum& beta, 
-		const ray& ray, real pdf, size_t max_depth,
-		std::vector<vertex>& vertices)
+		const transport_mode& mode, const medium_info& medium, 
+		const spectrum& beta, const ray& ray, real pdf, 
+		size_t max_depth, std::vector<vertex>& vertices)
 	{
 		// generate the sub path from emitter or camera the transport_mode will indicate the direction of path
 		// the vertices[0] will be the start of path(camera or emitter), the creation is not included in this function
@@ -480,7 +496,7 @@ namespace rainbow::cpus::integrators {
 		// the tracing_info.ray is the ray from last vertex to current vertex
 		tracing_info.beta = beta;
 		tracing_info.ray = ray;
-		tracing_info.medium = medium_info(); //default medium is vacuum
+		tracing_info.medium = medium;
 
 		// the forward_pdf means the pdf from last vertex to this vertex
 		// the reverse_pdf means the pdf from next vertex to this vertex
@@ -527,6 +543,8 @@ namespace rainbow::cpus::integrators {
 					const auto emitter = scene->environments().empty() ? nullptr : scene->environments()[0];
 
 					vertices.push_back(create_emitter_vertex(emitter, tracing_info.beta, tracing_info.ray, forward_pdf));
+
+					vertices.back().medium = tracing_info.medium;
 				}
 
 				break;
@@ -536,6 +554,12 @@ namespace rainbow::cpus::integrators {
 				// compute the new ray 
 				tracing_info.ray = interaction->spawn_ray(tracing_info.ray.direction);
 
+				// update the medium property when interaction->entity has media
+				// if interaction->normal dot ray.direction > 0, the medium we tracing should be outside of entity
+				// otherwise the medium should be inside
+				if (interaction->entity->has_component<cpus::media::media>())
+					tracing_info.medium = medium_info(interaction->entity, interaction->normal, tracing_info.ray.direction);
+				
 				// because we intersect a invisible shape, we do not need add the bounces
 				bounces--;
 
@@ -549,8 +573,8 @@ namespace rainbow::cpus::integrators {
 			// get the scattering functions from surface properties
 			const auto& scattering_functions = surface_properties.functions;
 
-			vertices.push_back(create_surface_vertex(interaction.value(), surface_properties, tracing_info.beta,
-				vertices.back(), forward_pdf));
+			vertices.push_back(create_surface_vertex(interaction.value(), surface_properties, tracing_info.medium,
+				tracing_info.beta, vertices.back(), forward_pdf));
 
 			const auto scattering_sample = scattering_functions.sample(interaction.value(), samplers.sampler2d->next());
 
@@ -606,7 +630,7 @@ namespace rainbow::cpus::integrators {
 
 		const auto [pdf_position, pdf_direction] = camera->pdf(ray);
 		
-		generate_sub_path(scene, samplers, transport_mode::radiance, beta, ray, pdf_direction, max_depth - 1, vertices);
+		generate_sub_path(scene, samplers, transport_mode::radiance, medium_info(), beta, ray, pdf_direction, max_depth - 1, vertices);
 
 		return vertices;
 	}
@@ -626,15 +650,19 @@ namespace rainbow::cpus::integrators {
 
 		if (ray_sample.intensity.is_black() || ray_sample.pdf_position == 0 || ray_sample.pdf_direction == 0) return {};
 
-		std::vector<vertex> vertices;
-
-		vertices.push_back(create_emitter_vertex(emitter, ray_sample));
-
 		const auto beta = ray_sample.intensity * math::abs(dot(ray_sample.normal, ray_sample.ray.direction)) /
 			(pdf * ray_sample.pdf_position * ray_sample.pdf_direction);
 
-		generate_sub_path(scene, samplers, transport_mode::important, beta, ray_sample.ray, ray_sample.pdf_direction, max_depth - 1,
-			vertices);
+		const auto medium = emitter->has_component<cpus::media::media>() ? 
+			medium_info(emitter, ray_sample.normal, ray_sample.ray.direction) :
+			medium_info();
+		
+		std::vector<vertex> vertices;
+
+		vertices.push_back(create_emitter_vertex(emitter, ray_sample, medium));
+
+		generate_sub_path(scene, samplers, transport_mode::important, medium, beta,
+			ray_sample.ray, ray_sample.pdf_direction, max_depth - 1, vertices);
 
 		// if the start emitter is environment emitter, the forward pdf should be he pdf of position
 		// todo : add more text

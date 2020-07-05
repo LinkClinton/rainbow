@@ -52,6 +52,8 @@ namespace rainbow::cpus::media {
 
 		medium_sample sample(const std::shared_ptr<sampler1d>& sampler, const ray& ray) const;
 
+		medium_info clone(const vector3& normal, const vector3& wi) const;
+		
 		bool has() const noexcept;
 	};
 	

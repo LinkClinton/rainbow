@@ -57,6 +57,14 @@ rainbow::cpus::media::medium_sample rainbow::cpus::media::medium_info::sample(
 	return medium->sample(sampler, ray);
 }
 
+rainbow::cpus::media::medium_info rainbow::cpus::media::medium_info::clone(const vector3& normal,
+	const vector3& wi) const
+{
+	if (entity == nullptr || !entity->has_component<media>()) return medium_info(entity, nullptr);
+
+	return medium_info(entity, normal, wi);
+}
+
 bool rainbow::cpus::media::medium_info::has() const noexcept
 {
 	return medium != nullptr && entity != nullptr;
