@@ -75,6 +75,8 @@ namespace rainbow::cpus::scenes {
 		std::shared_ptr<media> mMedia;
 
 		shared::transform mLocalToWorld, mWorldToLocal;
+
+		shape_instance_properties mShapeInstanceProperties;
 	};
 
 }

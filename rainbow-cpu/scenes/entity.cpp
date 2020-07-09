@@ -12,6 +12,7 @@ rainbow::cpus::scenes::entity::entity(
 	mMaterial(material), mEmitter(emitter), mShape(shape), mMedia(media),
 	mLocalToWorld(transform), mWorldToLocal(transform.inverse())
 {
+	mShapeInstanceProperties = mShape != nullptr ? mShape->instance(mLocalToWorld) : shape_instance_properties();
 }
 
 std::optional<surface_interaction> rainbow::cpus::scenes::entity::intersect(const ray& ray, size_t index) const
@@ -83,7 +84,7 @@ bool rainbow::cpus::scenes::entity::visible() const noexcept
 
 spectrum rainbow::cpus::scenes::entity::power() const noexcept
 {
-	return mEmitter->power(mShape);
+	return mEmitter->power(mShapeInstanceProperties);
 }
 
 transform entity::transform() const noexcept

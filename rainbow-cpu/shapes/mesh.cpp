@@ -81,7 +81,7 @@ rainbow::core::math::bound3 rainbow::cpus::shapes::mesh::bounding_box(const tran
 	return transform(mBoundingBox);
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::mesh::sample(const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::mesh::sample(const shape_instance_properties& properties, const vector2& sample) const
 {
 	const auto which = std::min(static_cast<size_t>(std::floor(sample.x * mCount)),
 		mCount - 1);
@@ -111,7 +111,7 @@ rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::mesh::sample(const ve
 
 	return shape_sample(
 		interaction,
-		pdf()
+		pdf(properties)
 	);
 }
 
@@ -122,9 +122,33 @@ rainbow::core::real rainbow::cpus::shapes::mesh::area(size_t index) const noexce
 	return static_cast<real>(0.5) * length(math::cross(points[2] - points[0], points[2] - points[1]));
 }
 
-rainbow::core::real rainbow::cpus::shapes::mesh::pdf() const
+rainbow::core::real rainbow::cpus::shapes::mesh::pdf(const shape_instance_properties& properties) const
 {
-	return 1 / area();
+	// the transform of entity may have scale component
+	// the area of world space is not equal to the area of local space
+	// so we will use shape_instance_properties::area(the area in world space)
+	return 1 / properties.area;
+}
+
+real rainbow::cpus::shapes::mesh::area(const transform& transform, size_t index) const noexcept
+{
+	auto points = positions(index);
+
+	points[0] = transform_point(transform, points[0]);
+	points[1] = transform_point(transform, points[1]);
+	points[2] = transform_point(transform, points[2]);
+	
+	return static_cast<real>(0.5) * length(math::cross(points[2] - points[0], points[2] - points[1]));
+}
+
+real rainbow::cpus::shapes::mesh::area(const transform& transform) const noexcept
+{
+	real area = 0;
+	
+	for (size_t index = 0; index < mCount; index++) 
+		area = area + this->area(transform, index);
+
+	return area;
 }
 
 rainbow::core::real rainbow::cpus::shapes::mesh::area() const noexcept

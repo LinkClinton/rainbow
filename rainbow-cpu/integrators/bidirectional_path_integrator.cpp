@@ -3,8 +3,6 @@
 #include "../../rainbow-core/logs/log.hpp"
 #include "../shared/scope_assignment.hpp"
 
-#pragma optimize("", off)
-
 #ifndef _DEBUG
 #define __PARALLEL_RENDER__
 #endif
@@ -150,7 +148,7 @@ namespace rainbow::cpus::integrators {
 			
 			// in fact, the type of vertex is impossible to be emitter
 			// so we do not discuss this type
-			assert(type != vertex_type::vertex_type::emitter);
+			assert(type != vertex_type::emitter);
 			
 			if (type == vertex_type::camera)
 				return scene->evaluate_media_beam(samplers.sampler1d, { medium_info(), interaction() }, to);
@@ -919,10 +917,6 @@ namespace rainbow::cpus::integrators {
 				if (L.is_black()) return L;
 
 				// visible test
-				/*const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
-				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
-
-				if (shadow_interaction.has_value()) return spectrum(0);*/
 				const auto beam = current_vertex.evaluate_media_beam(scene, samplers, sampled_vertex.interaction());
 				
 				const auto weight = mis_weight_emitter_case(scene, sampled_vertex, 
@@ -963,11 +957,6 @@ namespace rainbow::cpus::integrators {
 				if (L.is_black()) return L;
 
 				// visible test
-				/*const auto shadow_ray = current_vertex.interaction().spawn_ray_to(sampled_vertex.interaction().point);
-				const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
-
-				if (shadow_interaction.has_value()) return spectrum(0);*/
-
 				const auto beam = current_vertex.evaluate_media_beam(scene, samplers, sampled_vertex.interaction());
 				
 				const auto weight = mis_weight_camera_case(scene, sampled_vertex,
@@ -999,11 +988,6 @@ namespace rainbow::cpus::integrators {
 			this_camera.evaluate(this_emitter, transport_mode::radiance) * this_camera.beta;
 
 		if (L.is_black()) return L;
-
-		/*const auto shadow_ray = current_emitter.interaction().spawn_ray_to(current_camera.interaction().point);
-		const auto shadow_interaction = scene->intersect_with_shadow_ray(shadow_ray);
-
-		if (shadow_interaction.has_value()) return spectrum(0);*/
 
 		const auto beam = this_emitter.evaluate_media_beam(scene, samplers, this_camera.interaction());
 		
@@ -1143,7 +1127,7 @@ void rainbow::cpus::integrators::bidirectional_path_integrator::render(
 							break;
 						}
 #endif					
-
+						
 						auto emitter_sub_path = generate_emitter_sub_path(scene, trace_samplers, mMaxDepth + 1);
 						auto camera_sub_path = generate_camera_sub_path(camera, scene, trace_samplers, sample, mMaxDepth + 2);
 

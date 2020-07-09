@@ -15,6 +15,8 @@ namespace rainbow::cpus::shapes {
 
 	using namespace core;
 
+	class shape;
+	
 	struct shape_sample {
 		interaction interaction;
 		real pdf = 0;
@@ -28,7 +30,17 @@ namespace rainbow::cpus::shapes {
 		static shape_sample transform(const transform& transform, const shape_sample& sample);
 	};
 
-	class shape : public interfaces::noncopyable {
+	struct shape_instance_properties {
+		std::shared_ptr<const shape> shape;
+		
+		real area = 0;
+
+		shape_instance_properties() = default;
+
+		shape_instance_properties(const std::shared_ptr<const shapes::shape>& shape, real area);
+	};
+	
+	class shape : public interfaces::noncopyable, public std::enable_shared_from_this<shape> {
 	public:
 		using sample_type = shape_sample;
 	public:
@@ -46,20 +58,26 @@ namespace rainbow::cpus::shapes {
 
 		virtual bound3 bounding_box(const transform& transform) const = 0;
 
-		virtual shape_sample sample(const interaction& reference, const vector2& sample) const;
+		virtual shape_sample sample(const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const;
 
-		virtual shape_sample sample(const vector2& sample) const = 0;
+		virtual shape_sample sample(const shape_instance_properties& properties, const vector2& sample) const = 0;
 
-		virtual real pdf(const interaction& reference, const vector3& wi) const;
+		virtual real pdf(const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const;
 
-		virtual real pdf() const = 0;
+		virtual real pdf(const shape_instance_properties& properties) const = 0;
 
+		virtual real area(const transform& transform, size_t index) const noexcept = 0;
+		
+		virtual real area(const transform& transform) const noexcept = 0;
+		
 		virtual real area(size_t index) const noexcept = 0;
 
 		virtual real area() const noexcept = 0;
 
 		virtual void build_accelerator() = 0;
 
+		shape_instance_properties instance(const transform& transform) const noexcept;
+		
 		bool reverse_orientation() const noexcept;
 
 		size_t count() const noexcept;

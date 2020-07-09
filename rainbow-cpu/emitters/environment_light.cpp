@@ -53,7 +53,7 @@ spectrum rainbow::cpus::emitters::environment_light::evaluate(
 }
 
 rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::environment_light::sample(
-	const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const
+	const shape_instance_properties& properties, const vector2& sample0, const vector2& sample1) const
 {
 	// first, sample the distribution to find the direction of ray
 	const auto distribution_sample = mDistribution->sample(sample0);
@@ -83,7 +83,7 @@ rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::environment
 }
 
 rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::environment_light::sample(
-	const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const
+	const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const
 {
 	const auto distribution_sample = mDistribution->sample(sample);
 
@@ -106,8 +106,8 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::environment_lig
 	);
 }
 
-std::tuple<real, real> rainbow::cpus::emitters::environment_light::pdf(const std::shared_ptr<shape>& shape,
-	const ray& ray, const vector3& normal) const
+std::tuple<real, real> rainbow::cpus::emitters::environment_light::pdf(
+	const shape_instance_properties& properties, const ray& ray, const vector3& normal) const
 {
 	// the ray is spawned from the emitter, so we need inverse it direction to find theta and phi
 	const auto direction = normalize(-ray.direction);
@@ -128,7 +128,7 @@ std::tuple<real, real> rainbow::cpus::emitters::environment_light::pdf(const std
 }
 
 rainbow::core::real rainbow::cpus::emitters::environment_light::pdf(
-	const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const
+	const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const
 {
 	// in environment light, the interaction is always with default interaction.
 	// the wi will be the trace ray
@@ -148,7 +148,7 @@ rainbow::core::real rainbow::cpus::emitters::environment_light::pdf(
 	return distribution_pdf / (two_pi<real>() * pi<real>() * sin_theta);
 }
 
-spectrum rainbow::cpus::emitters::environment_light::power(const std::shared_ptr<shape>& shape) const
+spectrum rainbow::cpus::emitters::environment_light::power(const shape_instance_properties& properties) const
 {
 	return mIntensity * mRadius * mRadius * pi<real>() * mEnvironmentMap->sample(vector2(0.5));
 }

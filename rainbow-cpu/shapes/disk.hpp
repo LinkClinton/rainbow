@@ -18,10 +18,14 @@ namespace rainbow::cpus::shapes {
 
 		bound3 bounding_box(const transform& transform) const override;
 
-		shape_sample sample(const vector2& sample) const override;
+		shape_sample sample(const shape_instance_properties& properties, const vector2& sample) const override;
 
-		real pdf() const override;
+		real pdf(const shape_instance_properties& properties) const override;
 
+		real area(const transform& transform, size_t index) const noexcept override;
+		
+		real area(const transform& transform) const noexcept override;
+		
 		real area(size_t index) const noexcept override;
 
 		real area() const noexcept override;

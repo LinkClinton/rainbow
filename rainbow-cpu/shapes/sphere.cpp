@@ -99,14 +99,15 @@ rainbow::core::math::bound3 rainbow::cpus::shapes::sphere::bounding_box(const tr
 	return bound3(center - radius, center + radius);
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const interaction& reference, const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const shape_instance_properties& properties, 
+	const interaction& reference, const vector2& sample) const
 {
 	const auto center = vector3(0);
 
 	// the reference point is in the inside of sphere
 	// we will sample it using the sample function without reference point
 	if (distance_squared(center, reference.point) <= mRadius * mRadius) {
-		auto shape_sample = sphere::sample(sample);
+		auto shape_sample = sphere::sample(properties, sample);
 		auto wi = shape_sample.interaction.point - reference.point;
 
 		if (length_squared(wi) == 0) return {};
@@ -179,22 +180,23 @@ rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const 
 	);
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::sphere::sample(const shape_instance_properties& properties, const vector2& sample) const
 {
 	const auto point = vector3(0) + mRadius * uniform_sample_sphere(sample);
 
 	return shape_sample(
 		interaction(normalize(point), point, vector3(0)),
-		pdf()
+		pdf(properties)
 	);
 }
 
-rainbow::core::real rainbow::cpus::shapes::sphere::pdf(const interaction& reference, const vector3& wi) const
+rainbow::core::real rainbow::cpus::shapes::sphere::pdf(const shape_instance_properties& properties, 
+	const interaction& reference, const vector3& wi) const
 {
 	const auto center = vector3(0);
 
 	if (distance_squared(center, reference.point) <= mRadius * mRadius)
-		return pdf();
+		return pdf(properties);
 
 	const auto sin_theta_max_2 = mRadius * mRadius / distance_squared(reference.point, center);
 	const auto cos_theta_max = sqrt(max(static_cast<real>(0), 1 - sin_theta_max_2));
@@ -202,9 +204,26 @@ rainbow::core::real rainbow::cpus::shapes::sphere::pdf(const interaction& refere
 	return uniform_sample_cone_pdf(cos_theta_max);
 }
 
-rainbow::core::real rainbow::cpus::shapes::sphere::pdf() const
+rainbow::core::real rainbow::cpus::shapes::sphere::pdf(const shape_instance_properties& properties) const
 {
-	return 1 / area();
+	// the transform of entity may have scale component
+	// the area of world space is not equal to the area of local space
+	// so we will use shape_instance_properties::area(the area in world space)
+	return 1 / properties.area;
+}
+
+real rainbow::cpus::shapes::sphere::area(const transform& transform, size_t index) const noexcept
+{
+	return area(transform);
+}
+
+real rainbow::cpus::shapes::sphere::area(const transform& transform) const noexcept
+{
+	const auto center = transform_point(transform, vector3(0));
+	const auto point = transform_point(transform, vector3(0, 0, mRadius));
+	const auto radius = length(point - center);
+
+	return 4 * pi<real>() * radius * radius;
 }
 
 rainbow::core::real rainbow::cpus::shapes::sphere::area(size_t index) const noexcept

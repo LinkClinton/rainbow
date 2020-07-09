@@ -17,7 +17,7 @@ spectrum rainbow::cpus::emitters::point_light::evaluate(const interaction& inter
 }
 
 rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::point_light::sample(
-	const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const
+	const shape_instance_properties& properties, const vector2& sample0, const vector2& sample1) const
 {
 	// sample the direction of ray spawn to 
 	const auto direction = uniform_sample_sphere(sample0);
@@ -32,7 +32,7 @@ rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::point_light
 }
 
 rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::point_light::sample(
-	const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const
+	const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const
 {
 	const auto position = vector3(0);
 	
@@ -45,19 +45,19 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::point_light::sa
 }
 
 std::tuple<real, real> rainbow::cpus::emitters::point_light::pdf(
-	const std::shared_ptr<shape>& shape, const ray& ray, const vector3& normal) const
+	const shape_instance_properties& properties, const ray& ray, const vector3& normal) const
 {
 	// [pdf_position, pdf_direction]
 	return { static_cast<real>(1), uniform_sample_sphere_pdf() };
 }
 
 rainbow::core::real rainbow::cpus::emitters::point_light::pdf(
-	const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const
+	const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const
 {
 	return 0;
 }
 
-spectrum rainbow::cpus::emitters::point_light::power(const std::shared_ptr<shape>& shape) const
+spectrum rainbow::cpus::emitters::point_light::power(const shape_instance_properties& properties) const
 {
 	return mIntensity * 4 * pi<real>();
 }

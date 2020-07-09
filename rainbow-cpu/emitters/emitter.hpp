@@ -70,15 +70,15 @@ namespace rainbow::cpus::emitters {
 
 		virtual spectrum evaluate(const interaction& interaction, const vector3& wi) const = 0;
 
-		virtual emitter_ray_sample sample(const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const = 0;
+		virtual emitter_ray_sample sample(const shape_instance_properties& properties, const vector2& sample0, const vector2& sample1) const = 0;
 		
-		virtual emitter_sample sample(const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const = 0;
+		virtual emitter_sample sample(const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const = 0;
 
-		virtual std::tuple<real, real> pdf(const std::shared_ptr<shape>& shape, const ray& ray, const vector3& normal) const = 0;
+		virtual std::tuple<real, real> pdf(const shape_instance_properties& properties, const ray& ray, const vector3& normal) const = 0;
 		
-		virtual real pdf(const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const = 0;
+		virtual real pdf(const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const = 0;
 
-		virtual spectrum power(const std::shared_ptr<shape>& shape) const = 0;
+		virtual spectrum power(const shape_instance_properties& properties) const = 0;
 
 		emitter_type type() const noexcept;
 

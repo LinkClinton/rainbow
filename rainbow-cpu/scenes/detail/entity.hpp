@@ -15,7 +15,7 @@ namespace rainbow::cpus::scenes {
 	inline emitter::ray_sample_type entity::sample<emitter>(const vector2& sample0, const vector2& sample1) const
 	{
 		return emitter_ray_sample::transform(mLocalToWorld,
-			mEmitter->sample(mShape, sample0, sample1));
+			mEmitter->sample(mShapeInstanceProperties, sample0, sample1));
 	}
 
 	template <>
@@ -23,6 +23,7 @@ namespace rainbow::cpus::scenes {
 	{
 		return shape_sample::transform(mLocalToWorld,
 			mShape->sample(
+				mShapeInstanceProperties,
 				transform_interaction(mWorldToLocal, reference),
 				sample
 			));
@@ -33,7 +34,7 @@ namespace rainbow::cpus::scenes {
 	{
 		return emitter_sample::transform(mLocalToWorld,
 			mEmitter->sample(
-				mShape,
+				mShapeInstanceProperties,
 				transform_interaction(mWorldToLocal, reference),
 				sample
 			));
@@ -42,19 +43,20 @@ namespace rainbow::cpus::scenes {
 	template <>
 	inline shape::sample_type entity::sample<shape>(const vector2& sample) const
 	{
-		return shape_sample::transform(mLocalToWorld, mShape->sample(sample));
+		return shape_sample::transform(mLocalToWorld, mShape->sample(mShapeInstanceProperties, sample));
 	}
 
 	template <>
 	inline std::tuple<real, real> entity::pdf<emitter>(const ray& ray, const vector3& normal) const
 	{
-		return mEmitter->pdf(mShape, mWorldToLocal(ray), transform_normal(mWorldToLocal, normal));
+		return mEmitter->pdf(mShapeInstanceProperties, mWorldToLocal(ray), transform_normal(mWorldToLocal, normal));
 	}
 	
 	template <>
 	inline real entity::pdf<shape>(const interaction& reference, const vector3& wi) const
 	{
 		return mShape->pdf(
+			mShapeInstanceProperties,
 			transform_interaction(mWorldToLocal, reference),
 			transform_vector(mWorldToLocal, wi));
 	}
@@ -63,7 +65,7 @@ namespace rainbow::cpus::scenes {
 	inline real entity::pdf<emitter>(const interaction& reference, const vector3& wi) const
 	{
 		return mEmitter->pdf(
-			mShape,
+			mShapeInstanceProperties,
 			transform_interaction(mWorldToLocal, reference),
 			transform_vector(mWorldToLocal, wi));
 	}
@@ -79,7 +81,7 @@ namespace rainbow::cpus::scenes {
 	template <>
 	inline real entity::pdf<shape>() const
 	{
-		return mShape->pdf();
+		return mShape->pdf(mShapeInstanceProperties);
 	}
 
 	template <>

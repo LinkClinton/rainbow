@@ -23,15 +23,15 @@ namespace rainbow::cpus::emitters {
 
 		spectrum evaluate(const interaction& interaction, const vector3& wi) const override;
 
-		emitter_ray_sample sample(const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const override;
+		emitter_ray_sample sample(const shape_instance_properties& properties, const vector2& sample0, const vector2& sample1) const override;
 		
-		emitter_sample sample(const std::shared_ptr<shape>& shape, const interaction& reference, const vector2& sample) const override;
+		emitter_sample sample(const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const override;
 
-		std::tuple<real, real> pdf(const std::shared_ptr<shape>& shape, const ray& ray, const vector3& normal) const override;
+		std::tuple<real, real> pdf(const shape_instance_properties& properties, const ray& ray, const vector3& normal) const override;
 		
-		real pdf(const std::shared_ptr<shape>& shape, const interaction& reference, const vector3& wi) const override;
+		real pdf(const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const override;
 
-		spectrum power(const std::shared_ptr<shape>& shape) const override;
+		spectrum power(const shape_instance_properties& properties) const override;
 
 		real radius() const noexcept;
 	private:

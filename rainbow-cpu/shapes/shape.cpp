@@ -14,13 +14,19 @@ rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::shape_sample::transfo
 	);
 }
 
+rainbow::cpus::shapes::shape_instance_properties::shape_instance_properties(const std::shared_ptr<const shapes::shape>& shape, real area)
+	: shape(shape), area(area)
+{
+}
+
 rainbow::cpus::shapes::shape::shape(bool reverse_orientation, size_t count) : mReverseOrientation(reverse_orientation), mCount(count)
 {
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::shape::sample(const interaction& reference, const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::shape::sample(const shape_instance_properties& properties, 
+	const interaction& reference, const vector2& sample) const
 {
-	auto shape_sample = this->sample(sample);
+	auto shape_sample = this->sample(properties, sample);
 	auto wi = shape_sample.interaction.point - reference.point;
 
 	if (length_squared(wi) == 0) return {};
@@ -37,7 +43,7 @@ rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::shape::sample(const i
 	return shape_sample;
 }
 
-rainbow::core::real rainbow::cpus::shapes::shape::pdf(const interaction& reference, const vector3& wi) const
+rainbow::core::real rainbow::cpus::shapes::shape::pdf(const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const
 {
 	const auto ray = reference.spawn_ray(wi);
 	const auto interaction = intersect(ray);
@@ -46,11 +52,16 @@ rainbow::core::real rainbow::cpus::shapes::shape::pdf(const interaction& referen
 	if (!interaction.has_value()) return 0;
 
 	const auto pdf = distance_squared(reference.point, interaction->point) /
-		(abs(dot(interaction->normal, -wi)) * area());
+		(abs(dot(interaction->normal, -wi)) * properties.area);
 
 	if (isinf(pdf)) return 0;
 
 	return pdf;
+}
+
+rainbow::cpus::shapes::shape_instance_properties rainbow::cpus::shapes::shape::instance(const transform& transform) const noexcept
+{
+	return shape_instance_properties(shared_from_this(), area(transform));
 }
 
 bool rainbow::cpus::shapes::shape::reverse_orientation() const noexcept

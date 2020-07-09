@@ -170,16 +170,52 @@ bound3 rainbow::cpus::shapes::curve::bounding_box(const transform& transform) co
 	return bound3(ret.min - max_width, ret.max + max_width);
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::curve::sample(const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::curve::sample(const shape_instance_properties& properties, const vector2& sample) const
 {
 	// not support in this version
 	throw std::exception();
 }
 
-real rainbow::cpus::shapes::curve::pdf() const
+real rainbow::cpus::shapes::curve::pdf(const shape_instance_properties& properties) const
 {
 	// not support in this version
 	throw std::exception();
+}
+
+real rainbow::cpus::shapes::curve::area(const transform& transform, size_t index) const noexcept
+{
+	return area(transform);
+}
+
+real rainbow::cpus::shapes::curve::area(const transform& transform) const noexcept
+{
+	const std::array<vector3, 4> transformed_points = {
+		transform_point(transform, mControlPoints[0]),
+		transform_point(transform, mControlPoints[1]),
+		transform_point(transform, mControlPoints[2]),
+		transform_point(transform, mControlPoints[3])
+	};
+	
+	std::array<vector3, 4> points = {
+		blossom_bezier_curve(transformed_points, { mUMin, mUMin, mUMin }),
+		blossom_bezier_curve(transformed_points, { mUMin, mUMin, mUMax }),
+		blossom_bezier_curve(transformed_points, { mUMin, mUMax, mUMax }),
+		blossom_bezier_curve(transformed_points, { mUMax, mUMax, mUMax }),
+	};
+
+	// evaluate the average of width, we use it as the width of curve in area calculation
+	const auto width0 = lerp(mWidth[0], mWidth[1], mUMin);
+	const auto width1 = lerp(mWidth[0], mWidth[1], mUMax);
+	const auto width = (width0 + width1) * 0.5f;
+
+	real length = 0;
+
+	// the length of curve, we use the length of three segment in area calculation
+	for (size_t index = 0; index < 3; index++)
+		length = length + distance(points[index + 0], points[index + 1]);
+
+	// the approximate area should be the length * width
+	return length * width;
 }
 
 real rainbow::cpus::shapes::curve::area(size_t index) const noexcept

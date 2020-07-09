@@ -84,20 +84,35 @@ rainbow::core::math::bound3 rainbow::cpus::shapes::disk::bounding_box(const tran
 	));
 }
 
-rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::disk::sample(const vector2& sample) const
+rainbow::cpus::shapes::shape_sample rainbow::cpus::shapes::disk::sample(const shape_instance_properties& properties, const vector2& sample) const
 {
 	const auto point_disk = concentric_sample_disk(sample);
 	const auto point = vector3(point_disk.x * mRadius, point_disk.y * mRadius, mHeight);
 
 	return shape_sample(
 		interaction(vector3(0, 0, mReverseOrientation ? -1 : 1), point, vector3(0)),
-		pdf()
+		pdf(properties)
 	);
 }
 
-rainbow::core::real rainbow::cpus::shapes::disk::pdf() const
+rainbow::core::real rainbow::cpus::shapes::disk::pdf(const shape_instance_properties& properties) const
 {
-	return 1 / area();
+	// the transform of entity may have scale component
+	// the area of world space is not equal to the area of local space
+	// so we will use shape_instance_properties::area(the area in world space)
+	return 1 / properties.area;
+}
+
+real rainbow::cpus::shapes::disk::area(const transform& transform, size_t index) const noexcept
+{
+	return area(transform);
+}
+
+real rainbow::cpus::shapes::disk::area(const transform& transform) const noexcept
+{
+	const auto radius = length(transform_point(transform, vector3(mRadius, 0, 0)));
+
+	return pi<real>() * radius * radius;
 }
 
 rainbow::core::real rainbow::cpus::shapes::disk::area(size_t index) const noexcept

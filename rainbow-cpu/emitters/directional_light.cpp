@@ -20,7 +20,7 @@ spectrum rainbow::cpus::emitters::directional_light::evaluate(const interaction&
 }
 
 rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::directional_light::sample(
-	const std::shared_ptr<shape>& shape, const vector2& sample0, const vector2& sample1) const
+	const shape_instance_properties& properties, const vector2& sample0, const vector2& sample1) const
 {
 	// first, build a system with z = direction and sample a point on disk
 	// transform the point on disk to local space
@@ -38,8 +38,8 @@ rainbow::cpus::emitters::emitter_ray_sample rainbow::cpus::emitters::directional
 	);
 }
 
-rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::directional_light::sample(const std::shared_ptr<shape>& shape,
-                                                                                           const interaction& reference, const vector2& sample) const
+rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::directional_light::sample(
+	const shape_instance_properties& properties, const interaction& reference, const vector2& sample) const
 {
 	return emitter_sample(
 		interaction(reference.point + 2 * mRadius * mDirection),
@@ -49,20 +49,20 @@ rainbow::cpus::emitters::emitter_sample rainbow::cpus::emitters::directional_lig
 	);
 }
 
-std::tuple<real, real> rainbow::cpus::emitters::directional_light::pdf(const std::shared_ptr<shape>& shape,
-	const ray& ray, const vector3& normal) const
+std::tuple<real, real> rainbow::cpus::emitters::directional_light::pdf(
+	const shape_instance_properties& properties,  const ray& ray, const vector3& normal) const
 {
 	// [pdf_position, pdf_direction]
 	return { 1 / (pi<real>() * mRadius * mRadius), static_cast<real>(1) };
 }
 
-rainbow::core::real rainbow::cpus::emitters::directional_light::pdf(const std::shared_ptr<shape>& shape,
-                                                                    const interaction& reference, const vector3& wi) const
+rainbow::core::real rainbow::cpus::emitters::directional_light::pdf(
+	const shape_instance_properties& properties, const interaction& reference, const vector3& wi) const
 {
 	return 0;
 }
 
-spectrum rainbow::cpus::emitters::directional_light::power(const std::shared_ptr<shape>& shape) const
+spectrum rainbow::cpus::emitters::directional_light::power(const shape_instance_properties& properties) const
 {
 	return mIrradiance * pi<real>() * mRadius * mRadius;
 }
