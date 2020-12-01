@@ -2,6 +2,7 @@
 
 #include "../bounding_volume_hierarchy.hpp"
 
+#include <algorithm>
 #include <stack>
 
 #define BOUNDING_VOLUME_HIERARCHY_POOL_SIZE 16

@@ -2,6 +2,8 @@
 
 using namespace rainbow::cpus::shared::interactions;
 
+#include <tuple>
+
 namespace rainbow::cpus::shapes {
 
 	inline vector3 blossom_bezier_curve(
