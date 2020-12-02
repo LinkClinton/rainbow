@@ -3,6 +3,8 @@
 #include "../matrix4x4.hpp"
 
 #ifdef __GLM_IMPLEMENTATION__
+#undef near
+#undef far
 #include <glm/gtc/matrix_transform.hpp>
 #endif
 
