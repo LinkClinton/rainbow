@@ -22,14 +22,14 @@ rainbow::core::real rainbow::cpus::shared::default_random_generator::uniform_rea
 
 rainbow::core::real rainbow::cpus::shared::default_random_generator::real(core::real min, core::real max)
 {
-	const auto distribution = std::uniform_real_distribution<core::real>(min, max);
+	auto distribution = std::uniform_real_distribution<core::real>(min, max);
 
 	return distribution(mEngine);
 }
 
 rainbow::core::uint32 rainbow::cpus::shared::default_random_generator::uint32(core::uint32 min, core::uint32 max)
 {
-	const auto distribution = std::uniform_int_distribution<core::uint32>(min, max);
+	auto distribution = std::uniform_int_distribution<core::uint32>(min, max);
 
 	return distribution(mEngine);
 }

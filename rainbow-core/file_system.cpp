@@ -4,6 +4,8 @@
 
 #define __STB_IMAGE__
 
+#pragma warning(disable:4996)
+
 #ifdef __STB_IMAGE__
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
